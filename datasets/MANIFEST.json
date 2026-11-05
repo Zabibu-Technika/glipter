@@ -1,0 +1,80 @@
+{
+  "generatedFor": "Glipter Studio — Tier 0 demonstrator",
+  "note": "Runtime artifacts live in src/data and src/selftest/fixtures. Raw zips are included only for reproducibility; they are never loaded by the browser.",
+  "datasets": [
+    {
+      "id": "asl-borisgraudt",
+      "name": "ASL Alphabet Hand Landmarks",
+      "author": "Boris Graudt",
+      "license": "CC0-1.0",
+      "source": "https://www.kaggle.com/datasets/borisgraudt/asl-alphabet-hand-landmarks",
+      "file": "raw/asl-borisgraudt.zip",
+      "sha256": "6314F5693F512D6EA193B76D2F88B0C0B62CCBB8909011839A66AD8348394685",
+      "bytes": 5993141,
+      "samples": 10508,
+      "classes": 26,
+      "preprocessing": "MediaPipe Hands; 21 3D points; wrist-centered; scaled by maximum wrist distance",
+      "usedBy": "src/data/models/asl-static.js (ASL and KSL fingerspelling proxy)",
+      "limitation": "Held-out frames from the same curated dataset, not signer-independent validation."
+    },
+    {
+      "id": "ksl-joanwachuka",
+      "name": "KSL hand landmarks",
+      "author": "Joan Wachuka",
+      "license": "Apache-2.0",
+      "source": "https://www.kaggle.com/datasets/joanwachuka/ksl-hand-landmarks",
+      "file": "raw/ksl-joanwachuka.zip",
+      "sha256": "04C26FFE293573B61F7012C340FDE8EED1B2294B2EEE2F597FC1F6D4DBAE5288",
+      "bytes": 15108560,
+      "samples": 818,
+      "classes": 4,
+      "words": ["FATHER", "HELLO", "IS", "MY"],
+      "preprocessing": "MediaPipe Hands; two hands; wrist-centered; scale-normalized; resampled to 24 frames",
+      "usedBy": "src/data/models/ksl-words.js (KSL word-sign pilot)",
+      "limitation": "Small, non-signer-independent dataset. Four glosses only. Not a KSL lexicon."
+    },
+    {
+      "id": "bsl-alifsathar",
+      "name": "BSL-Fingerspelling-Dataset",
+      "author": "Alif Sathar",
+      "license": "Apache-2.0",
+      "source": "https://www.kaggle.com/datasets/alifsathar/bsl-fingerspelling-dataset",
+      "file": null,
+      "samples": null,
+      "classes": 26,
+      "usedBy": "Not bundled. BSL remains rule-based in this build.",
+      "limitation": "A permissively licensed BSL landmark corpus has not been curated and reviewed yet. BSL is experimental."
+    },
+    {
+      "id": "mediapipe-hands",
+      "name": "MediaPipe Hands",
+      "author": "Google",
+      "license": "Apache-2.0",
+      "source": "https://www.npmjs.com/package/@mediapipe/hands/v/0.4.1675469240",
+      "file": "vendor/mediapipe/hands",
+      "usedBy": "src/engine/engine.js",
+      "limitation": "Vendored locally so the recognition path has no runtime CDN dependency."
+    },
+    {
+      "id": "mars-ksl",
+      "name": "MARS-KSL benchmark",
+      "author": "KSL research community",
+      "license": "See publication",
+      "source": "https://doi.org/10.5281/zenodo.14974973",
+      "file": null,
+      "usedBy": "Reference benchmark only (reported 86.3% frontal accuracy with a trained model).",
+      "limitation": "The Zenodo record is access-restricted; it is not bundled."
+    },
+    {
+      "id": "ekitabu-ksl-video",
+      "name": "Kenyan Sign Language (KSL) Video Dataset",
+      "author": "eKitabu / Laurette Kazenga",
+      "license": "CC-BY-NC-4.0",
+      "source": "https://www.kaggle.com/datasets/ekitabu/kenyan-sign-language-videos",
+      "file": null,
+      "samples": null,
+      "usedBy": "Future work. Not bundled because the licence is non-commercial and the dataset is large.",
+      "limitation": "Would require a Deaf-led curation and consent process before use."
+    }
+  ]
+}

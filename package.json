@@ -1,0 +1,29 @@
+{
+  "name": "glipter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Glipter — an offline-first, on-device sign language engine. A Zabibu Technika product, led by Tehillah Kachila.",
+  "author": "Zabibu Technika · Tehillah Kachila",
+  "license": "MIT",
+  "homepage": "https://glipter.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teh317/glipter.git"
+  },
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check.mjs",
+    "build:sw": "node scripts/build-sw.mjs",
+    "fetch:datasets": "node scripts/fetch-datasets.mjs",
+    "audit": "node scripts/audit.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.2",
+    "playwright": "^1.64.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

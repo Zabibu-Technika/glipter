@@ -1,0 +1,11 @@
+datasets/
+docs/
+scripts/
+tests/
+.github/
+/README.md
+/CREDITS.md
+/ATTRIBUTION.md
+/LICENSE
+/package-lock.json
+/netlify.toml

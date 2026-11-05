@@ -1,0 +1,1067 @@
+{
+  "generatedAt": "2026-11-05T20:44:13.779Z",
+  "base": "http://127.0.0.1:3000/",
+  "viewports": [
+    {
+      "label": "small-mobile",
+      "viewport": {
+        "w": 320,
+        "h": 568
+      },
+      "document": {
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollHeight": 568,
+        "clientHeight": 568
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 1269,
+        "clientHeight": 518
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 50
+        },
+        "rail": {
+          "x": 0,
+          "y": 510,
+          "w": 320,
+          "h": 58
+        },
+        "studio": {
+          "x": 7,
+          "y": 57,
+          "w": 306,
+          "h": 1196
+        },
+        "camera": {
+          "x": 7,
+          "y": 57,
+          "w": 306,
+          "h": 487
+        },
+        "inspector": {
+          "x": 7,
+          "y": 556,
+          "w": 306,
+          "h": 560
+        },
+        "timeline": {
+          "x": 7,
+          "y": 1127,
+          "w": 306,
+          "h": 126
+        },
+        "status": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 19,
+      "under44": 0,
+      "under24": 0,
+      "under44Samples": [],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Caching 24/52"
+    },
+    {
+      "label": "mobile",
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "document": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 1147,
+        "clientHeight": 794
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 50
+        },
+        "rail": {
+          "x": 0,
+          "y": 786,
+          "w": 390,
+          "h": 58
+        },
+        "studio": {
+          "x": 7,
+          "y": 57,
+          "w": 376,
+          "h": 1074
+        },
+        "camera": {
+          "x": 7,
+          "y": 57,
+          "w": 376,
+          "h": 368
+        },
+        "inspector": {
+          "x": 7,
+          "y": 437,
+          "w": 376,
+          "h": 556
+        },
+        "timeline": {
+          "x": 7,
+          "y": 1006,
+          "w": 376,
+          "h": 126
+        },
+        "status": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 19,
+      "under44": 0,
+      "under24": 0,
+      "under44Samples": [],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Caching 48/52"
+    },
+    {
+      "label": "tablet",
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "document": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "clientHeight": 1024
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 1216,
+        "clientHeight": 944
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 768,
+          "h": 54
+        },
+        "rail": {
+          "x": 0,
+          "y": 54,
+          "w": 64,
+          "h": 944
+        },
+        "studio": {
+          "x": 73,
+          "y": 63,
+          "w": 686,
+          "h": 1198
+        },
+        "camera": {
+          "x": 73,
+          "y": 63,
+          "w": 686,
+          "h": 596
+        },
+        "inspector": {
+          "x": 73,
+          "y": 671,
+          "w": 686,
+          "h": 480
+        },
+        "timeline": {
+          "x": 73,
+          "y": 1164,
+          "w": 686,
+          "h": 98
+        },
+        "status": {
+          "x": 0,
+          "y": 998,
+          "w": 768,
+          "h": 26
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 20,
+      "under44": 13,
+      "under24": 0,
+      "under44Samples": [
+        {
+          "tag": "a",
+          "id": "",
+          "label": "Glipter Studio home",
+          "w": 94,
+          "h": 34
+        },
+        {
+          "tag": "select",
+          "id": "language-select",
+          "label": "Sign language",
+          "w": 176,
+          "h": 30
+        },
+        {
+          "tag": "button",
+          "id": "command-btn",
+          "label": "Open command palette Ctrl K",
+          "w": 81,
+          "h": 31
+        },
+        {
+          "tag": "button",
+          "id": "settings-btn",
+          "label": "Open settings",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tag": "button",
+          "id": "demo-btn",
+          "label": "Demo",
+          "w": 73,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "camera-more",
+          "label": "Camera options",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "hero-start",
+          "label": "Start camera",
+          "w": 109,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "hero-demo",
+          "label": "Play demo",
+          "w": 97,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "View all",
+          "w": 63,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "clear-timeline",
+          "label": "Clear",
+          "w": 69,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "speak-btn",
+          "label": "Speak English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "copy-btn",
+          "label": "Copy English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Open transcript",
+          "w": 114,
+          "h": 33
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Offline ready"
+    },
+    {
+      "label": "tablet-landscape",
+      "viewport": {
+        "w": 1024,
+        "h": 768
+      },
+      "document": {
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "scrollHeight": 768,
+        "clientHeight": 768
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 688,
+        "clientHeight": 688
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 1024,
+          "h": 54
+        },
+        "rail": {
+          "x": 0,
+          "y": 54,
+          "w": 84,
+          "h": 688
+        },
+        "studio": {
+          "x": 96,
+          "y": 66,
+          "w": 916,
+          "h": 664
+        },
+        "camera": {
+          "x": 96,
+          "y": 66,
+          "w": 594,
+          "h": 554
+        },
+        "inspector": {
+          "x": 702,
+          "y": 66,
+          "w": 310,
+          "h": 664
+        },
+        "timeline": {
+          "x": 96,
+          "y": 632,
+          "w": 594,
+          "h": 98
+        },
+        "status": {
+          "x": 0,
+          "y": 742,
+          "w": 1024,
+          "h": 26
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 20,
+      "under44": 13,
+      "under24": 0,
+      "under44Samples": [
+        {
+          "tag": "a",
+          "id": "",
+          "label": "Glipter Studio home",
+          "w": 94,
+          "h": 34
+        },
+        {
+          "tag": "select",
+          "id": "language-select",
+          "label": "Sign language",
+          "w": 176,
+          "h": 30
+        },
+        {
+          "tag": "button",
+          "id": "command-btn",
+          "label": "Open command palette Ctrl K",
+          "w": 81,
+          "h": 31
+        },
+        {
+          "tag": "button",
+          "id": "settings-btn",
+          "label": "Open settings",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tag": "button",
+          "id": "demo-btn",
+          "label": "Demo",
+          "w": 73,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "camera-more",
+          "label": "Camera options",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "hero-start",
+          "label": "Start camera",
+          "w": 109,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "hero-demo",
+          "label": "Play demo",
+          "w": 97,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "View all",
+          "w": 63,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "clear-timeline",
+          "label": "Clear",
+          "w": 69,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "speak-btn",
+          "label": "Speak English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "copy-btn",
+          "label": "Copy English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Open transcript",
+          "w": 114,
+          "h": 33
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Offline ready"
+    },
+    {
+      "label": "desktop",
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "document": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 820,
+        "clientHeight": 820
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 54
+        },
+        "rail": {
+          "x": 0,
+          "y": 54,
+          "w": 84,
+          "h": 820
+        },
+        "studio": {
+          "x": 96,
+          "y": 66,
+          "w": 1332,
+          "h": 796
+        },
+        "camera": {
+          "x": 96,
+          "y": 66,
+          "w": 948,
+          "h": 686
+        },
+        "inspector": {
+          "x": 1056,
+          "y": 66,
+          "w": 372,
+          "h": 796
+        },
+        "timeline": {
+          "x": 96,
+          "y": 764,
+          "w": 948,
+          "h": 98
+        },
+        "status": {
+          "x": 0,
+          "y": 874,
+          "w": 1440,
+          "h": 26
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 20,
+      "under44": 13,
+      "under24": 0,
+      "under44Samples": [
+        {
+          "tag": "a",
+          "id": "",
+          "label": "Glipter Studio home",
+          "w": 94,
+          "h": 34
+        },
+        {
+          "tag": "select",
+          "id": "language-select",
+          "label": "Sign language",
+          "w": 176,
+          "h": 30
+        },
+        {
+          "tag": "button",
+          "id": "command-btn",
+          "label": "Open command palette Ctrl K",
+          "w": 81,
+          "h": 31
+        },
+        {
+          "tag": "button",
+          "id": "settings-btn",
+          "label": "Open settings",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tag": "button",
+          "id": "demo-btn",
+          "label": "Demo",
+          "w": 73,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "camera-more",
+          "label": "Camera options",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "hero-start",
+          "label": "Start camera",
+          "w": 109,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "hero-demo",
+          "label": "Play demo",
+          "w": 97,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "View all",
+          "w": 63,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "clear-timeline",
+          "label": "Clear",
+          "w": 69,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "speak-btn",
+          "label": "Speak English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "copy-btn",
+          "label": "Copy English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Open transcript",
+          "w": 114,
+          "h": 33
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Offline ready"
+    },
+    {
+      "label": "wide",
+      "viewport": {
+        "w": 1920,
+        "h": 1080
+      },
+      "document": {
+        "scrollWidth": 1920,
+        "clientWidth": 1920,
+        "scrollHeight": 1080,
+        "clientHeight": 1080
+      },
+      "horizontalOverflow": false,
+      "mainScroll": {
+        "scrollHeight": 1000,
+        "clientHeight": 1000
+      },
+      "rects": {
+        "appBar": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 54
+        },
+        "rail": {
+          "x": 0,
+          "y": 54,
+          "w": 84,
+          "h": 1000
+        },
+        "studio": {
+          "x": 222,
+          "y": 66,
+          "w": 1560,
+          "h": 976
+        },
+        "camera": {
+          "x": 222,
+          "y": 66,
+          "w": 1176,
+          "h": 866
+        },
+        "inspector": {
+          "x": 1410,
+          "y": 66,
+          "w": 372,
+          "h": 976
+        },
+        "timeline": {
+          "x": 222,
+          "y": 944,
+          "w": 1176,
+          "h": 98
+        },
+        "status": {
+          "x": 0,
+          "y": 1054,
+          "w": 1920,
+          "h": 26
+        },
+        "learnDetail": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "voiceGrid": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "controls": 20,
+      "under44": 13,
+      "under24": 0,
+      "under44Samples": [
+        {
+          "tag": "a",
+          "id": "",
+          "label": "Glipter Studio home",
+          "w": 94,
+          "h": 34
+        },
+        {
+          "tag": "select",
+          "id": "language-select",
+          "label": "Sign language",
+          "w": 176,
+          "h": 30
+        },
+        {
+          "tag": "button",
+          "id": "command-btn",
+          "label": "Open command palette Ctrl K",
+          "w": 81,
+          "h": 31
+        },
+        {
+          "tag": "button",
+          "id": "settings-btn",
+          "label": "Open settings",
+          "w": 32,
+          "h": 32
+        },
+        {
+          "tag": "button",
+          "id": "demo-btn",
+          "label": "Demo",
+          "w": 73,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "camera-more",
+          "label": "Camera options",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "hero-start",
+          "label": "Start camera",
+          "w": 109,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "hero-demo",
+          "label": "Play demo",
+          "w": 97,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "View all",
+          "w": 63,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "clear-timeline",
+          "label": "Clear",
+          "w": 69,
+          "h": 33
+        },
+        {
+          "tag": "button",
+          "id": "speak-btn",
+          "label": "Speak English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "copy-btn",
+          "label": "Copy English",
+          "w": 28,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Open transcript",
+          "w": 114,
+          "h": 33
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Translate"
+        },
+        {
+          "tag": "H2",
+          "text": "Timeline"
+        },
+        {
+          "tag": "H2",
+          "text": "Inspector"
+        }
+      ],
+      "theme": "studio",
+      "title": "Glipter Studio",
+      "lang": "en",
+      "buttonsWithoutName": 0,
+      "imagesWithoutAlt": 0,
+      "asr": "ASR ready",
+      "tts": "TTS · 3 voices",
+      "selfTest": "self-test ✓ 74/74",
+      "offline": "Offline ready"
+    }
+  ],
+  "axe": [
+    {
+      "label": "mobile-voice",
+      "violations": [],
+      "passes": 41,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "label": "desktop-voice",
+      "violations": [],
+      "passes": 42,
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    {
+      "label": "desktop-live",
+      "violations": [],
+      "passes": 40,
+      "incomplete": [
+        "color-contrast",
+        "video-caption"
+      ]
+    },
+    {
+      "label": "desktop-learn",
+      "violations": [],
+      "passes": 43,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "label": "desktop-about",
+      "violations": [],
+      "passes": 44,
+      "incomplete": [
+        "color-contrast"
+      ]
+    },
+    {
+      "label": "desktop-light-live",
+      "violations": [],
+      "passes": 40,
+      "incomplete": [
+        "color-contrast",
+        "video-caption"
+      ]
+    },
+    {
+      "label": "desktop-dark-live",
+      "violations": [],
+      "passes": 40,
+      "incomplete": [
+        "color-contrast",
+        "video-caption"
+      ]
+    }
+  ],
+  "console": [],
+  "pageErrors": [],
+  "performance": {
+    "domContentLoadedMs": 1715,
+    "loadMs": 1725,
+    "resources": 31,
+    "transferKB": 0,
+    "decodedKB": 1279,
+    "scriptCount": 30,
+    "heapMB": 20.7
+  },
+  "offline": {
+    "status": "reloaded-offline",
+    "title": "Glipter Studio",
+    "selfTest": "self-test ✓ 74/74",
+    "offlineBadge": "Offline"
+  },
+  "demo": {
+    "gloss": "HELLO M",
+    "english": "Hello M",
+    "tokens": "1",
+    "timeline": "1 sign",
+    "engine": "demo"
+  }
+}

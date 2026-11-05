@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en" data-theme="studio">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="description" content="Glipter Studio — an offline-first, on-device sign language engine. Real hand tracking, real datasets, zero cloud dependency." />
+  <meta name="application-name" content="Glipter" />
+  <meta name="author" content="Zabibu Technika · Tehillah Kachila" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:title" content="Glipter Studio" />
+  <meta property="og:description" content="An offline-first, on-device sign language engine built for the languages the world overlooks." />
+  <meta property="og:type" content="website" />
+  <title>Glipter Studio</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="stylesheet" href="src/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7V5Z"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.1 2.1-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21h-3v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L6.6 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5v-3h.4a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L6.6 8l2.1-2.1.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V4h3v.7a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L18.8 8l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.4v3H20a1.7 1.7 0 0 0-1.6 1Z"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 9 5 5 5-5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2m-8 0 1 13h8l1-13"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M4 12h9a6 6 0 0 1 6 6v1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 19h14"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 12V5a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-3a1.5 1.5 0 0 1 3 0v6c0 3.3-2.7 6-6 6h-2.5a6 6 0 0 1-4.8-2.4L4 15.7a1.6 1.6 0 0 1 2.5-2L8 15"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/><path d="m3 3 18 18"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5.5 12a10 10 0 0 1 13 0"/><path d="M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/></symbol>
+    <symbol id="i-install" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8.4 7 10 4-1.6 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 3v4m6-4v4M9 17v4m6-4v4M3 9h4m-4 6h4m10-6h4m-4 6h4"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2V5Z"/><path d="M20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2V5Z"/></symbol>
+    <symbol id="i-transcript" viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="1"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10H4Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.5 20h19L12 4Z"/><path d="M12 9v5"/><circle cx="12" cy="17" r="1"/></symbol>
+    <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.5A8 8 0 0 1 8.5 4 8 8 0 1 0 20 15.5Z"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <header class="app-bar">
+      <div class="app-bar-brand">
+        <a class="brand" href="#live" aria-label="Glipter Studio home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg>
+          </span>
+          <span class="brand-text">
+            <strong>Glip<span>ter</span></strong>
+            <small>studio</small>
+          </span>
+        </a>
+        <div class="workspace-crumb">
+          <span class="crumb-muted">Workspace</span>
+          <span class="crumb-sep">/</span>
+          <span id="workspace-title">Kenyan Sign Language</span>
+          <span class="tier-chip">TIER 0</span>
+        </div>
+      </div>
+
+      <div class="app-bar-status">
+        <span id="session-clock" class="status-chip mono" title="Session duration">00:00</span>
+        <span id="engine-status" class="status-chip" title="Engine status"><span class="status-dot"></span> idle</span>
+        <span id="offline-badge" class="status-chip" title="Offline status">
+          <svg class="icon" aria-hidden="true"><use href="#i-wifi"></use></svg>
+          <span id="offline-text">Online</span>
+        </span>
+      </div>
+
+      <div class="app-bar-actions">
+        <label class="lang-select">
+          <span class="sr-only">Language</span>
+          <select id="language-select" aria-label="Sign language"></select>
+        </label>
+        <button id="command-btn" class="command-btn" type="button" title="Command palette (Ctrl/Cmd K)" aria-label="Open command palette Ctrl K">
+          <svg class="icon" aria-hidden="true"><use href="#i-command"></use></svg>
+          <kbd>⌘K</kbd>
+        </button>
+        <button id="install-btn" class="btn btn-ghost btn-sm hidden" type="button">
+          <svg class="icon" aria-hidden="true"><use href="#i-install"></use></svg>
+          Install
+        </button>
+        <button id="settings-btn" class="icon-btn" type="button" aria-label="Open settings" title="Settings">
+          <svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <nav class="side-rail" aria-label="Workspace">
+        <button class="rail-item is-active" type="button" data-view="live" title="Live (1)" aria-label="Live">
+          <svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg>
+          <span>Live</span>
+          <kbd>1</kbd>
+        </button>
+        <button class="rail-item" type="button" data-view="transcript" title="Transcript (2)" aria-label="Transcript">
+          <svg class="icon" aria-hidden="true"><use href="#i-transcript"></use></svg>
+          <span>Transcript</span>
+          <kbd>2</kbd>
+        </button>
+        <button class="rail-item" type="button" data-view="learn" title="Learn (3)" aria-label="Learn">
+          <svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg>
+          <span>Learn</span>
+          <kbd>3</kbd>
+        </button>
+        <button class="rail-item" type="button" data-view="voice" title="Voice (4)" aria-label="Voice">
+          <svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg>
+          <span>Voice</span>
+          <kbd>4</kbd>
+        </button>
+        <button class="rail-item" type="button" data-view="about" title="About (5)" aria-label="About">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+          <span>About</span>
+          <kbd>5</kbd>
+        </button>
+        <div class="rail-spacer"></div>
+        <button class="rail-item" type="button" id="rail-settings" title="Settings" aria-label="Settings">
+          <svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg>
+          <span>Settings</span>
+        </button>
+        <div class="rail-foot mono">v1.0</div>
+      </nav>
+
+      <main id="main" class="app-main">
+        <!-- ══ LIVE ═══════════════════════════════════════════ -->
+        <section id="view-live" class="view app-view" aria-label="Live workspace">
+          <div class="studio">
+            <div class="studio-main">
+              <section id="camera-panel" class="panel camera-panel is-idle" aria-labelledby="live-title">
+                <div class="panel-head">
+                  <div class="panel-title">
+                    <span class="panel-eyebrow">Capture</span>
+                    <h1 id="live-title">Translate</h1>
+                  </div>
+                  <div class="panel-tools">
+                    <span id="camera-status" class="status-chip"><span class="status-dot"></span> idle</span>
+                    <button id="start-btn" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Start</button>
+                    <button id="stop-btn" class="btn btn-secondary btn-sm" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop</button>
+                    <button id="demo-btn" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Demo</button>
+                    <button id="camera-more" class="icon-btn icon-btn-sm" type="button" aria-label="Camera options" aria-expanded="false" aria-controls="camera-menu" title="Camera options"><svg class="icon" aria-hidden="true"><use href="#i-more"></use></svg></button>
+                  </div>
+                </div>
+
+                <div id="camera-menu" class="camera-menu hidden">
+                  <label class="menu-row">
+                    <span><strong>Mirror preview</strong><small>Selfie-style preview and overlay.</small></span>
+                    <input id="mirror-toggle" type="checkbox" checked />
+                  </label>
+                  <label class="menu-row">
+                    <span><strong>Show skeleton</strong><small>Draw the 21-point hand overlay.</small></span>
+                    <input id="skeleton-toggle" type="checkbox" checked />
+                  </label>
+                  <div class="menu-divider" aria-hidden="true"></div>
+                  <button id="camera-settings" class="menu-action" type="button"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg> Settings</button>
+                  <button id="camera-kiosk" class="menu-action" type="button"><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg> Kiosk mode</button>
+                </div>
+
+                <div id="practice-banner" class="practice-banner hidden" aria-live="polite">
+                  <div class="practice-target">
+                    <span class="label">practice</span>
+                    <strong id="practice-target">A</strong>
+                  </div>
+                  <div class="practice-feedback" id="practice-feedback">Show the handshape to the camera.</div>
+                  <div class="practice-progress" id="practice-progress">0 / 0</div>
+                  <button id="practice-exit" class="icon-btn icon-btn-sm" type="button" aria-label="Exit practice" title="Exit practice"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+                </div>
+
+                <div class="camera-stage" id="camera-stage">
+                  <video id="video" autoplay playsinline muted></video>
+                  <canvas id="overlay" width="960" height="720"></canvas>
+                  <svg class="placement-ghost" viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z" /></svg>
+                  <div class="framing-guide" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                  <div id="camera-placeholder" class="camera-placeholder">
+                    <div class="placeholder-mark"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg></div>
+                    <strong>Camera is off</strong>
+                    <span>Start the camera, or play the on-device demo to see the full pipeline without a camera.</span>
+                    <span class="placement-cue">Place one hand in frame, palm toward the camera.</span>
+                    <div class="placeholder-actions">
+                      <button id="hero-start" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Start camera</button>
+                      <button id="hero-demo" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Play demo</button>
+                    </div>
+                  </div>
+                  <div class="stage-chips">
+                    <span id="live-chip" class="chip chip-live hidden"><span class="live-dot"></span> live</span>
+                    <span class="chip chip-mono"><span id="hand-count">0</span> <span id="hand-label">hands</span></span>
+                  </div>
+                  <div id="error-banner" class="error-banner hidden" role="alert">
+                    <span id="error-text"></span>
+                    <div class="error-actions">
+                      <button id="error-retry" class="btn btn-sm btn-secondary" type="button">Retry</button>
+                      <button id="error-dismiss" class="btn btn-sm btn-ghost" type="button" aria-label="Dismiss error">Dismiss</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="camera-footer">
+                  <div class="transport-metrics">
+                    <span class="privacy-chip"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg> on-device</span>
+                    <span><b id="fps">—</b> fps</span>
+                    <span><b id="latency">—</b> ms</span>
+                  </div>
+                  <div class="transport-hint">
+                    <kbd>S</kbd> start/stop <span>·</span> <kbd>D</kbd> demo <span>·</span> <kbd>⌘K</kbd> commands
+                  </div>
+                </div>
+              </section>
+
+              <section class="panel timeline-panel" aria-labelledby="timeline-title">
+                <div class="panel-head compact">
+                  <div class="panel-title">
+                    <span class="panel-eyebrow">Session</span>
+                    <h2 id="timeline-title">Timeline</h2>
+                  </div>
+                  <div class="panel-tools">
+                    <span id="timeline-count" class="status-chip">0 signs</span>
+                    <button class="btn btn-ghost btn-sm" type="button" data-view-jump="transcript">View all</button>
+                    <button id="clear-timeline" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Clear</button>
+                  </div>
+                </div>
+                <div id="timeline" class="timeline" aria-live="polite"></div>
+                <div id="timeline-empty" class="timeline-empty">Recognised signs appear here in order. Start the camera or play the demo.</div>
+              </section>
+            </div>
+
+            <section class="panel inspector" aria-labelledby="inspector-title">
+              <div class="panel-head compact">
+                <div class="panel-title">
+                  <span class="panel-eyebrow">Recognition</span>
+                  <h2 id="inspector-title">Inspector</h2>
+                </div>
+                <span id="model-pill" class="pill pill-accent">KSL · static model v1</span>
+              </div>
+
+              <div class="inspector-scroll">
+                <div class="current-block">
+                  <div class="current-top">
+                    <div class="current-main">
+                      <div class="label">current sign</div>
+                      <div id="current-sign" class="current-sign is-empty">—</div>
+                      <div id="current-label" class="current-label">no gesture</div>
+                    </div>
+                    <div class="confidence-wrap">
+                      <div class="label">confidence</div>
+                      <div class="confidence-track" aria-hidden="true"><div id="confidence-bar" class="confidence-fill"></div></div>
+                      <div id="confidence-value" class="confidence-value mono">—</div>
+                    </div>
+                  </div>
+                  <div id="sign-state" class="sign-state">Start the camera or demo to begin.</div>
+                </div>
+
+                <div class="primary-output">
+                  <div class="stream-head"><span class="label">English translation</span><span class="label-note">live</span></div>
+                  <div class="english-wrap">
+                    <div id="english-stream" class="stream english" data-placeholder="Your English translation will appear here."></div>
+                    <button id="speak-btn" class="icon-btn icon-btn-sm" type="button" aria-label="Speak English" title="Speak English"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg></button>
+                    <button id="copy-btn" class="icon-btn icon-btn-sm" type="button" aria-label="Copy English" title="Copy English"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button>
+                  </div>
+                  <button class="btn btn-ghost btn-sm primary-link" type="button" data-view-jump="transcript">Open transcript <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+                </div>
+
+                <button id="inspector-toggle" class="details-toggle" type="button" aria-expanded="false" aria-controls="inspector-details">
+                  <span id="inspector-toggle-label">Details</span>
+                  <svg class="icon" aria-hidden="true"><use href="#i-chevron"></use></svg>
+                </button>
+
+                <div id="inspector-details" class="inspector-details hidden">
+                  <div id="top3" class="top3" role="group" aria-label="Top three candidates"></div>
+
+                  <div class="stream-block">
+                    <div class="stream-head"><span class="label">gloss stream</span><span class="label-note">raw recognised signs</span></div>
+                    <div id="gloss-stream" class="stream gloss" data-placeholder="Raw recognised signs will appear here."></div>
+                  </div>
+
+                  <div class="output-actions">
+                    <button id="undo-btn" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-undo"></use></svg> Undo</button>
+                    <button id="clear-btn" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Clear</button>
+                    <button id="export-btn" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> Export</button>
+                  </div>
+
+                  <div class="session-stats">
+                    <div><span class="label">tokens</span><strong id="stat-tokens">0</strong></div>
+                    <div><span class="label">words</span><strong id="stat-words">0</strong></div>
+                    <div><span class="label">session</span><strong id="stat-duration">0:00</strong></div>
+                    <div><span class="label">model</span><strong id="stat-model">KSL</strong></div>
+                  </div>
+                  <p id="language-note" class="lang-note"></p>
+                </div>
+
+                <div class="inspector-tip">
+                  <div class="tip-head"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg><strong>How to sign</strong></div>
+                  <p>Hold one hand in frame, palm toward the camera. Keep it steady until the sign commits; pause to finish a word.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ══ TRANSCRIPT ══════════════════════════════════════ -->
+        <section id="view-transcript" class="view app-view hidden" aria-labelledby="transcript-title">
+          <div class="page-toolbar">
+            <div class="page-heading">
+              <span class="panel-eyebrow">Workspace</span>
+              <h1 id="transcript-title">Transcript</h1>
+              <p>Every recognised sign, with timestamps and confidence. Export as text, CSV, or JSON.</p>
+            </div>
+            <div class="toolbar-actions">
+              <button id="export-txt" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> TXT</button>
+              <button id="export-csv" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> CSV</button>
+              <button id="export-json" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> JSON</button>
+              <button id="clear-session" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Clear</button>
+            </div>
+          </div>
+
+          <div class="transcript-filters">
+            <label class="filter-field">
+              <span class="label">search signs</span>
+              <input id="transcript-search" type="search" placeholder="Search sign or label…" autocomplete="off" />
+            </label>
+            <label class="filter-field">
+              <span class="label">min confidence</span>
+              <select id="transcript-confidence">
+                <option value="0">All signs</option>
+                <option value="0.8">80% and above</option>
+                <option value="0.9">90% and above</option>
+                <option value="0.95">95% and above</option>
+              </select>
+            </label>
+            <span id="transcript-filter-count" class="status-chip">Showing 0 of 0</span>
+          </div>
+
+          <div class="panel summary-panel">
+            <div class="summary-item"><span class="label">language</span><strong id="transcript-language">—</strong></div>
+            <div class="summary-item"><span class="label">tokens</span><strong id="transcript-count">0</strong></div>
+            <div class="summary-item"><span class="label">duration</span><strong id="transcript-duration">0:00</strong></div>
+            <div class="summary-item"><span class="label">engine</span><strong>on-device</strong></div>
+          </div>
+
+          <div class="panel transcript-card">
+            <div id="transcript-empty" class="empty-state">
+              <div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-transcript"></use></svg></div>
+              <h3>No signs yet</h3>
+              <p>Start the camera or play the demo. Recognised signs will appear here with timestamps.</p>
+              <button class="btn btn-primary btn-sm" type="button" data-view-jump="live"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Go to Live</button>
+            </div>
+            <div id="transcript-list" class="transcript-list" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <!-- ══ LEARN ═══════════════════════════════════════════ -->
+        <section id="view-learn" class="view app-view hidden" aria-labelledby="learn-title">
+          <div class="page-toolbar">
+            <div class="page-heading">
+              <span class="panel-eyebrow">Reference</span>
+              <h1 id="learn-title">Handshape library</h1>
+              <p>Every card is rendered from a real landmark sample in the bundled dataset. Select a card, then practise in Live.</p>
+            </div>
+            <div id="learn-filter" class="segmented" role="group" aria-label="Reference language">
+              <button class="seg is-active" type="button" data-learn-lang="ASL">ASL</button>
+              <button class="seg" type="button" data-learn-lang="KSL">KSL</button>
+              <button class="seg" type="button" data-learn-lang="BSL">BSL</button>
+            </div>
+          </div>
+
+          <div class="practice-hero">
+            <div class="practice-hero-copy">
+              <span class="panel-eyebrow">Guided practice</span>
+              <h2>Learn by doing</h2>
+              <p>Watch the handshape, try it with the camera or demo, and get instant feedback. One letter at a time.</p>
+            </div>
+            <div class="practice-hero-target">
+              <span class="label">target</span>
+              <strong id="practice-hero-letter">A</strong>
+            </div>
+            <button id="practice-hero-start" class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Start practice</button>
+          </div>
+
+          <div class="library">
+            <div class="panel library-grid-panel">
+              <div id="learn-grid" class="learn-grid" aria-live="polite"></div>
+            </div>
+            <section class="panel learn-detail" aria-label="Selected handshape">
+              <div class="panel-head compact">
+                <div class="panel-title"><span class="panel-eyebrow">Selected</span><h2>Handshape</h2></div>
+                <span class="status-chip">reference</span>
+              </div>
+              <div id="learn-svg" class="learn-svg" aria-hidden="true"></div>
+              <h3 id="learn-title-sign">A</h3>
+              <p id="learn-note">Select a card to inspect the landmark sample.</p>
+              <div class="learn-meta">
+                <div><span class="label">source</span><strong id="learn-source">—</strong></div>
+                <div><span class="label">model confidence</span><strong id="learn-confidence">—</strong></div>
+              </div>
+              <button id="learn-practice" class="btn btn-primary btn-block" type="button">Practise this language</button>
+            </section>
+          </div>
+
+          <div class="panel how-to">
+            <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Workflow</span><h2>How to use Glipter</h2></div></div>
+            <div class="how-grid">
+              <article><span class="step-num">01</span><h3>Pick a language</h3><p>KSL is the default. ASL uses the static alphabet model. KSL words is a four-sign pilot.</p></article>
+              <article><span class="step-num">02</span><h3>Start the camera</h3><p>Hold one hand in frame, palm toward the camera. Keep the hand steady until the sign commits.</p></article>
+              <article><span class="step-num">03</span><h3>Watch the gloss</h3><p>Letters join into words after a pause. The English panel applies the language's surface reordering.</p></article>
+              <article><span class="step-num">04</span><h3>Export the session</h3><p>Copy the English or export the transcript with timestamps, confidence, and language metadata.</p></article>
+            </div>
+          </div>
+
+          <div class="panel type-to-sign">
+            <div class="panel-head compact">
+              <div class="panel-title"><span class="panel-eyebrow">Experimental</span><h2>Gliptic Typography — type to handshape</h2></div>
+              <span class="status-chip">text → handshape</span>
+            </div>
+            <div class="type-to-sign-body">
+              <label class="filter-field type-field">
+                <span class="label">type a word or phrase</span>
+                <input id="type-to-sign-input" type="text" maxlength="42" value="HELLO" autocomplete="off" spellcheck="false" />
+              </label>
+              <div id="type-to-sign-output" class="glyph-strip" aria-live="polite"></div>
+              <p class="fine-print">A visual shorthand built from the bundled ASL/KSL handshape samples. It shows handshape only; orientation, motion, location, facial grammar, and Deaf review are still required. Not a full text-to-sign system.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ VOICE ═══════════════════════════════════════════ -->
+        <section id="view-voice" class="view app-view hidden" aria-labelledby="voice-title">
+          <div class="page-toolbar">
+            <div class="page-heading">
+              <span class="panel-eyebrow">Two-way bridge</span>
+              <h1 id="voice-title">Voice</h1>
+              <p>Speech → text for hearing speakers, and text → speech for the signed conversation. ASR is browser-dependent; TTS prefers a local voice.</p>
+            </div>
+            <div class="toolbar-actions">
+              <span id="asr-support" class="status-chip">ASR checking…</span>
+              <span id="asr-network" class="status-chip">ASR · may need network</span>
+              <span id="tts-support" class="status-chip">TTS checking…</span>
+            </div>
+          </div>
+
+          <div class="voice-grid">
+            <section class="panel voice-card" aria-labelledby="asr-title">
+              <div class="panel-head compact">
+                <div class="panel-title"><span class="panel-eyebrow">Speech → text</span><h2 id="asr-title">Listen</h2></div>
+                <div class="panel-tools">
+                  <select id="asr-lang" class="mini-select" aria-label="Speech recognition language">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="en-KE">English (Kenya)</option>
+                    <option value="sw-KE">Kiswahili (Kenya)</option>
+                  </select>
+                  <button id="asr-toggle" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Listen</button>
+                  <button id="asr-clear" class="btn btn-ghost btn-sm" type="button" aria-label="Clear speech text" title="Clear speech text"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg></button>
+                </div>
+              </div>
+              <div class="voice-stage">
+                <div class="voice-visual">
+                  <div id="asr-wave" class="asr-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                  <div id="asr-status" class="voice-status">Idle</div>
+                </div>
+                <div id="asr-transcript" class="stream english asr-transcript" aria-live="polite" data-placeholder="Speech will appear here."></div>
+                <div class="voice-actions">
+                  <button id="asr-to-speak" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-send"></use></svg> Send to Speak</button>
+                  <button id="asr-use-text" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-transcript"></use></svg> Use text instead</button>
+                  <button id="asr-copy" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
+                  <button id="asr-speak" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg> Speak</button>
+                </div>
+                <p id="asr-note" class="fine-print">Browser speech recognition may use an online service. If you are offline, type in the Speak panel instead.</p>
+              </div>
+            </section>
+
+            <section class="panel voice-card" aria-labelledby="tts-title">
+              <div class="panel-head compact">
+                <div class="panel-title"><span class="panel-eyebrow">Text → speech</span><h2 id="tts-title">Speak</h2></div>
+                <div class="panel-tools">
+                  <button id="tts-stop" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop</button>
+                </div>
+              </div>
+              <div class="voice-stage">
+                <textarea id="tts-text" class="tts-text" rows="4" placeholder="Type something to say…">Hello. I am using Glipter, an on-device sign language assistant.</textarea>
+                <div class="voice-controls">
+                  <label class="voice-field"><span class="label">voice</span><select id="tts-voice"></select></label>
+                  <label class="voice-field"><span class="label">rate</span><span class="range-wrap"><input id="tts-rate" type="range" min="0.6" max="1.4" step="0.05" value="0.95" /><output id="tts-rate-value">0.95</output></span></label>
+                </div>
+                <div class="voice-actions">
+                  <button id="tts-speak" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Speak</button>
+                  <button id="tts-copy" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
+                </div>
+                <div id="quick-phrases" class="quick-phrases" aria-label="Quick phrases"></div>
+                <p id="tts-note" class="fine-print">TTS uses the device's speech synthesiser. Local voices work offline.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ══ ABOUT ═══════════════════════════════════════════ -->
+        <section id="view-about" class="view app-view hidden" aria-labelledby="about-title">
+          <div class="page-toolbar">
+            <div class="page-heading">
+              <span class="panel-eyebrow">About</span>
+              <h1 id="about-title">Built for the places the cloud forgot.</h1>
+              <p>Glipter is an edge-AI sign language engine from <strong>Zabibu Technika</strong>, led by Tehillah Kachila. It reads sign through any camera, runs on the device, and prioritises Kenyan Sign Language.</p>
+            </div>
+          </div>
+
+          <div class="about-grid">
+            <article class="panel about-story">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Mission</span><h2>Why this exists</h2></div></div>
+              <p>There are not enough human sign language interpreters. In some schools the ratio has been reported as high as one interpreter for three hundred deaf students. Cloud-heavy avatar products cannot reach the rural schools, public kiosks, and low-end phones where the gap is widest.</p>
+              <p>Glipter takes the opposite path: sign → text, on-device, offline-capable, and built language by language with the communities who use it.</p>
+              <div class="quote">“Does this help a deaf student in Nairobi communicate with their teacher today, better than not having it?”</div>
+              <p class="quote-note">The question we keep asking.</p>
+            </article>
+
+            <article class="panel about-credits">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Credits</span><h2>Who built this</h2></div></div>
+              <div class="credit-row">
+                <div class="credit-avatar">TK</div>
+                <div><strong>Tehillah Kachila</strong><span>Project lead · research, product & engineering</span></div>
+              </div>
+              <div class="credit-row">
+                <div class="credit-avatar alt">ZT</div>
+                <div><strong>Zabibu Technika</strong><span>Product studio · design, engineering & delivery</span></div>
+              </div>
+              <p class="fine-print">Glipter is a Tier 0 demonstrator. It is not a validated accessibility tool and is not a substitute for a professional interpreter. Every language profile requires Deaf-led review before real-world use.</p>
+            </article>
+
+            <article class="panel about-how">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Pipeline</span><h2>How it works</h2></div></div>
+              <ol class="pipeline">
+                <li><span>01</span><div><strong>Camera</strong><p>getUserMedia, entirely local.</p></div></li>
+                <li><span>02</span><div><strong>Landmarks</strong><p>MediaPipe Hands, vendored locally, 21 points per hand.</p></div></li>
+                <li><span>03</span><div><strong>Features</strong><p>Wrist-centred, scale-normalised coordinates + pairwise distances + joint angles.</p></div></li>
+                <li><span>04</span><div><strong>Model</strong><p>A tiny neural network runs in plain JavaScript. No server, no GPU.</p></div></li>
+                <li><span>05</span><div><strong>Grammar</strong><p>Letters become words; KSL gets a conservative S-O-V verb move.</p></div></li>
+              </ol>
+            </article>
+
+            <article class="panel about-datasets">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Provenance</span><h2>Datasets & licenses</h2></div></div>
+              <div id="dataset-list" class="dataset-list"></div>
+              <p class="fine-print">Dataset accuracy is measured on held-out frames from the same public corpus. It is not signer-independent validation. We publish the limits with the numbers.</p>
+            </article>
+
+            <article class="panel about-models">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Evaluation</span><h2>Model cards</h2></div><span class="status-chip">review pending</span></div>
+              <div id="model-cards" class="model-cards"></div>
+              <p class="fine-print">Every profile is pending review by native Deaf signers of that language. A model card is not consent or validation.</p>
+            </article>
+
+            <article class="panel about-limits">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Limits</span><h2>Read this</h2></div></div>
+              <ul class="limit-list">
+                <li>Static handshapes only for ASL/KSL fingerspelling. J and Z need motion.</li>
+                <li>The KSL word model knows four glosses: FATHER, HELLO, IS, MY.</li>
+                <li>BSL is rule-based and experimental. No permissively licensed BSL landmark corpus is bundled yet.</li>
+                <li>No facial grammar, mouthing, or non-manual signals — all of which are part of real sign languages.</li>
+                <li>Not validated by Deaf signers in any language. Do not use in medical, legal, or high-stakes settings.</li>
+                <li>Browser ASR may use an online service; TTS may use a remote voice if no local voice is installed. Glipter does not upload audio itself.</li>
+                <li>Camera access requires HTTPS or localhost. The UI, learn mode, demo, and self-test work without a camera.</li>
+              </ul>
+            </article>
+
+            <article class="panel about-offline">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Offline</span><h2>Private by architecture</h2></div></div>
+              <p>Glipter ships its own MediaPipe assets, models, and UI. The service worker precaches the app shell on first visit, so later launches work with no network. There is no backend in the recognition path.</p>
+              <div class="offline-grid">
+                <div><svg class="icon" aria-hidden="true"><use href="#i-offline"></use></svg><strong>Offline ready</strong><span>after first load</span></div>
+                <div><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg><strong>No upload</strong><span>frames stay local</span></div>
+                <div><svg class="icon" aria-hidden="true"><use href="#i-cpu"></use></svg><strong>Small runtime</strong><span>landmark model + JS</span></div>
+                <div><svg class="icon" aria-hidden="true"><use href="#i-install"></use></svg><strong>Installable</strong><span>PWA on any device</span></div>
+              </div>
+              <div class="self-test-box">
+                <div class="self-test-head">
+                  <div><span class="label">on-device self-test</span><strong id="self-test-title">running…</strong></div>
+                  <button id="self-test-badge" class="badge" type="button" title="Click for details">self-test</button>
+                </div>
+                <div id="self-test-details" class="self-test-details hidden"></div>
+              </div>
+            </article>
+
+            <article class="panel about-roadmap">
+              <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Roadmap</span><h2>What comes next</h2></div></div>
+              <div class="roadmap">
+                <div class="roadmap-item done"><span>Tier 0</span><div><strong>Demonstrator</strong><p>Real datasets, offline PWA, self-tests, credits.</p></div></div>
+                <div class="roadmap-item"><span>Tier 1</span><div><strong>Working MVP</strong><p>Full alphabets, ~50 static signs, motion signs, transcript export, Deaf review loop.</p></div></div>
+                <div class="roadmap-item"><span>Tier 2</span><div><strong>Real translator</strong><p>Continuous signing, sign segmentation, ~500 signs, language auto-detect, text → sign.</p></div></div>
+                <div class="roadmap-item"><span>Tier 3</span><div><strong>Community platform</strong><p>No-code profile authoring, dataset contribution, versioned review, ONNX plug-ins.</p></div></div>
+                <div class="roadmap-item"><span>Tier 4</span><div><strong>Universal edge</strong><p>Any supported SL, offline, sub-100 ms, kiosks and $30 devices, Deaf-led validation everywhere.</p></div></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="status-bar">
+      <div class="status-group"><span class="status-dot"></span> on-device</div>
+      <div class="status-group"><span class="label">model</span> <span id="status-model">KSL</span></div>
+      <div class="status-group"><span class="label">fps</span> <span id="status-fps">—</span></div>
+      <div class="status-group"><span class="label">latency</span> <span id="status-latency">—</span> ms</div>
+      <div class="status-group"><span class="label">offline</span> <span id="status-offline">caching…</span></div>
+      <div class="status-spacer"></div>
+      <div class="status-group"><span id="status-self-test" class="badge">self-test</span></div>
+      <div class="status-group" title="A Zabibu Technika product · Tehillah Kachila">Glipter 1.0 · a Zabibu Technika product</div>
+    </footer>
+  </div>
+
+  <dialog id="onboarding-dialog" class="onboarding-dialog" aria-labelledby="onboarding-title">
+    <div class="onboarding-box">
+      <div class="onboarding-top">
+        <div class="eyebrow" id="onboarding-kicker">Start here · 1 of 3</div>
+        <button id="onboarding-skip" class="icon-btn" type="button" aria-label="Skip onboarding" title="Skip"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+      </div>
+      <div class="onboarding-step is-active" data-onboarding-step="0">
+        <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
+        <h2 id="onboarding-title">Pick a language</h2>
+        <p>KSL is the default. ASL uses the static alphabet model. KSL words is a four-sign pilot. BSL is experimental.</p>
+        <div class="onboarding-chips"><span>KSL · first-class</span><span>ASL · static A–Z</span><span>KSL words · 4 signs</span><span>BSL · rules</span></div>
+      </div>
+      <div class="onboarding-step" data-onboarding-step="1" hidden>
+        <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
+        <h2>Start camera, or play the demo</h2>
+        <p>No camera? The demo replays real landmark samples through the same on-device pipeline. Everything runs locally.</p>
+        <div class="onboarding-actions"><button id="onboarding-start" class="btn btn-primary btn-sm" type="button">Start camera</button> <button id="onboarding-demo" class="btn btn-secondary btn-sm" type="button">Play demo</button></div>
+      </div>
+      <div class="onboarding-step" data-onboarding-step="2" hidden>
+        <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
+        <h2>Read the inspector</h2>
+        <p>Hold a sign steady. The confidence bar fills and the sign commits. The gloss stream is the raw sign; the English panel is the reordered view. Use the command palette with Ctrl/Cmd K.</p>
+        <div class="onboarding-chips"><span>Confidence</span><span>Top 3</span><span>Gloss</span><span>English</span><span>Transcript</span></div>
+      </div>
+      <div class="onboarding-footer">
+        <button id="onboarding-back" class="btn btn-ghost btn-sm" type="button" disabled>Back</button>
+        <div class="onboarding-dots" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
+        <button id="onboarding-next" class="btn btn-primary btn-sm" type="button">Next</button>
+      </div>
+      <p class="onboarding-note">Tier 0 demonstrator · not validated by Deaf signers · not a substitute for an interpreter.</p>
+    </div>
+  </dialog>
+
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+    <form method="dialog" class="settings-form">
+      <div class="dialog-head">
+        <div><div class="panel-eyebrow">Preferences</div><h2 id="settings-title">Settings</h2></div>
+        <button class="icon-btn" value="close" aria-label="Close settings"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+      </div>
+
+      <div class="settings-group">
+        <h3>Display</h3>
+        <label class="setting-row"><span><strong>Theme</strong><small>Follow the system or force a mode.</small></span>
+          <select id="setting-theme"><option value="studio">Studio · lilac</option><option value="dark">Midnight</option><option value="light">Daylight</option><option value="system">System</option></select>
+        </label>
+        <label class="setting-row"><span><strong>Text size</strong><small>Larger type across the interface.</small></span>
+          <select id="setting-text-size"><option value="normal">Normal</option><option value="large">Large</option><option value="xlarge">Extra large</option></select>
+        </label>
+        <label class="setting-row"><span><strong>High contrast</strong><small>Stronger borders and text contrast.</small></span>
+          <input id="setting-contrast" type="checkbox" />
+        </label>
+        <label class="setting-row"><span><strong>Reduce motion</strong><small>Disable decorative animation.</small></span>
+          <input id="setting-motion" type="checkbox" />
+        </label>
+        <label class="setting-row"><span><strong>Haptic confirmation</strong><small>Vibrate briefly when a sign commits, on supported devices.</small></span>
+          <input id="setting-haptics" type="checkbox" checked />
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Camera</h3>
+        <label class="setting-row"><span><strong>Mirror preview</strong><small>Selfie-style preview and overlay.</small></span>
+          <input id="setting-mirror" type="checkbox" checked />
+        </label>
+        <label class="setting-row"><span><strong>Show skeleton</strong><small>Draw the 21-point hand overlay.</small></span>
+          <input id="setting-skeleton" type="checkbox" checked />
+        </label>
+        <label class="setting-row"><span><strong>Model quality</strong><small>Full is more accurate; lite is faster on old phones.</small></span>
+          <select id="setting-complexity"><option value="0">Lite</option><option value="1">Full</option></select>
+        </label>
+        <label class="setting-row"><span><strong>Low-power mode</strong><small>One hand, lite model, ~15 fps inference, reduced load.</small></span>
+          <input id="setting-low-power" type="checkbox" />
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Recognition</h3>
+        <label class="setting-row"><span><strong>Commit confidence</strong><small>Signs below this score are shown but not committed.</small></span>
+          <span class="range-wrap"><input id="setting-threshold" type="range" min="0.2" max="0.95" step="0.05" value="0.55" /><output id="setting-threshold-value">0.55</output></span>
+        </label>
+        <label class="setting-row"><span><strong>Word gap</strong><small>Pause length before a letter run becomes a word.</small></span>
+          <span class="range-wrap"><input id="setting-word-gap" type="range" min="800" max="4000" step="100" value="2200" /><output id="setting-word-gap-value">2.2s</output></span>
+        </label>
+        <label class="setting-row"><span><strong>Speak recognised English</strong><small>Uses the device's speech synthesiser. May need a local voice.</small></span>
+          <input id="setting-speech" type="checkbox" />
+        </label>
+        <label class="setting-row"><span><strong>Speech voice</strong><small>Local voices work offline. Remote voices need a connection.</small></span>
+          <select id="setting-voice"></select>
+        </label>
+        <label class="setting-row"><span><strong>Speech rate</strong><small>How fast the synthesised voice speaks.</small></span>
+          <span class="range-wrap"><input id="setting-rate" type="range" min="0.6" max="1.4" step="0.05" value="0.95" /><output id="setting-rate-value">0.95</output></span>
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Workspace</h3>
+        <div class="setting-row">
+          <span><strong>Kiosk mode</strong><small>Full-screen capture with no app chrome. Best for tablets and public counters.</small></span>
+          <button id="setting-kiosk" class="btn btn-secondary btn-sm" type="button">Enter kiosk</button>
+        </div>
+        <div class="setting-row">
+          <span><strong>Onboarding</strong><small>Replay the three-step introduction.</small></span>
+          <button id="setting-onboarding" class="btn btn-ghost btn-sm" type="button">Replay</button>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button id="settings-reset" class="btn btn-ghost" type="button">Reset defaults</button>
+        <button class="btn btn-primary" value="close">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="command-dialog" class="command-dialog" aria-labelledby="command-title">
+    <div class="command-box">
+      <div class="command-search">
+        <svg class="icon" aria-hidden="true"><use href="#i-command"></use></svg>
+        <input id="command-input" type="text" placeholder="Type a command or search…" autocomplete="off" spellcheck="false" aria-label="Search commands" role="combobox" aria-autocomplete="list" aria-controls="command-list" aria-expanded="true" />
+        <kbd>ESC</kbd>
+      </div>
+      <div class="command-head"><span id="command-title" class="label">Commands</span><span class="label" id="command-hint">↑↓ navigate · ↵ run</span></div>
+      <div id="command-list" class="command-list" role="listbox" aria-label="Commands"></div>
+    </div>
+  </dialog>
+
+  <button id="kiosk-exit" class="kiosk-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg> Exit kiosk</button>
+  <div id="sign-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript">Glipter needs JavaScript for on-device inference. The camera and recognition cannot run without it.</div>
+  </noscript>
+
+  <script src="vendor/mediapipe/hands/hands.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

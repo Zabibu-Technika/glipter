@@ -1,0 +1,10 @@
+MediaPipe Hands
+===============
+
+Vendored from @mediapipe/hands 0.4.1675469240.
+Copyright Google LLC.
+Licensed under the Apache License, Version 2.0 (see LICENSE in this folder).
+
+Files are served locally from this directory so Glipter's recognition path
+has no runtime CDN dependency. The service worker precaches them for offline
+use. The package is used as a browser-side hand landmark detector only.
