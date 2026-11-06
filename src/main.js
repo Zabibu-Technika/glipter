@@ -1,5 +1,5 @@
 import { GlipterEngine } from "./engine/engine.js";
-import { DemoPlayer } from "./engine/demo.js";
+import { DemoPlayer, DEMO_SENTENCE } from "./engine/demo.js";
 import { GestureDebouncer } from "./lib/debouncer.js";
 import { drawHands, clearOverlay } from "./lib/overlay.js";
 import { TextAccumulator } from "./text/accumulator.js";
@@ -784,6 +784,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   sequenceDebouncer.reset();
   lastGestureId = null;
   lastSequenceAt = 0;
+  accumulator.setAutoCommit(true);
   setRunningUI(false);
   els.cameraStage.classList.remove("is-active");
   clearError();
@@ -868,6 +869,8 @@ async function startCamera() {
 
 function startDemo() {
   stopEverything({ silent: true, keepPractice: true });
+  clearSession({ silent: true });
+  accumulator.setAutoCommit(false);
   showView("live");
   clearError();
   setRunningUI(true);
@@ -879,6 +882,12 @@ function startDemo() {
     onStatus: (status) => {
       if (status === "demo") setCameraStatus("demo", "demo");
       if (status === "stopped") setCameraStatus("idle", "idle");
+      if (status === "complete") {
+        stopEverything({ silent: true, keepPractice: true });
+        setText(els.signState, `Demo complete — “${DEMO_SENTENCE}”.`);
+        els.signState.className = "sign-state high";
+        toast(`Demo complete: ${DEMO_SENTENCE}.`, { type: "success", duration: 4200 });
+      }
     },
     profile,
   });
@@ -1006,7 +1015,7 @@ function buildAccumulator() {
 }
 
 /* ── Session actions ───────────────────────────────────────── */
-function clearSession() {
+function clearSession({ silent = false } = {}) {
   accumulator.clear();
   sessionLog.clear();
   debouncer.reset();
@@ -1022,7 +1031,7 @@ function clearSession() {
   renderTimeline();
   renderTranscriptView();
   renderStatsFromAccumulator();
-  toast("Session cleared.", { type: "info", duration: 1800 });
+  if (!silent) toast("Session cleared.", { type: "info", duration: 1800 });
 }
 
 async function copyText(text) {

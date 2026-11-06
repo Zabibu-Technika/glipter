@@ -35,6 +35,12 @@ export function joinLetterRuns(tokens) {
 
 const ACRONYMS = new Set(["ASL", "KSL", "BSL", "USA", "UK", "TV", "OK", "ID"]);
 
+const PROPER_NOUNS = new Map([
+  ["GLIPTER", "Glipter"],
+  ["ZABIBU", "Zabibu"],
+  ["TEHILLAH", "Tehillah"],
+]);
+
 export function capitalize(sentence) {
   if (!sentence) return "";
   return sentence.charAt(0).toUpperCase() + sentence.slice(1);
@@ -44,6 +50,7 @@ export function capitalize(sentence) {
 export function toSentenceCase(words) {
   const out = words.map((word) => {
     if (!word) return word;
+    if (PROPER_NOUNS.has(word)) return PROPER_NOUNS.get(word);
     if (ACRONYMS.has(word)) return word;
     if (word.length > 1 && word === word.toUpperCase()) return word.toLowerCase();
     return word;

@@ -9,7 +9,7 @@
   "homepage": "https://glipter.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/teh317/glipter.git"
+    "url": "https://github.com/Zabibu-Technika/glipter.git"
   },
   "scripts": {
     "serve": "node scripts/serve.mjs",

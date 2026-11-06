@@ -19,6 +19,7 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 - **Progressive disclosure:** the inspector leads with the sign, confidence, state, and English; gloss, top-3, stats, and model notes live under **Details**.
 - **Studio** theme (default): lilac/cream surfaces, deep ink outlines, sticker cards, green/purple hand glyphs. **Midnight** and **Daylight** are included, plus system.
 - Dense keyboard workflow: `1–5` views, `S` start/stop, `D` demo, `M` mic, `T` speak, `C` clear, `E` export, `⌘K` / `Ctrl+K` commands.
+- **Scripted demo that actually finishes:** signs `HELLO MY NAME IS GLIPTER` once, commits all five words, stops at the end of the sentence, and clears the session on replay.
 - Responsive: rail on desktop/tablet; bottom tab bar on phones; tested at 320–1920 px.
 - High contrast, large text, reduced motion, print styles.
 - Accessible focus states, ARIA live regions for recognized signs and transcripts, skip link, labelled controls.

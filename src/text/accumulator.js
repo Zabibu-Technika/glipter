@@ -21,8 +21,17 @@ export class TextAccumulator {
     this.currentConfidence = 0;
     this.lastPushAt = 0;
     this.lastCommitAt = 0;
+    this.autoCommit = true;
     this.sessionStartedAt = Date.now();
     this._timer = setInterval(() => this._tick(), 300);
+  }
+
+  /**
+   * Demo playback is scripted, so its explicit word boundaries should be the
+   * only thing that closes a word. Live recognition keeps the timed pause.
+   */
+  setAutoCommit(enabled) {
+    this.autoCommit = Boolean(enabled);
   }
 
   setProfile(profile) {
@@ -50,7 +59,7 @@ export class TextAccumulator {
     const gap = now - this.lastPushAt;
     this.lastPushAt = now;
 
-    if (gap > this.wordGapMs) this.commitWord();
+    if (this.autoCommit && gap > this.wordGapMs) this.commitWord();
 
     if (id.length === 1 && /[A-Za-z0-9]/.test(id)) {
       this.currentWord += id.toUpperCase();
@@ -80,6 +89,7 @@ export class TextAccumulator {
   }
 
   _tick() {
+    if (!this.autoCommit) return;
     if (!this.lastPushAt) return;
     const now = Date.now();
     if (this.currentWord && now - this.lastPushAt > this.wordGapMs) {

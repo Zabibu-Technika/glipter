@@ -98,7 +98,7 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 | Node test suite | **16/16** |
 | Static checker | Passing — all referenced IDs and precache files present; **0 runtime CDN loads** |
 | Offline reload | **Pass** — title, self-test, and shell restored offline |
-| Demo pipeline | **Pass** - HELLO committed, next sign in progress; 1 token, 1 timeline item, hand overlay pixels present |
+| Demo pipeline | **Pass** — `HELLO MY NAME IS GLIPTER` completes once, stops, and shows 5 tokens / 5 timeline items with the hand overlay present; replay starts clean |
 | Onboarding / practice / kiosk / filters / type-to-sign | **Smoke-tested**; onboarding step flow, practice success/wrong, kiosk exit, transcript filter, and 5-glyph HELLO strip verified |
 | Cold load (localhost, service workers blocked) | 31 resources · 1,240 KB · DCL 1.38 s · load 1.42 s · 9.5 MB heap |
 
@@ -294,9 +294,9 @@ Severity: **P0** blocks use or accessibility; **P1** major; **P2** polish; **P3*
 ### Passing
 
 - `npm test`: 16/16.
-- `npm run check`: passing (210 IDs, 54 service-worker references, 0 runtime CDN loads).
+- `npm run check`: passing (210 IDs, 53 service-worker references, 0 runtime CDN loads).
 - On-device self-test: 74/74.
-- Demo pipeline: HELLO committed, next sign in progress; 1 token, timeline item, overlay pixels present.
+- Demo pipeline: `HELLO MY NAME IS GLIPTER` completes once, stops, preserves the final English, and starts a clean session on replay.
 - Offline reload: shell, models, and self-test restored with the service worker offline.
 - No console or uncaught page errors.
 - No horizontal overflow at 320, 390, 768, 1024, 1440, 1920.
@@ -523,6 +523,7 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 | `desktop-command-palette.png` | Keyboard-first command palette. |
 | `desktop-settings.png` | Settings with theme, camera, recognition, speech, low-power, kiosk. |
 | `desktop-demo-hand.png` | Demo with visible hand skeleton and live recognition. |
+| `demo-complete.png` | Demo finish state: `Hello my name is Glipter` in English, 5 timeline signs, demo stopped. |
 | `offline-live.png` | Offline reload with self-test. |
 | `audit-data.json` | Raw measurements and axe results. |
 

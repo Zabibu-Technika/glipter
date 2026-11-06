@@ -44,6 +44,9 @@ function pickFixture(letter) {
   return ASL_FIXTURES.find((fixture) => fixture.className === letter);
 }
 
+export const DEMO_SENTENCE = "Hello my name is Glipter";
+const DEMO_WORDS = ["HELLO", "MY", "NAME", "IS", "GLIPTER"];
+
 /**
  * Deterministic on-device demo. It replays real landmark samples from the
  * test split through the exact same feature/model/overlay pipeline as the
@@ -66,13 +69,8 @@ export class DemoPlayer {
   }
 
   _buildStaticFrames() {
-    const words = [
-      ["H", "E", "L", "L", "O"],
-      ["M", "Y"],
-      ["N", "A", "M", "E"],
-    ];
     const frames = [];
-    for (const word of words) {
+    for (const word of DEMO_WORDS) {
       for (const letter of word) {
         const fixture = pickFixture(letter);
         if (!fixture) continue;
@@ -130,12 +128,24 @@ export class DemoPlayer {
 
     const tick = (now) => {
       if (!this.running) return;
-      // 30 fps target, with a small allowance for slow devices.
-      if (now - this.lastAt >= 33) {
+      if (this.index >= this.frames.length) {
+        this.running = false;
+        this.frames = [];
+        this.index = 0;
+        this.onStatus?.("complete");
+        return;
+      }
+      const elapsed = now - this.lastAt;
+      // 30 fps target. If rendering is slow, catch up a few frames so the
+      // scripted sentence still finishes in roughly the same wall-clock time.
+      if (elapsed >= 33) {
+        const steps = Math.min(4, Math.max(1, Math.floor(elapsed / 33)));
+        for (let step = 0; step < steps && this.index < this.frames.length; step++) {
+          const frame = this.frames[this.index];
+          this.index += 1;
+          if (frame) this.onFrame?.(frame);
+        }
         this.lastAt = now;
-        const frame = this.frames[this.index % this.frames.length];
-        this.index += 1;
-        if (frame) this.onFrame?.(frame);
       }
       this.rafId = requestAnimationFrame(tick);
     };

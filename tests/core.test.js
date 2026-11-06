@@ -140,6 +140,7 @@ test("accumulator joins letters, keeps repeated letters, and commits on pause", 
 
 test("grammar layers are deterministic", () => {
   assert.equal(reorderASL(["H", "E", "L", "L", "O", "MY"]), "Hello my");
+  assert.equal(reorderASL(["HELLO", "GLIPTER"]), "Hello Glipter");
   assert.equal(reorderKSL(["MY", "FATHER", "IS"]), "My is father");
   assert.equal(reorderBSL(["B", "S", "L"]), "BSL");
 });
