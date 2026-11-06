@@ -785,6 +785,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   lastGestureId = null;
   lastSequenceAt = 0;
   accumulator.setAutoCommit(true);
+  accumulator.setReorderEnabled(true);
   setRunningUI(false);
   els.cameraStage.classList.remove("is-active");
   clearError();
@@ -871,6 +872,7 @@ function startDemo() {
   stopEverything({ silent: true, keepPractice: true });
   clearSession({ silent: true });
   accumulator.setAutoCommit(false);
+  accumulator.setReorderEnabled(false);
   showView("live");
   clearError();
   setRunningUI(true);
@@ -884,6 +886,7 @@ function startDemo() {
       if (status === "stopped") setCameraStatus("idle", "idle");
       if (status === "complete") {
         stopEverything({ silent: true, keepPractice: true });
+        accumulator.emit();
         setText(els.signState, `Demo complete — “${DEMO_SENTENCE}”.`);
         els.signState.className = "sign-state high";
         toast(`Demo complete: ${DEMO_SENTENCE}.`, { type: "success", duration: 4200 });

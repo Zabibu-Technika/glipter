@@ -1,4 +1,4 @@
-import { reorderFor } from "./grammar.js";
+import { joinLetterRuns, reorderFor, toSentenceCase } from "./grammar.js";
 
 /**
  * Gloss accumulator: turns a stream of committed signs into a gloss line and
@@ -22,6 +22,7 @@ export class TextAccumulator {
     this.lastPushAt = 0;
     this.lastCommitAt = 0;
     this.autoCommit = true;
+    this.reorderEnabled = true;
     this.sessionStartedAt = Date.now();
     this._timer = setInterval(() => this._tick(), 300);
   }
@@ -32,6 +33,15 @@ export class TextAccumulator {
    */
   setAutoCommit(enabled) {
     this.autoCommit = Boolean(enabled);
+  }
+
+  /**
+   * The scripted demo shows the sign-to-text pipeline. Keep its partial
+   * English in sign order until the sentence is complete, so a KSL verb move
+   * cannot make words jump around mid-sentence.
+   */
+  setReorderEnabled(enabled) {
+    this.reorderEnabled = Boolean(enabled);
   }
 
   setProfile(profile) {
@@ -106,7 +116,10 @@ export class TextAccumulator {
   }
 
   getEnglish() {
-    return reorderFor(this.profile, this.getGlosses());
+    const glosses = this.getGlosses();
+    return this.reorderEnabled
+      ? reorderFor(this.profile, glosses)
+      : toSentenceCase(joinLetterRuns(glosses));
   }
 
   getState() {
@@ -115,7 +128,7 @@ export class TextAccumulator {
       glosses,
       tokens: this.tokens.slice(),
       currentWord: this.currentWord,
-      english: reorderFor(this.profile, glosses),
+      english: this.getEnglish(),
       sessionStartedAt: this.sessionStartedAt,
       language: this.profile?.id ?? null,
     };
