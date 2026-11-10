@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T11:25:11.564Z",
+  "generatedAt": "2026-11-10T11:57:13.016Z",
   "base": "http://127.0.0.1:3000/",
   "viewports": [
     {
@@ -16,7 +16,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1825,
+        "scrollHeight": 1656,
         "clientHeight": 518
       },
       "rects": {
@@ -36,26 +36,21 @@
           "x": 7,
           "y": 57,
           "w": 306,
-          "h": 1752
+          "h": 1583
         },
         "camera": {
           "x": 7,
           "y": 57,
           "w": 306,
-          "h": 487
+          "h": 477
         },
         "inspector": {
           "x": 7,
-          "y": 1112,
+          "y": 1083,
           "w": 306,
-          "h": 560
+          "h": 557
         },
-        "timeline": {
-          "x": 7,
-          "y": 1683,
-          "w": 306,
-          "h": 126
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 0,
@@ -75,7 +70,7 @@
           "h": 0
         }
       },
-      "controls": 33,
+      "controls": 28,
       "under44": 0,
       "under24": 0,
       "under44Samples": [],
@@ -86,18 +81,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -121,7 +112,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1608,
+        "scrollHeight": 1504,
         "clientHeight": 794
       },
       "rects": {
@@ -141,26 +132,21 @@
           "x": 7,
           "y": 57,
           "w": 376,
-          "h": 1535
+          "h": 1431
         },
         "camera": {
           "x": 7,
           "y": 57,
           "w": 376,
-          "h": 368
+          "h": 373
         },
         "inspector": {
           "x": 7,
-          "y": 898,
+          "y": 934,
           "w": 376,
-          "h": 556
+          "h": 553
         },
-        "timeline": {
-          "x": 7,
-          "y": 1466,
-          "w": 376,
-          "h": 126
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 0,
@@ -180,7 +166,7 @@
           "h": 0
         }
       },
-      "controls": 33,
+      "controls": 28,
       "under44": 0,
       "under24": 0,
       "under44Samples": [],
@@ -191,18 +177,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -226,7 +208,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1598,
+        "scrollHeight": 1489,
         "clientHeight": 944
       },
       "rects": {
@@ -246,26 +228,21 @@
           "x": 73,
           "y": 63,
           "w": 686,
-          "h": 1580
+          "h": 1471
         },
         "camera": {
           "x": 73,
           "y": 63,
           "w": 686,
-          "h": 596
+          "h": 601
         },
         "inspector": {
           "x": 73,
-          "y": 1053,
+          "y": 1058,
           "w": 686,
-          "h": 480
+          "h": 475
         },
-        "timeline": {
-          "x": 73,
-          "y": 1546,
-          "w": 686,
-          "h": 98
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 998,
@@ -285,30 +262,23 @@
           "h": 0
         }
       },
-      "controls": 34,
-      "under44": 26,
+      "controls": 29,
+      "under44": 23,
       "under24": 0,
       "under44Samples": [
         {
           "tag": "a",
           "id": "",
-          "label": "Glipter Studio home",
+          "label": "Glipter talk — home",
           "w": 94,
           "h": 34
         },
         {
-          "tag": "select",
-          "id": "language-select",
-          "label": "Sign language",
-          "w": 176,
-          "h": 30
-        },
-        {
           "tag": "button",
-          "id": "command-btn",
-          "label": "Open command palette Ctrl K",
-          "w": 81,
-          "h": 31
+          "id": "language-btn",
+          "label": "Languages: KSL · English",
+          "w": 146,
+          "h": 38
         },
         {
           "tag": "button",
@@ -321,8 +291,8 @@
           "tag": "button",
           "id": "demo-btn",
           "label": "Demo",
-          "w": 73,
-          "h": 33
+          "w": 71,
+          "h": 31
         },
         {
           "tag": "button",
@@ -334,23 +304,23 @@
         {
           "tag": "button",
           "id": "hero-start",
-          "label": "Start camera",
-          "w": 109,
-          "h": 33
+          "label": "Start signing",
+          "w": 105,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "hero-demo",
-          "label": "Play demo",
-          "w": 97,
-          "h": 33
+          "label": "See a demo",
+          "w": 99,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "talk-clear",
           "label": "Clear",
-          "w": 69,
-          "h": 33
+          "w": 66,
+          "h": 31
         },
         {
           "tag": "button",
@@ -386,6 +356,13 @@
           "label": "No",
           "w": 28,
           "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "I love you",
+          "w": 56,
+          "h": 28
         }
       ],
       "headings": [
@@ -395,18 +372,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -430,7 +403,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 914,
+        "scrollHeight": 794,
         "clientHeight": 688
       },
       "rects": {
@@ -450,26 +423,21 @@
           "x": 96,
           "y": 66,
           "w": 916,
-          "h": 890
+          "h": 770
         },
         "camera": {
           "x": 96,
           "y": 66,
           "w": 594,
-          "h": 398
+          "h": 388
         },
         "inspector": {
           "x": 702,
           "y": 66,
           "w": 310,
-          "h": 890
+          "h": 770
         },
-        "timeline": {
-          "x": 96,
-          "y": 858,
-          "w": 594,
-          "h": 98
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 742,
@@ -489,30 +457,23 @@
           "h": 0
         }
       },
-      "controls": 34,
-      "under44": 26,
+      "controls": 29,
+      "under44": 23,
       "under24": 0,
       "under44Samples": [
         {
           "tag": "a",
           "id": "",
-          "label": "Glipter Studio home",
+          "label": "Glipter talk — home",
           "w": 94,
           "h": 34
         },
         {
-          "tag": "select",
-          "id": "language-select",
-          "label": "Sign language",
-          "w": 176,
-          "h": 30
-        },
-        {
           "tag": "button",
-          "id": "command-btn",
-          "label": "Open command palette Ctrl K",
-          "w": 81,
-          "h": 31
+          "id": "language-btn",
+          "label": "Languages: KSL · English",
+          "w": 146,
+          "h": 38
         },
         {
           "tag": "button",
@@ -525,8 +486,8 @@
           "tag": "button",
           "id": "demo-btn",
           "label": "Demo",
-          "w": 73,
-          "h": 33
+          "w": 71,
+          "h": 31
         },
         {
           "tag": "button",
@@ -538,23 +499,23 @@
         {
           "tag": "button",
           "id": "hero-start",
-          "label": "Start camera",
-          "w": 109,
-          "h": 33
+          "label": "Start signing",
+          "w": 105,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "hero-demo",
-          "label": "Play demo",
-          "w": 97,
-          "h": 33
+          "label": "See a demo",
+          "w": 99,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "talk-clear",
           "label": "Clear",
-          "w": 69,
-          "h": 33
+          "w": 66,
+          "h": 31
         },
         {
           "tag": "button",
@@ -590,6 +551,13 @@
           "label": "No",
           "w": 28,
           "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "I love you",
+          "w": 56,
+          "h": 28
         }
       ],
       "headings": [
@@ -599,18 +567,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -634,7 +598,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 914,
+        "scrollHeight": 820,
         "clientHeight": 820
       },
       "rects": {
@@ -654,26 +618,21 @@
           "x": 96,
           "y": 66,
           "w": 1332,
-          "h": 890
+          "h": 796
         },
         "camera": {
           "x": 96,
           "y": 66,
           "w": 948,
-          "h": 398
+          "h": 414
         },
         "inspector": {
           "x": 1056,
           "y": 66,
           "w": 372,
-          "h": 890
+          "h": 796
         },
-        "timeline": {
-          "x": 96,
-          "y": 858,
-          "w": 948,
-          "h": 98
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 874,
@@ -693,30 +652,23 @@
           "h": 0
         }
       },
-      "controls": 34,
-      "under44": 26,
+      "controls": 29,
+      "under44": 23,
       "under24": 0,
       "under44Samples": [
         {
           "tag": "a",
           "id": "",
-          "label": "Glipter Studio home",
+          "label": "Glipter talk — home",
           "w": 94,
           "h": 34
         },
         {
-          "tag": "select",
-          "id": "language-select",
-          "label": "Sign language",
-          "w": 176,
-          "h": 30
-        },
-        {
           "tag": "button",
-          "id": "command-btn",
-          "label": "Open command palette Ctrl K",
-          "w": 81,
-          "h": 31
+          "id": "language-btn",
+          "label": "Languages: KSL · English",
+          "w": 146,
+          "h": 38
         },
         {
           "tag": "button",
@@ -729,8 +681,8 @@
           "tag": "button",
           "id": "demo-btn",
           "label": "Demo",
-          "w": 73,
-          "h": 33
+          "w": 71,
+          "h": 31
         },
         {
           "tag": "button",
@@ -742,23 +694,23 @@
         {
           "tag": "button",
           "id": "hero-start",
-          "label": "Start camera",
-          "w": 109,
-          "h": 33
+          "label": "Start signing",
+          "w": 105,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "hero-demo",
-          "label": "Play demo",
-          "w": 97,
-          "h": 33
+          "label": "See a demo",
+          "w": 99,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "talk-clear",
           "label": "Clear",
-          "w": 69,
-          "h": 33
+          "w": 66,
+          "h": 31
         },
         {
           "tag": "button",
@@ -794,6 +746,13 @@
           "label": "No",
           "w": 28,
           "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "I love you",
+          "w": 56,
+          "h": 28
         }
       ],
       "headings": [
@@ -803,18 +762,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -864,7 +819,7 @@
           "x": 222,
           "y": 66,
           "w": 1176,
-          "h": 484
+          "h": 596
         },
         "inspector": {
           "x": 1410,
@@ -872,12 +827,7 @@
           "w": 372,
           "h": 976
         },
-        "timeline": {
-          "x": 222,
-          "y": 944,
-          "w": 1176,
-          "h": 98
-        },
+        "timeline": null,
         "status": {
           "x": 0,
           "y": 1054,
@@ -897,30 +847,23 @@
           "h": 0
         }
       },
-      "controls": 34,
-      "under44": 26,
+      "controls": 29,
+      "under44": 23,
       "under24": 0,
       "under44Samples": [
         {
           "tag": "a",
           "id": "",
-          "label": "Glipter Studio home",
+          "label": "Glipter talk — home",
           "w": 94,
           "h": 34
         },
         {
-          "tag": "select",
-          "id": "language-select",
-          "label": "Sign language",
-          "w": 176,
-          "h": 30
-        },
-        {
           "tag": "button",
-          "id": "command-btn",
-          "label": "Open command palette Ctrl K",
-          "w": 81,
-          "h": 31
+          "id": "language-btn",
+          "label": "Languages: KSL · English",
+          "w": 146,
+          "h": 38
         },
         {
           "tag": "button",
@@ -933,8 +876,8 @@
           "tag": "button",
           "id": "demo-btn",
           "label": "Demo",
-          "w": 73,
-          "h": 33
+          "w": 71,
+          "h": 31
         },
         {
           "tag": "button",
@@ -946,23 +889,23 @@
         {
           "tag": "button",
           "id": "hero-start",
-          "label": "Start camera",
-          "w": 109,
-          "h": 33
+          "label": "Start signing",
+          "w": 105,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "hero-demo",
-          "label": "Play demo",
-          "w": 97,
-          "h": 33
+          "label": "See a demo",
+          "w": 99,
+          "h": 31
         },
         {
           "tag": "button",
           "id": "talk-clear",
           "label": "Clear",
-          "w": 69,
-          "h": 33
+          "w": 66,
+          "h": 31
         },
         {
           "tag": "button",
@@ -998,6 +941,13 @@
           "label": "No",
           "w": 28,
           "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "I love you",
+          "w": 56,
+          "h": 28
         }
       ],
       "headings": [
@@ -1007,18 +957,14 @@
         },
         {
           "tag": "H2",
-          "text": "Talk thread"
+          "text": "Conversation"
         },
         {
           "tag": "H2",
-          "text": "Timeline"
-        },
-        {
-          "tag": "H2",
-          "text": "Inspector"
+          "text": "Translation"
         }
       ],
-      "theme": "studio",
+      "theme": "light",
       "title": "Glipter Studio",
       "lang": "en",
       "buttonsWithoutName": 0,
@@ -1036,6 +982,7 @@
       "passes": 41,
       "incomplete": [
         "aria-prohibited-attr",
+        "aria-valid-attr-value",
         "color-contrast"
       ]
     },
@@ -1045,15 +992,17 @@
       "passes": 42,
       "incomplete": [
         "aria-prohibited-attr",
+        "aria-valid-attr-value",
         "color-contrast"
       ]
     },
     {
       "label": "desktop-live",
       "violations": [],
-      "passes": 43,
+      "passes": 41,
       "incomplete": [
         "aria-prohibited-attr",
+        "aria-valid-attr-value",
         "color-contrast",
         "video-caption"
       ]
@@ -1061,25 +1010,28 @@
     {
       "label": "desktop-learn",
       "violations": [],
-      "passes": 43,
+      "passes": 42,
       "incomplete": [
+        "aria-valid-attr-value",
         "color-contrast"
       ]
     },
     {
       "label": "desktop-about",
       "violations": [],
-      "passes": 44,
+      "passes": 41,
       "incomplete": [
+        "aria-valid-attr-value",
         "color-contrast"
       ]
     },
     {
       "label": "desktop-light-live",
       "violations": [],
-      "passes": 43,
+      "passes": 41,
       "incomplete": [
         "aria-prohibited-attr",
+        "aria-valid-attr-value",
         "color-contrast",
         "video-caption"
       ]
@@ -1087,9 +1039,10 @@
     {
       "label": "desktop-dark-live",
       "violations": [],
-      "passes": 43,
+      "passes": 41,
       "incomplete": [
         "aria-prohibited-attr",
+        "aria-valid-attr-value",
         "color-contrast",
         "video-caption"
       ]
@@ -1098,13 +1051,13 @@
   "console": [],
   "pageErrors": [],
   "performance": {
-    "domContentLoadedMs": 814,
-    "loadMs": 815,
+    "domContentLoadedMs": 1046,
+    "loadMs": 1047,
     "resources": 36,
     "transferKB": 0,
-    "decodedKB": 2257,
+    "decodedKB": 2271,
     "scriptCount": 34,
-    "heapMB": 64.8
+    "heapMB": 48.1
   },
   "offline": {
     "status": "reloaded-offline",

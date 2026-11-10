@@ -14,14 +14,14 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 ### App shell
 
-- Native-app-style layout: **mobile-first Talk**, rail navigation, split-pane studio, inspector, timeline, status bar, command palette.
+- Native-app-style layout: **three primary destinations** — Talk, History, Learn. Settings is one top-bar action; Voice and About are secondary screens. **Language button** in the top bar opens one picker for sign language + spoken language.
 - **Two-way conversation thread:** signed English appears as it commits; spoken/typed replies appear beside it, with a speech-to-sign preview.
 - **Task-first flow:** one primary action per state; advanced camera controls live in the overflow menu.
-- **Progressive disclosure:** the inspector leads with the sign, confidence, state, and English; gloss, top-3, stats, and model notes live under **Details**.
-- **Studio** theme (default): lilac/cream surfaces, deep ink outlines, sticker cards, green/purple hand glyphs. **Midnight** and **Daylight** are included, plus system.
-- Dense keyboard workflow: `1–5` views, `S` start/stop, `D` demo, `M` mic, `T` speak, `C` clear, `E` export, `⌘K` / `Ctrl+K` commands.
+- **Progressive disclosure:** the inspector leads with the sign, confidence, state, and English; gloss, top-3, stats, and model notes are under **Advanced details**.
+- **Light** theme (default): calm neutral surfaces, one blue accent, soft borders. **Studio** (lilac/sticker), **Midnight**, and **System** remain available.
+- Dense keyboard workflow: `1–3` primary views, `4` Voice, `5` About, `S` start/stop, `D` demo, `M` mic, `T` speak, `C` clear, `E` export, `⌘K` / `Ctrl+K` commands.
 - **Scripted demo that actually finishes:** signs `HELLO MY NAME IS GLIPTER` once, commits all five words, stops at the end of the sentence, and clears the session on replay.
-- Responsive: mobile order is camera → Talk thread → inspector → timeline; tablet/desktop add the inspector column. Tested at 320–1920 px.
+- Responsive: mobile order is camera → Talk thread → Translation; tablet/desktop add the inspector column. Tested at 320–1920 px.
 - High contrast, large text, reduced motion, print styles.
 - Accessible focus states, ARIA live regions for recognized signs and transcripts, skip link, labelled controls.
 
@@ -40,10 +40,10 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 > Strategic context: `docs/EDGE-COMPETITOR.md` lays out what it would take to become a true local/edge competitor to cloud-avatar products — data, continuous signing, runtime budget, Deaf-led validation, and distribution.
 
-- **Listen** — browser `SpeechRecognition` with interim results, continuous mode, auto-restart, and four language options (English US/UK/Kenya, Kiswahili Kenya). It is labelled honestly: browser ASR may use an online service; Glipter itself does not upload audio. Newer browsers may expose on-device recognition; offline, the quick phrase board and typing still work.
+- **Listen** — browser `SpeechRecognition` with interim results, continuous mode, auto-restart, and spoken-language options for English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, and Tigrinya. Browser support varies by language; the UI says so. Glipter itself does not upload audio.
 - **Speak** — **embedded eSpeak NG WebAssembly**, bundled with the app. It needs no OS voice and no network. Languages include English, **Kiswahili**, **Afrikaans**, **Amharic**, **Setswana**, **Oromo**, and **Tigrinya**.
 - **System voice** is an optional fallback, not a requirement.
-- **Two-way Talk** — signed English can be spoken automatically; spoken/typed replies appear in the thread and are rendered as a sign card or fingerspelling strip.
+- **Two-way Talk** — signed English can be spoken automatically; spoken/typed replies appear in the thread and are rendered as a sign card or fingerspelling strip. Signed English is mapped through a **small offline phrase pack** (Hello, Thank you, Please, Yes, No, I love you, Help, Sorry, the demo sentence, and KSL pilot words) before it is spoken; unusual sentences stay in English.
 - Optional automatic speech of recognized English in Settings.
 - Text fallback works fully offline when ASR is unavailable.
 
@@ -54,7 +54,7 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 - **Gliptic Typography (experimental)** — type a word and see the bundled ASL/KSL handshape glyphs.
 - Kiosk mode (`?kiosk=1` or Settings) with app chrome hidden and a large capture surface.
 - In-product model cards with top-1/top-3, split, weakest classes, confusions, and review status.
-- Transcript search and confidence filters.
+- Transcript search and confidence filters in **History**.
 - Low-power preset, haptic commit feedback, commit animation, camera framing guide.
 
 ### Offline / PWA
@@ -71,10 +71,11 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 - 74 on-device checks in five layers: ASL fixtures, KSL fixtures, BSL rules, geometry, model/grammar integrity.
 - Self-test runs on load and is visible in the status bar and About view.
-- Node test suite: 18 tests covering feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, phrase/motion rules, telemetry, safe ASR/TTS degradation.
+- Node test suite: 19 tests covering feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, phrase/motion rules, spoken-language packs, telemetry, safe ASR/TTS degradation.
 - `npm run check` verifies every referenced element ID and every service-worker precache file.
 - A professional design/QA audit lives in [`docs/DESIGN-AUDIT.md`](docs/DESIGN-AUDIT.md), with raw measurements in [`docs/audit/audit-data.json`](docs/audit/audit-data.json) and screenshots in [`docs/audit/`](docs/audit/). It covers mobile/tablet/desktop, WCAG 2.2 AA, axe-core, offline reload, demo, and competitive positioning.
 - The recognition/mobile/two-way audit is [`docs/DEEP-AUDIT-2026-11-10.md`](docs/DEEP-AUDIT-2026-11-10.md).
+- The everyday-person UX research and redesign is [`docs/UX-REDESIGN-2026-11-10.md`](docs/UX-REDESIGN-2026-11-10.md).
 - Design principles and the rules behind the current layout: [`docs/DESIGN-PRINCIPLES.md`](docs/DESIGN-PRINCIPLES.md).
 - Execution status: [`docs/RECOMMENDATIONS-STATUS.md`](docs/RECOMMENDATIONS-STATUS.md).
 - Release gates and human work: [`docs/DEAF-REVIEW-KIT.md`](docs/DEAF-REVIEW-KIT.md), [`docs/SCREEN-READER-TEST.md`](docs/SCREEN-READER-TEST.md), [`docs/DEVICE-TEST-MATRIX.md`](docs/DEVICE-TEST-MATRIX.md).
@@ -183,7 +184,7 @@ src/
   lib/overlay.js           mirrored Canvas 2D skeleton renderer
   lib/phraseRecognizer.js  ILY/HELP/J/Z/wave/nod rules
   tts/espeak.js            embedded multilingual TTS
-  tts/languages.js         African language catalogue
+  text/spokenLanguages.js  spoken languages, ASR codes, quick phrases
   languages/               ASL, KSL, KSL words, BSL profiles
   text/accumulator.js      letter runs, word gaps, transcript
   text/grammar.js          ASL/KSL/BSL surface reordering
@@ -208,6 +209,7 @@ docs/EDGE-COMPETITOR.md    what it takes to compete at the edge
 - Dataset accuracy is held-out from the same public corpora, **not signer-independent validation**.
 - **No language profile has been reviewed by native Deaf signers yet.** That review is the gate before any real-world deployment.
 - Browser ASR may use an online service. The embedded eSpeak voice does not. System voices are optional and may depend on the OS.
+- Spoken translation uses a small offline phrase pack, not a general translator; unusual sentences remain in English.
 - MediaPipe's WASM graph still needs a WebGL context for image conversion. Glipter now uses WebGL 1/2 where available, offers a CPU delegate, downscales frames, and falls back to the demo/phrase board when no GL context exists.
 - eSpeak NG is **GPL-3.0**; see the licensing note in `ATTRIBUTION.md`. Remove `vendor/tts/espeak/` for an MIT-only build.
 - Not for medical, legal, or high-stakes use.

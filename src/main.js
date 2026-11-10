@@ -32,7 +32,14 @@ import {
   renderTop3, toast, pct,
 } from "./ui.js";
 import { PHRASE_LABELS, phraseForText, phraseLabel } from "./text/phrases.js";
-import { TTS_LANGUAGES, ttsLanguageLabel } from "./tts/languages.js";
+import {
+  SPOKEN_LANGUAGES,
+  quickPhrasesFor,
+  spokenLanguage,
+  spokenLanguageOptions,
+  translateForSpeech,
+  ttsLanguageLabel,
+} from "./text/spokenLanguages.js";
 
 /* ── State ──────────────────────────────────────────────────── */
 let settings = initSettings();
@@ -123,30 +130,15 @@ const LETTER_HINTS = {
   Z: "Index traces a Z in the air (motion).",
 };
 
-const QUICK_PHRASES = [
-  "Hello",
-  "Thank you",
-  "Please repeat that",
-  "I am Deaf. Please write it down.",
-  "Do you sign?",
-  "Can I get a pen and paper?",
-];
-
-const TALK_PHRASES = [
-  "Hello",
-  "Thank you",
-  "Please",
-  "Yes",
-  "No",
-  "I love you",
-  "Help",
-  "Sorry",
-];
-
 /* ── Elements ───────────────────────────────────────────────── */
 const els = {
   video: $("video"),
   overlay: $("overlay"),
+  languageBtn: $("language-btn"),
+  languageSummary: $("language-summary"),
+  languageDialog: $("language-dialog"),
+  spokenLanguageSelect: $("spoken-language-select"),
+  languageApply: $("language-apply"),
   cameraPanel: $("camera-panel"),
   cameraMore: $("camera-more"),
   cameraMenu: $("camera-menu"),
@@ -190,6 +182,7 @@ const els = {
   top3: $("top3"),
   glossStream: $("gloss-stream"),
   englishStream: $("english-stream"),
+  spokenTranslation: $("spoken-translation"),
   speakBtn: $("speak-btn"),
   copyBtn: $("copy-btn"),
   clearBtn: $("clear-btn"),
@@ -275,6 +268,8 @@ const els = {
   settingKiosk: $("setting-kiosk"),
   settingOnboarding: $("setting-onboarding"),
   settingsReset: $("settings-reset"),
+  settingVoiceView: $("setting-voice-view"),
+  settingAboutView: $("setting-about-view"),
   sessionClock: $("session-clock"),
   statusModel: $("status-model"),
   statusFps: $("status-fps"),
@@ -390,6 +385,115 @@ function applyLanguage(next, { initial = false } = {}) {
   renderTimeline();
 
   if (!initial && changed) toast(`Language: ${profile.name}`, { type: "success" });
+  updateLanguageSummary();
+}
+
+/* ── Spoken language, used across the whole app ───────────── */
+function fillSpokenLanguageSelect() {
+  const options = spokenLanguageOptions().map((language) =>
+    `<option value="${escapeHTML(language.code)}">${escapeHTML(language.label)}</option>`).join("");
+  for (const select of [els.spokenLanguageSelect, els.ttsLang, els.settingTtsLang]) {
+    if (!select) continue;
+    select.innerHTML = options;
+    select.value = settings.ttsLang;
+  }
+}
+
+function fillAsrLanguages() {
+  if (!els.asrLang) return;
+  const options = SPOKEN_LANGUAGES.map((language) =>
+    `<option value="${escapeHTML(language.asr)}">${escapeHTML(language.label)}</option>`).join("");
+  els.asrLang.innerHTML = options;
+  els.asrLang.value = settings.asrLang;
+  if (!els.asrLang.value) {
+    els.asrLang.value = "en-US";
+    settings = updateSettings({ asrLang: "en-US" });
+  }
+}
+
+function updateLanguageSummary() {
+  const spoken = spokenLanguage(settings.ttsLang);
+  setText(els.languageSummary, `${profile.shortName} · ${spoken.label}`);
+  if (els.languageBtn) {
+    const summary = `${profile.shortName} · ${spoken.label}`;
+    els.languageBtn.title = `Languages: ${summary}. Sign: ${profile.name}. Speak: ${spoken.english}.`;
+    els.languageBtn.setAttribute("aria-label", `Languages: ${summary}`);
+  }
+}
+
+function renderTalkQuickPhrases() {
+  if (!els.talkQuick) return;
+  els.talkQuick.innerHTML = quickPhrasesFor(settings.ttsLang).map((phrase) =>
+    `<button class="quick-phrase" type="button" data-talk-phrase="${escapeHTML(phrase)}">${escapeHTML(phrase)}</button>`).join("");
+}
+
+function renderVoiceQuickPhrases() {
+  if (!els.quickPhrases) return;
+  els.quickPhrases.innerHTML = quickPhrasesFor(settings.ttsLang).map((phrase) =>
+    `<button class="quick-phrase" type="button" data-phrase="${escapeHTML(phrase)}">${escapeHTML(phrase)}</button>`).join("");
+}
+
+/**
+ * One spoken-language choice updates the embedded voice, speech recognition,
+ * quick phrases, and the speech-to-sign preview.
+ */
+function updateSpokenTranslation(english = els.englishStream?.textContent) {
+  if (!els.spokenTranslation) return;
+  const text = String(english ?? "").trim();
+  const spoken = translateForSpeech(text, settings.ttsLang);
+  const show = text && spoken && spoken.toLowerCase() !== text.toLowerCase();
+  setText(els.spokenTranslation, show ? `Spoken: ${spoken}` : "");
+}
+
+function applySpokenLanguage(code, { persist = true, announce = false } = {}) {
+  const language = spokenLanguage(code);
+  if (persist) {
+    settings = updateSettings({
+      ttsLang: language.code,
+      ttsEngine: "espeak",
+      asrLang: language.asr,
+    });
+  } else {
+    settings = getSettings();
+  }
+  if (els.spokenLanguageSelect) els.spokenLanguageSelect.value = language.code;
+  if (els.settingTtsLang) els.settingTtsLang.value = language.code;
+  if (els.ttsLang) els.ttsLang.value = language.code;
+  if (els.asrLang) els.asrLang.value = language.asr;
+  asr?.setLang(language.asr);
+  fillSpokenLanguageSelect();
+  fillAsrLanguages();
+  renderTalkQuickPhrases();
+  renderVoiceQuickPhrases();
+  populateVoices();
+  updateLanguageSummary();
+  updateTalkMode();
+  updateSpokenTranslation();
+  if (announce) {
+    toast(`Conversation language: ${language.label}`, { type: "success", duration: 2600 });
+  }
+}
+
+function openLanguageDialog() {
+  if (!els.languageDialog) return;
+  fillLanguageSelect();
+  fillSpokenLanguageSelect();
+  if (els.languageSelect) els.languageSelect.value = profile.id;
+  if (els.spokenLanguageSelect) els.spokenLanguageSelect.value = settings.ttsLang;
+  els.languageDialog.showModal();
+}
+
+function bindLanguageDialog() {
+  els.languageBtn?.addEventListener("click", openLanguageDialog);
+  els.languageApply?.addEventListener("click", () => {
+    const nextProfile = getById(els.languageSelect?.value ?? profile.id);
+    if (nextProfile.id !== profile.id) applyLanguage(nextProfile);
+    applySpokenLanguage(els.spokenLanguageSelect?.value ?? settings.ttsLang, { announce: true });
+    els.languageDialog?.close();
+  });
+  els.languageDialog?.addEventListener("click", (event) => {
+    if (event.target === els.languageDialog) els.languageDialog.close();
+  });
 }
 
 /* ── Reference & learn ──────────────────────────────────────── */
@@ -831,6 +935,8 @@ function resetLiveReadout() {
   els.confidenceBar.dataset.state = "idle";
   els.confidenceValue.dataset.state = "idle";
   setText(els.confidenceValue, "—");
+  setText(els.englishStream, "");
+  setText(els.spokenTranslation, "");
   setText(els.signState, "Start the camera or demo to begin.");
   if (els.signState) els.signState.className = "sign-state idle";
   els.top3.innerHTML = "";
@@ -1026,7 +1132,7 @@ function scheduleSpeech(english) {
   if (!settings.speech || !english) return;
   clearTimeout(speechTimer);
   speechTimer = setTimeout(() => {
-    speak(english, {
+    speak(translateForSpeech(english, settings.ttsLang), {
       enabled: settings.speech,
       engine: settings.ttsEngine,
       lang: settings.ttsLang,
@@ -1076,27 +1182,36 @@ function updateTalkMode() {
   const offline = !navigator.onLine;
   const localAsr = SpeechInput.localRecognitionSupported;
   els.talkMode.classList.toggle("is-error", offline && !localAsr);
-  if (listening) setText(els.talkMode, localAsr ? "listening · local-capable" : "listening");
-  else if (offline) setText(els.talkMode, localAsr ? "offline · local-capable ASR" : "offline · phrase board");
-  else setText(els.talkMode, localAsr ? "ASR · local-capable" : "on-device models");
+  if (listening) setText(els.talkMode, "Listening…");
+  else if (offline) setText(els.talkMode, localAsr ? "Offline · mic may work" : "Offline · quick replies");
+  else setText(els.talkMode, localAsr ? "Mic ready" : "Mic may need internet");
 }
 
 function addTalkMessage(role, text, { label = "", update = false } = {}) {
   const clean = String(text ?? "").trim();
   if (!clean) return;
+  const translation = role === "sign" ? translateForSpeech(clean, settings.ttsLang) : "";
+  const showTranslation = translation && translation.toLowerCase() !== clean.toLowerCase();
   const now = Date.now();
   if (role === "sign" && update && talkMessages.length) {
     const last = talkMessages[talkMessages.length - 1];
     if (last.role === "sign" && now - lastTalkSignAt < 7000) {
       last.text = clean;
       last.label = label || last.label;
+      last.translation = showTranslation ? translation : "";
       last.at = now;
       lastTalkSignAt = now;
       renderTalkThread();
       return;
     }
   }
-  talkMessages.push({ role, text: clean, label, at: now });
+  talkMessages.push({
+    role,
+    text: clean,
+    label,
+    translation: showTranslation ? translation : "",
+    at: now,
+  });
   if (talkMessages.length > 40) talkMessages.shift();
   if (role === "sign") lastTalkSignAt = now;
   renderTalkThread();
@@ -1116,6 +1231,7 @@ function renderTalkThread() {
     return `<article class="talk-message ${escapeHTML(message.role)}">
       <div class="talk-message-head"><span>${escapeHTML(roleLabel)}</span><time>${escapeHTML(time)}</time></div>
       <p>${escapeHTML(message.text)}</p>
+      ${message.translation ? `<small class="talk-translation">Spoken: ${escapeHTML(message.translation)}</small>` : ""}
       ${message.label ? `<small>${escapeHTML(message.label)}</small>` : ""}
     </article>`;
   }).join("");
@@ -1149,6 +1265,17 @@ function renderTalkSignPreview(text) {
   }
 
   const language = currentLearnLang === "BSL" ? "ASL" : currentLearnLang;
+  if (/[^\p{Script=Latin}\p{N}\s'.,!?…()-]/u.test(clean)) {
+    els.talkSignPreview.innerHTML = `<div class="sign-preview-card">
+      <div class="sign-preview-icon"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg></div>
+      <div class="sign-preview-copy">
+        <span class="label">sign back</span>
+        <strong>${escapeHTML(clean)}</strong>
+        <small>This script is not covered by the Latin-based handshape library. Use a phrase card or record a sign video.</small>
+      </div>
+    </div>`;
+    return;
+  }
   const glyphs = [...clean.toUpperCase()].slice(0, 36).map((character) => {
     if (character === " ") return `<span class="glyph is-space" aria-hidden="true">·</span>`;
     const prototype = prototypeFor(language, character);
@@ -1196,8 +1323,7 @@ function clearTalk() {
 
 function initTalk() {
   if (els.talkQuick) {
-    els.talkQuick.innerHTML = TALK_PHRASES.map((phrase) =>
-      `<button class="quick-phrase" type="button" data-talk-phrase="${escapeHTML(phrase)}">${escapeHTML(phrase)}</button>`).join("");
+    renderTalkQuickPhrases();
     els.talkQuick.addEventListener("click", (event) => {
       const button = event.target.closest("[data-talk-phrase]");
       if (!button) return;
@@ -1290,6 +1416,7 @@ function buildAccumulator() {
     },
     onEnglish: (english) => {
       setText(els.englishStream, english || "");
+      updateSpokenTranslation(english || "");
     },
     onState: onAccumulatorState,
   });
@@ -1373,7 +1500,7 @@ function speakEnglish() {
     toast("Speech synthesis is not supported in this browser.", { type: "error" });
     return;
   }
-  speak(text, {
+  speak(translateForSpeech(text, settings.ttsLang), {
     enabled: true,
     engine: settings.ttsEngine,
     lang: settings.ttsLang,
@@ -1472,7 +1599,7 @@ function bindSettings() {
       { type: "info", duration: 3600 },
     );
   });
-  els.settingTtsLang?.addEventListener("change", () => save({ ttsLang: els.settingTtsLang.value }));
+  els.settingTtsLang?.addEventListener("change", () => applySpokenLanguage(els.settingTtsLang.value));
   els.settingHaptics?.addEventListener("change", () => save({ haptics: els.settingHaptics.checked }));
   els.settingLowPower?.addEventListener("change", () => {
     save({ lowPower: els.settingLowPower.checked });
@@ -1485,6 +1612,14 @@ function bindSettings() {
   els.settingOnboarding?.addEventListener("click", () => {
     els.settingsDialog.close();
     openOnboarding(true);
+  });
+  els.settingVoiceView?.addEventListener("click", () => {
+    els.settingsDialog.close();
+    showView("voice");
+  });
+  els.settingAboutView?.addEventListener("click", () => {
+    els.settingsDialog.close();
+    showView("about");
   });
   els.settingVoice?.addEventListener("change", () => {
     save({ voiceURI: els.settingVoice.value });
@@ -1611,7 +1746,7 @@ function setAsrButton(listening) {
   if (els.talkListen) {
     els.talkListen.innerHTML = listening
       ? `<svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop listening`
-      : `<svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Listen`;
+      : `<svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Speak reply`;
     els.talkListen.classList.toggle("is-listening", listening);
   }
   updateTalkMode();
@@ -1707,16 +1842,14 @@ function populateVoices() {
     if (selected) select.value = selected;
     select.disabled = settings.ttsEngine !== "system";
   }
+  els.settingVoice?.closest(".setting-row")?.classList.toggle("hidden", settings.ttsEngine !== "system");
+  els.ttsVoice?.closest(".voice-field")?.classList.toggle("hidden", settings.ttsEngine !== "system");
   if (els.ttsEngine) els.ttsEngine.value = settings.ttsEngine;
   if (els.settingTtsEngine) els.settingTtsEngine.value = settings.ttsEngine;
 
-  const languageOptions = TTS_LANGUAGES.map((language) =>
-    `<option value="${escapeHTML(language.code)}">${escapeHTML(language.label)}</option>`).join("");
+  fillSpokenLanguageSelect();
   for (const select of [els.ttsLang, els.settingTtsLang]) {
-    if (!select) continue;
-    select.innerHTML = languageOptions;
-    select.value = settings.ttsLang;
-    select.disabled = settings.ttsEngine !== "espeak";
+    if (select) select.disabled = settings.ttsEngine !== "espeak";
   }
 
   if (els.ttsSupport) {
@@ -1750,7 +1883,7 @@ function speakText(text, { force = true } = {}) {
     toast("Speech synthesis is unavailable in this browser.", { type: "error" });
     return;
   }
-  const ok = speak(text, {
+  const ok = speak(translateForSpeech(text, settings.ttsLang), {
     enabled: true,
     engine: settings.ttsEngine,
     lang: settings.ttsLang,
@@ -1815,12 +1948,15 @@ function initVoice() {
     },
   });
 
-  els.asrLang?.addEventListener("change", () => {
-    updateSettings({ asrLang: els.asrLang.value });
-    settings = getSettings();
-    asr.setLang(els.asrLang.value);
-    toast(`Speech language: ${els.asrLang.selectedOptions[0]?.textContent ?? els.asrLang.value}`, { type: "info", duration: 2000 });
-  });
+  if (els.asrLang) {
+    fillAsrLanguages();
+    els.asrLang.addEventListener("change", () => {
+      updateSettings({ asrLang: els.asrLang.value });
+      settings = getSettings();
+      asr.setLang(els.asrLang.value);
+      toast(`Speech input language updated.`, { type: "info", duration: 2200 });
+    });
+  }
   els.asrToggle?.addEventListener("click", toggleAsr);
   els.asrUseText?.addEventListener("click", () => {
     showView("voice");
@@ -1875,18 +2011,14 @@ function initVoice() {
       { type: "info", duration: 3000 },
     );
   });
-  els.ttsLang?.addEventListener("change", () => {
-    updateSettings({ ttsLang: els.ttsLang.value });
-    syncSettingsUI();
-  });
+  els.ttsLang?.addEventListener("change", () => applySpokenLanguage(els.ttsLang.value));
   els.settingVoice?.addEventListener("change", () => {
     updateSettings({ voiceURI: els.settingVoice.value });
     syncSettingsUI();
   });
 
   if (els.quickPhrases) {
-    els.quickPhrases.innerHTML = QUICK_PHRASES.map((phrase) =>
-      `<button class="quick-phrase" type="button" data-phrase="${escapeHTML(phrase)}">${escapeHTML(phrase)}</button>`).join("");
+    renderVoiceQuickPhrases();
     els.quickPhrases.addEventListener("click", (event) => {
       const button = event.target.closest("[data-phrase]");
       if (!button) return;
@@ -1916,8 +2048,8 @@ function getCommands() {
     { id: "clear", label: "Clear session", hint: "C", icon: "i-trash", run: clearSession },
     { id: "export", label: "Export transcript as TXT", hint: "E", icon: "i-download", run: () => exportSession("txt") },
     { id: "settings", label: "Open settings", icon: "i-settings", run: openSettings },
-    { id: "view-live", label: "Go to Live", hint: "1", icon: "i-camera", run: () => showView("live") },
-    { id: "view-transcript", label: "Go to Transcript", hint: "2", icon: "i-transcript", run: () => showView("transcript") },
+    { id: "view-live", label: "Go to Talk", hint: "1", icon: "i-camera", run: () => showView("live") },
+    { id: "view-transcript", label: "Go to History", hint: "2", icon: "i-transcript", run: () => showView("transcript") },
     { id: "view-learn", label: "Go to Learn", hint: "3", icon: "i-book", run: () => showView("learn") },
     { id: "view-voice", label: "Go to Voice", hint: "4", icon: "i-mic", run: () => showView("voice") },
     { id: "view-about", label: "Go to About", hint: "5", icon: "i-info", run: () => showView("about") },
@@ -2031,7 +2163,7 @@ function bindKeyboard() {
       if (!commandOpen) openCommandPalette();
       return;
     }
-    if (commandOpen || typing || els.settingsDialog?.open) return;
+    if (commandOpen || typing || els.settingsDialog?.open || els.languageDialog?.open) return;
 
     if (event.key === "Escape" && !els.cameraMenu?.classList.contains("hidden")) {
       event.preventDefault();
@@ -2055,7 +2187,7 @@ function bindKeyboard() {
     else if (event.key === "t" || event.key === "T") { event.preventDefault(); speakEnglish(); }
     else if (event.key === "v" || event.key === "V") { event.preventDefault(); showView("voice"); }
     else if (event.key === "m" || event.key === "M") { event.preventDefault(); toggleAsr(); }
-    else if (event.key === "?") { event.preventDefault(); toast("Shortcuts: 1–5 views · S start/stop · D demo · M mic · T speak · C clear · E export · ⌘K commands", { type: "info", duration: 5200 }); }
+    else if (event.key === "?") { event.preventDefault(); toast("Shortcuts: 1 Talk · 2 History · 3 Learn · 4 Voice · 5 About · S start/stop · M mic · T speak · C clear · E export · ⌘K commands", { type: "info", duration: 5200 }); }
   });
 }
 
@@ -2068,7 +2200,9 @@ function bindEvents() {
     button.addEventListener("click", () => showView(button.dataset.viewJump));
   });
 
-  els.languageSelect?.addEventListener("change", () => applyLanguage(getById(els.languageSelect.value)));
+  els.languageSelect?.addEventListener("change", () => {
+    // Applied by the language dialog's primary action, not on every change.
+  });
 
   els.startBtn?.addEventListener("click", startCamera);
   els.heroStart?.addEventListener("click", startCamera);
@@ -2281,6 +2415,8 @@ function boot() {
   initOffline();
   initVoice();
   initTalk();
+  bindLanguageDialog();
+  applySpokenLanguage(settings.ttsLang, { persist: false });
   initCommandPalette();
   startTicker();
   renderTimeline();

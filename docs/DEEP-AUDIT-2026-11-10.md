@@ -121,9 +121,9 @@ New `src/lib/phraseRecognizer.js`:
 
 | Check | Result |
 |---|---|
-| Node tests | **18/18** |
+| Node tests | **19/19** |
 | In-app self-test | **74/74** |
-| Static checker | **231 IDs, 52 precache references, 0 runtime CDN loads** |
+| Static checker | **239 IDs, 52 precache references, 0 runtime CDN loads** |
 | Demo | `Hello my name is Glipter`, 5 timeline signs, stops and stays stopped |
 | Talk quick phrase | “I love you” → spoken bubble + ILY sign card |
 | Talk typed reply | “Thank you” → spoken bubble + sign preview |

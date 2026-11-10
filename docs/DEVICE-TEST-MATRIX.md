@@ -28,9 +28,9 @@ For every device/browser pair:
 4. Live recognition: one hand, two hands, no hand, low light, hand near edge.
 5. Language switching: KSL, ASL, KSL words, BSL.
 6. Practice mode: target letter, correct sign, wrong sign, exit.
-7. Voice: ASR start/stop, permission deny, offline warning, TTS local/remote, stop.
-8. Transcript: search, confidence filter, export TXT/CSV/JSON.
-9. Settings: theme, text size, contrast, motion, haptics, low-power, kiosk.
+7. Voice: embedded eSpeak voice, speech language, ASR start/stop, permission deny, offline warning, system voice, stop.
+8. History: search, confidence filter, export TXT/CSV/JSON.
+9. Settings: theme, text size, contrast, motion, haptics, low-power, kiosk, language picker.
 10. Install/PWA: install prompt, standalone launch, offline launch.
 11. Kiosk: enter, full-screen, exit, Escape.
 12. 10-minute continuous session: memory, FPS, thermal, crash-free.

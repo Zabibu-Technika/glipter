@@ -49,7 +49,7 @@ This is the honest status of every recommendation in `docs/DESIGN-AUDIT.md`. “
 - **0 horizontal overflow** at 320, 390, 768, 1024, 1440, 1920.
 - **0 controls under 24 px**; **0 controls under 44 px on mobile**.
 - **0 console / page errors** in the audit sweep.
-- **18/18 Node tests**, **74/74 self-test**, static check passing.
+- **19/19 Node tests**, **74/74 self-test**, static check passing.
 - **Offline reload pass**, demo pass (HELLO committed; next sign in progress).
 - **Onboarding, practice, kiosk, transcript filters, type-to-sign, model cards** smoke-tested.
 

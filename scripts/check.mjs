@@ -47,7 +47,7 @@ const required = [
   "src/lib/phraseRecognizer.js",
   "src/text/phrases.js",
   "src/tts/espeak.js",
-  "src/tts/languages.js",
+  "src/text/spokenLanguages.js",
   "vendor/tts/espeak/espeak-ng.js",
   "vendor/tts/espeak/espeak-ng.data",
   "manifest.webmanifest",

@@ -26,11 +26,11 @@ This is the manual accessibility pass recommended by the design audit. Automated
 ### 2. Navigation
 
 1. Tab to “Skip to content” and press Enter; focus moves to main.
-2. Tab through app bar: brand, language select, command palette, settings.
-3. Tab through the rail: Live, Transcript, Learn, Voice, About, Settings.
+2. Tab through app bar: brand, language button, offline status, settings.
+3. Tab through the rail: Talk, History, Learn, Settings. Voice and About are reached from Settings.
 4. Confirm each button announces its name, not just an icon.
 
-### 3. Live recognition
+### 3. Talk and recognition
 
 1. Start the demo (or camera).
 2. Confirm the current sign is **not** announced every frame.
@@ -67,10 +67,10 @@ This is the manual accessibility pass recommended by the design audit. Automated
 3. Start practice; confirm the target letter and feedback are announced.
 4. Exit practice.
 
-### 8. Transcript and export
+### 8. History and export
 
 1. Add several signs via the demo.
-2. Open Transcript; confirm rows are readable and search/filter controls are labelled.
+2. Open History; confirm rows are readable and search/filter controls are labelled.
 3. Apply a confidence filter; confirm the “Showing X of Y” status updates.
 4. Export TXT/CSV/JSON; confirm a download or an accessible error.
 

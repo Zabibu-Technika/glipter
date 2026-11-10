@@ -1,7 +1,7 @@
 const STORAGE_KEY = "glipter.settings.v2";
 
 export const DEFAULT_SETTINGS = Object.freeze({
-  theme: "studio",
+  theme: "light",
   textSize: "normal",
   highContrast: false,
   reduceMotion: false,

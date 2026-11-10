@@ -1,5 +1,6 @@
 import createEspeak from "../../vendor/tts/espeak/espeak-ng.js";
-import { TTS_LANGUAGES } from "./languages.js";
+import { TTS_LANGUAGES } from "../text/spokenLanguages.js";
+export { TTS_LANGUAGES };
 
 /**
  * Embedded multilingual voice: eSpeak NG compiled to WebAssembly.

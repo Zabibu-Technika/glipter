@@ -137,6 +137,13 @@ async function capture(page, name) {
 }
 
 async function navigate(page, view) {
+  if (view === "voice" || view === "about") {
+    await page.click("#settings-btn");
+    await page.waitForTimeout(100);
+    await page.click(view === "voice" ? "#setting-voice-view" : "#setting-about-view");
+    await page.waitForTimeout(220);
+    return;
+  }
   await page.click(`.rail-item[data-view="${view}"]`);
   await page.waitForTimeout(220);
 }
@@ -202,7 +209,7 @@ await navigate(page, "about");
 await runAxe(page, "desktop-about");
 
 await navigate(page, "live");
-await page.click("#command-btn");
+await page.keyboard.press("Control+K");
 await page.waitForTimeout(180);
 await capture(page, "desktop-command-palette");
 await page.keyboard.press("Escape");

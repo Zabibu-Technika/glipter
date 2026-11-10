@@ -44,14 +44,14 @@ export function phraseEnglish(id) {
 
 /** Spoken phrases that can be rendered back as a sign card or fingerspelling. */
 export const SPOKEN_TO_SIGN = Object.freeze([
-  { id: "ILY", matches: ["i love you", "i luv u", "ily", "love you"], note: "ASL-derived ILY handshape" },
-  { id: "HELLO", matches: ["hello", "hi", "hey", "jambo"], note: "Open-hand greeting" },
-  { id: "THANK-YOU", matches: ["thank you", "thanks", "asante"], note: "Fingerspelled phrase card" },
-  { id: "PLEASE", matches: ["please", "tafadhali"], note: "Fingerspelled phrase card" },
-  { id: "YES", matches: ["yes", "yeah", "ndiyo"], note: "Fist nod" },
-  { id: "NO", matches: ["no", "nope", "hapana"], note: "Fingerspelled phrase card" },
-  { id: "SORRY", matches: ["sorry", "samahani"], note: "Fingerspelled phrase card" },
-  { id: "HELP", matches: ["help", "help me", "nisadie", "nisaidie"], note: "Fist on an open palm" },
+  { id: "ILY", matches: ["i love you", "i luv u", "ily", "love you", "nakupenda", "ek is lief vir jou", "ewedihalehu", "ke a go rata", "sin jaalladha", "efetweka"], note: "ASL-derived ILY handshape" },
+  { id: "HELLO", matches: ["hello", "hi", "hey", "jambo", "habari", "hallo", "selam", "dumela", "nagaa", "ሰላም"], note: "Open-hand greeting" },
+  { id: "THANK-YOU", matches: ["thank you", "thanks", "asante", "dankie", "ameseginalehu", "ke a leboga", "galatoomi", "yeqenyeley"], note: "Fingerspelled phrase card" },
+  { id: "PLEASE", matches: ["please", "tafadhali", "asseblief", "ebakh", "ka kopo", "maaloo", "bejaka"], note: "Fingerspelled phrase card" },
+  { id: "YES", matches: ["yes", "yeah", "ndiyo", "ja", "awo", "ee", "eeyyee", "ewe"], note: "Fist nod" },
+  { id: "NO", matches: ["no", "nope", "hapana", "nee", "ay", "nnyaa", "lakki", "aykonin"], note: "Fingerspelled phrase card" },
+  { id: "SORRY", matches: ["sorry", "samahani", "jammer", "yikirta", "tshwarelo", "dhiifama", "yiqreta"], note: "Fingerspelled phrase card" },
+  { id: "HELP", matches: ["help", "help me", "nisadie", "nisaidie", "help my", "irdagn", "nthusa", "na gargaari", "hagzeni"], note: "Fist on an open palm" },
   { id: "STOP", matches: ["stop", "wait", "simama"], note: "Open palm" },
   { id: "MORE", matches: ["more", "zaidi"], note: "Fingerspelled phrase card" },
   { id: "FINISHED", matches: ["finished", "done", "imemalizika"], note: "Fingerspelled phrase card" },

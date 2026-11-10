@@ -25,6 +25,7 @@ import { canSpeak } from "../src/speech.js";
 import { SpeechInput } from "../src/asr.js";
 import { PhraseRecognizer } from "../src/lib/phraseRecognizer.js";
 import { phraseForText } from "../src/text/phrases.js";
+import { quickPhrasesFor, translateForSpeech } from "../src/text/spokenLanguages.js";
 import { RestPoseSegmenter } from "../src/lib/segmentation.js";
 import { validateProfile } from "../src/data/profileSchema.js";
 import { ASL } from "../src/languages/asl.js";
@@ -209,6 +210,15 @@ test("phrase recognizer finds ILY, HELP, and motion signs", () => {
   });
   assert.equal(zResult?.id, "Z");
   assert.equal(zResult?.kind, "motion");
+});
+
+test("spoken language packs drive phrases and spoken output", () => {
+  assert.deepEqual(quickPhrasesFor("sw").slice(0, 3), ["Habari", "Asante", "Tafadhali"]);
+  assert.equal(translateForSpeech("Hello my name is Glipter", "sw"), "Habari, jina langu ni Glipter.");
+  assert.equal(translateForSpeech("I love you", "am"), "እወድሃለሁ");
+  assert.equal(translateForSpeech("Thank you", "af"), "Dankie");
+  assert.equal(translateForSpeech("Habari", "sw"), "Habari");
+  assert.equal(translateForSpeech("Hello", "en"), "Hello");
 });
 
 test("telemetry exports TXT, CSV, and JSON", () => {
