@@ -7,9 +7,9 @@
 export const TIER1_ENGINEERING = Object.freeze([
   {
     id: "alphabet",
-    label: "ASL / KSL fingerspelling",
+    label: "ASL alphabet + KSL proxy",
     done: true,
-    detail: "26-class static model, held-out frames.",
+    detail: "26-class ASL model; KSL uses ASL-derived handshapes pending Deaf KSL review.",
   },
   {
     id: "ksl-words",

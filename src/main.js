@@ -801,7 +801,7 @@ function renderTierStatus() {
   if (!els.tierStatus) return;
   els.tierStatus.innerHTML = TIER1_ENGINEERING.map((item) => `
     <div class="tier-item">
-      <span>${escapeHTML(item.label)}</span>
+      <span title="${escapeHTML(item.detail)}">${escapeHTML(item.label)}</span>
       <strong class="${item.done ? "tier-done" : ""}">${item.done ? "✓" : "—"}</strong>
     </div>`).join("");
 }
