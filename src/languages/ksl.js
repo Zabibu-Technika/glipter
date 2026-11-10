@@ -15,6 +15,7 @@ export const KSL = {
   name: "Kenyan Sign Language",
   shortName: "KSL",
   priority: 1,
+  version: "1.0.0",
   mode: "static",
   family: "fingerspelling + S-O-V reordering",
   wordGapMs: 2400,
@@ -32,8 +33,8 @@ export const KSL = {
     note: "Shared handshapes are proxied from the ASL dataset. KSL-specific alphabet variants require a Deaf-led KSL dataset.",
   },
   metrics: ASL_STATIC_MODEL.metrics,
-  review: { status: "pending", version: "0.1.0", reviewers: [], note: "No native Deaf KSL reviewer has signed off." },
-  note: "KSL fingerspelling using ASL-derived handshapes, plus a small KSL S-O-V reordering rule. KSL has its own grammar and lexical variation; this is a demonstrator, not a validated KSL system. Deaf KSL review is required before any real deployment.",
+  review: { status: "pending", version: "1.0.0", reviewers: [], reviewedAt: null, note: "No native Deaf KSL reviewer has signed off." },
+  note: "KSL fingerspelling using ASL-derived handshapes, plus a small KSL S-O-V reordering rule. KSL has its own grammar and lexical variation; this is a pilot, not a validated KSL system. Deaf KSL review is required before any real deployment.",
   limitations: [
     "KSL-specific handshape variants are not yet covered.",
     "Grammar is a conservative verb-move rule, not a KSL grammar model.",

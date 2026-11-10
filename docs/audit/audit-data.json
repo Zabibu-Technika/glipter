@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T12:58:52.617Z",
+  "generatedAt": "2026-11-10T13:26:35.199Z",
   "base": "http://127.0.0.1:3000/",
   "viewports": [
     {
@@ -91,8 +91,8 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
-      "offline": "Caching 48/50"
+      "selfTest": "self-test ✓ 77/77",
+      "offline": "Caching 48/52"
     },
     {
       "label": "mobile",
@@ -183,7 +183,7 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
+      "selfTest": "self-test ✓ 77/77",
       "offline": "Offline ready"
     },
     {
@@ -374,7 +374,7 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
+      "selfTest": "self-test ✓ 77/77",
       "offline": "Offline ready"
     },
     {
@@ -565,7 +565,7 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
+      "selfTest": "self-test ✓ 77/77",
       "offline": "Offline ready"
     },
     {
@@ -756,7 +756,7 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
+      "selfTest": "self-test ✓ 77/77",
       "offline": "Offline ready"
     },
     {
@@ -947,7 +947,7 @@
       "imagesWithoutAlt": 0,
       "asr": "ASR · local capable",
       "tts": "TTS · embedded · EN + African languages",
-      "selfTest": "self-test ✓ 74/74",
+      "selfTest": "self-test ✓ 77/77",
       "offline": "Offline ready"
     }
   ],
@@ -1027,18 +1027,18 @@
   "console": [],
   "pageErrors": [],
   "performance": {
-    "domContentLoadedMs": 710,
-    "loadMs": 711,
-    "resources": 36,
+    "domContentLoadedMs": 912,
+    "loadMs": 913,
+    "resources": 39,
     "transferKB": 0,
-    "decodedKB": 2281,
-    "scriptCount": 34,
-    "heapMB": 28
+    "decodedKB": 2306,
+    "scriptCount": 37,
+    "heapMB": 40.1
   },
   "offline": {
     "status": "reloaded-offline",
     "title": "Glipter Studio",
-    "selfTest": "self-test ✓ 74/74",
+    "selfTest": "self-test ✓ 77/77",
     "offlineBadge": "Offline"
   },
   "demo": {

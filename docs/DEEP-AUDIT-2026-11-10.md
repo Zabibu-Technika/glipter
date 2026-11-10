@@ -1,9 +1,11 @@
 # Glipter deep audit — recognition, translation, mobile, and two-way conversation
 
 **Date:** 10 November 2026
-**Product:** Glipter Studio (Tier 0 demonstrator)
+**Product:** Glipter Studio (Tier 1 MVP · Deaf review pending)
 **Scope:** sign detection, phrase/motion coverage, translation quality, mobile camera path, two-way ASR/TTS, offline behaviour, security, and UI architecture
 **Prepared for:** Zabibu Technika · Tehillah Kachila
+
+> **Later update:** engineering has moved to the Tier 1 MVP build: rest-pose segmentation, THANK YOU / PLEASE / SORRY motion rules, sign-bank capture/export, and a Tier 1 readiness panel are now in the app. Deaf KSL review is still pending. See [`TIER-1-READINESS.md`](TIER-1-READINESS.md).
 
 ---
 
@@ -121,9 +123,9 @@ New `src/lib/phraseRecognizer.js`:
 
 | Check | Result |
 |---|---|
-| Node tests | **19/19** |
-| In-app self-test | **74/74** |
-| Static checker | **251 IDs, 52 precache references, 0 runtime CDN loads** |
+| Node tests | **22/22** |
+| In-app self-test | **77/77** |
+| Static checker | **273 IDs, 54 precache references, 0 runtime CDN loads** |
 | Demo | `Hello my name is Glipter`, 5 timeline signs, stops and stays stopped |
 | Talk quick phrase | “I love you” → spoken bubble + ILY sign card |
 | Talk typed reply | “Thank you” → spoken bubble + sign preview |

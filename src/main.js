@@ -40,6 +40,18 @@ import {
   translateForSpeech,
   ttsLanguageLabel,
 } from "./text/spokenLanguages.js";
+import {
+  buildBundle,
+  captureHasHands,
+  compactFrame,
+  createEntry,
+  signBankStats,
+  validateEntry,
+} from "./review/signBank.js";
+import {
+  TIER1_ENGINEERING,
+  tier1Status,
+} from "./tier1/status.js";
 
 /* ── State ──────────────────────────────────────────────────── */
 let settings = initSettings();
@@ -82,6 +94,13 @@ let sessionClockStartedAt = null;
 let sessionClockStoppedAt = null;
 let onboardingStep = 0;
 let kioskMode = false;
+let reviewFrames = [];
+let signBank = [];
+let pendingCapture = null;
+let signBankClearArmed = false;
+let signBankClearTimer = 0;
+const SIGN_BANK_STORAGE_KEY = "glipter.signbank.v1";
+const MAX_SIGN_BANK_ENTRIES = 40;
 
 const debouncer = new GestureDebouncer(10, 6);
 const sequenceDebouncer = new GestureDebouncer(8, 4);
@@ -194,6 +213,7 @@ const els = {
   inspectorToggle: $("inspector-toggle"),
   inspectorToggleLabel: $("inspector-toggle-label"),
   inspectorDetails: $("inspector-details"),
+  segmentState: $("segment-state"),
   confidenceBar: $("confidence-bar"),
   confidenceValue: $("confidence-value"),
   top3: $("top3"),
@@ -248,6 +268,27 @@ const els = {
   typeToSignOutput: $("type-to-sign-output"),
   datasetList: $("dataset-list"),
   modelCards: $("model-cards"),
+  tierLabel: $("tier-label"),
+  tierStatus: $("tier-status"),
+  tierEngineering: $("tier-engineering"),
+  tierSigns: $("tier-signs"),
+  tierReviewers: $("tier-reviewers"),
+  tierNote: $("tier-note"),
+  signBankCount: $("signbank-count"),
+  signBankPreview: $("signbank-preview"),
+  signBankList: $("signbank-list"),
+  signBankCapture: $("signbank-capture"),
+  signBankExport: $("signbank-export"),
+  signBankClear: $("signbank-clear"),
+  signBankDialog: $("signbank-dialog"),
+  signBankSample: $("signbank-sample"),
+  signBankLanguage: $("signbank-language"),
+  signBankGloss: $("signbank-gloss"),
+  signBankEnglish: $("signbank-english"),
+  signBankNotes: $("signbank-notes"),
+  signBankConsent: $("signbank-consent"),
+  signBankError: $("signbank-error"),
+  signBankSave: $("signbank-save"),
   selfTestBadge: $("self-test-badge"),
   statusSelfTest: $("status-self-test"),
   signAnnouncer: $("sign-announcer"),
@@ -682,6 +723,178 @@ function handlePractice(prediction) {
   }
 }
 
+/* ── Tier 1 sign bank ─────────────────────────────────────── */
+function recordReviewFrame(frame) {
+  if (!engine && !demo) return;
+  reviewFrames.push(compactFrame(frame));
+  const cutoff = Number(frame.timestamp ?? performance.now()) - 3200;
+  while (reviewFrames.length > 96) reviewFrames.shift();
+  while (reviewFrames.length && reviewFrames[0].t < cutoff) reviewFrames.shift();
+}
+
+function loadSignBank() {
+  try {
+    const raw = localStorage.getItem(SIGN_BANK_STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    signBank = parsed.filter((entry) => validateEntry(entry).ok);
+  } catch {
+    signBank = [];
+  }
+}
+
+function persistSignBank() {
+  try {
+    localStorage.setItem(SIGN_BANK_STORAGE_KEY, JSON.stringify(signBank));
+  } catch {
+    toast("Local storage is full. Export and clear the sign bank.", { type: "error", duration: 4200 });
+  }
+}
+
+function renderSignBank() {
+  const stats = signBankStats(signBank);
+  setText(els.signBankCount, `${stats.entries} captured`);
+  if (els.signBankExport) els.signBankExport.disabled = stats.entries === 0;
+  if (els.signBankClear) els.signBankClear.disabled = stats.entries === 0;
+  if (!els.signBankPreview) {
+    renderTierStatus();
+    return;
+  }
+  const latest = signBank[0];
+  if (!latest) {
+    els.signBankPreview.innerHTML = `<p class="fine-print">Start the camera, sign, then capture the last two seconds.</p>`;
+  } else {
+    const sample = latest.frames?.find((frame) => frame.hands?.length)?.hands?.[0]?.landmarks;
+    els.signBankPreview.innerHTML = `
+      ${sample ? handSvg(sample) : ""}
+      <div>
+        <strong>${escapeHTML(latest.gloss)}</strong>
+        <span>${escapeHTML(latest.language)} · ${latest.frameCount} frames · unreviewed</span>
+      </div>`;
+  }
+  if (els.signBankList) {
+    els.signBankList.innerHTML = signBank.slice(0, 8).map((entry) => `
+      <div class="signbank-list-row">
+        <strong>${escapeHTML(entry.gloss)}</strong>
+        <span>${escapeHTML(entry.language)} · ${entry.frameCount}f</span>
+        <span class="status-chip">unreviewed</span>
+      </div>`).join("");
+  }
+  renderTierStatus();
+}
+
+function renderTierStatus() {
+  const status = tier1Status(signBank);
+  setText(els.tierLabel, status.label);
+  setText(els.tierEngineering, `${status.engineeringDone} / ${status.engineeringTotal}`);
+  setText(els.tierSigns, `${status.kslSignsReviewed} / ${status.kslSignsRequired}`);
+  setText(els.tierReviewers, `${status.deafReviewersConfirmed} / ${status.deafReviewersRequired}`);
+  if (status.validationComplete) {
+    setText(els.tierNote, "The documented Tier 1 gate is met for this profile.");
+  } else {
+    setText(
+      els.tierNote,
+      `Engineering complete. Still required: ${Math.max(0, status.kslSignsRequired - status.kslSignsReviewed)} reviewed KSL signs, ${Math.max(0, status.motionSignsRequired - status.motionSignsReviewed)} reviewed motion signs, ${Math.max(0, status.deafReviewersRequired - status.deafReviewersConfirmed)} Deaf KSL reviewers, and task-preference evidence.`,
+    );
+  }
+  if (!els.tierStatus) return;
+  els.tierStatus.innerHTML = TIER1_ENGINEERING.map((item) => `
+    <div class="tier-item">
+      <span>${escapeHTML(item.label)}</span>
+      <strong class="${item.done ? "tier-done" : ""}">${item.done ? "✓" : "—"}</strong>
+    </div>`).join("");
+}
+
+function fillSignBankLanguages() {
+  if (!els.signBankLanguage) return;
+  const options = LANGUAGES.map((language) =>
+    `<option value="${escapeHTML(language.id)}">${escapeHTML(language.shortName ?? language.name)}</option>`).join("");
+  els.signBankLanguage.innerHTML = options;
+  els.signBankLanguage.value = profile.id;
+}
+
+function openSignBankDialog() {
+  const capture = reviewFrames.filter((frame) => frame.hands?.length);
+  if (!captureHasHands(reviewFrames) || capture.length < 8) {
+    toast("Start the camera and sign first.", { type: "info", duration: 2600 });
+    return;
+  }
+  pendingCapture = {
+    frames: reviewFrames.slice(-72).map((frame) => ({ ...frame, hands: frame.hands.map((hand) => ({ ...hand })) })),
+    source: demo ? "demo" : "camera",
+  };
+  setText(els.signBankError, "");
+  if (els.signBankGloss) els.signBankGloss.value = "";
+  if (els.signBankEnglish) els.signBankEnglish.value = "";
+  if (els.signBankNotes) els.signBankNotes.value = "";
+  if (els.signBankConsent) els.signBankConsent.checked = false;
+  fillSignBankLanguages();
+  const sample = pendingCapture.frames.find((frame) => frame.hands?.length)?.hands?.[0]?.landmarks;
+  if (els.signBankSample) els.signBankSample.innerHTML = sample ? handSvg(sample) : "";
+  els.signBankDialog?.showModal();
+  els.signBankGloss?.focus?.();
+}
+
+function saveSignBankEntry() {
+  if (!pendingCapture) return;
+  const language = els.signBankLanguage?.value ?? profile.id;
+  const gloss = els.signBankGloss?.value ?? "";
+  const result = createEntry({
+    language,
+    gloss,
+    english: els.signBankEnglish?.value ?? "",
+    notes: els.signBankNotes?.value ?? "",
+    source: pendingCapture.source,
+    frames: pendingCapture.frames,
+    consent: els.signBankConsent?.checked === true,
+  });
+  if (!result.ok) {
+    setText(els.signBankError, result.errors[0] ?? "Cannot save this capture.");
+    return;
+  }
+  signBank.unshift(result.entry);
+  if (signBank.length > MAX_SIGN_BANK_ENTRIES) signBank.length = MAX_SIGN_BANK_ENTRIES;
+  persistSignBank();
+  pendingCapture = null;
+  els.signBankDialog?.close();
+  renderSignBank();
+  toast("Sign captured.", { type: "success", duration: 1800 });
+}
+
+function exportSignBank() {
+  if (!signBank.length) {
+    toast("Nothing to export.", { type: "info" });
+    return;
+  }
+  const bundle = buildBundle(signBank, { appVersion: "1.0.0" });
+  const stamp = new Date().toISOString().slice(0, 10);
+  downloadText(`glipter-signbank-${stamp}.json`, JSON.stringify(bundle, null, 2), "application/json");
+  toast("Sign bank exported.", { type: "success", duration: 1800 });
+}
+
+function resetSignBankClear() {
+  signBankClearArmed = false;
+  clearTimeout(signBankClearTimer);
+  if (els.signBankClear) setText(els.signBankClear, "Clear");
+}
+
+function clearSignBank() {
+  if (!signBank.length) return;
+  if (!signBankClearArmed) {
+    signBankClearArmed = true;
+    setText(els.signBankClear, "Tap again");
+    clearTimeout(signBankClearTimer);
+    signBankClearTimer = setTimeout(resetSignBankClear, 3000);
+    return;
+  }
+  signBank = [];
+  persistSignBank();
+  resetSignBankClear();
+  renderSignBank();
+  toast("Sign bank cleared.", { type: "info", duration: 1800 });
+}
+
 /* ── Views ──────────────────────────────────────────────────── */
 const VIEWS = ["live", "transcript", "learn", "voice", "about"];
 
@@ -702,6 +915,7 @@ function showView(name, { scroll = true } = {}) {
   if (name === "about") {
     renderDatasetList(els.datasetList, LANGUAGES);
     renderModelCards();
+    renderSignBank();
     renderSelfTest(els.selfTestBadge, els.selfTestTitle, els.selfTestDetails, selfTestResult);
     updateSelfTestStatus();
   }
@@ -825,11 +1039,30 @@ function pushSequenceGesture(prediction) {
 
 function handleFrame(frame) {
   frameCount += 1;
+  recordReviewFrame(frame);
   drawHands(ctx, frame.hands, {
     mirror: settings.mirror,
     showSkeleton: settings.skeleton,
     showLabels: true,
   });
+
+  if (frame.segment?.started) {
+    debouncer.reset();
+    sequenceDebouncer.reset();
+    lastGestureId = null;
+  }
+  if (frame.segment?.ended) {
+    // Rest-pose boundary: close the current word as soon as the hand rests.
+    accumulator.commitWord();
+    accumulator.emit();
+  }
+  if (els.segmentState) {
+    const active = frame.segment
+      ? frame.segment.state === "active"
+      : (frame.hands?.length ?? 0) > 0;
+    setText(els.segmentState, active ? "sign" : "rest");
+    els.segmentState.className = `status-chip ${active ? "is-active" : ""}`;
+  }
 
   if (frame.commitWord) {
     accumulator.commitWord();
@@ -1028,6 +1261,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   engine = null;
   demo?.stop();
   demo = null;
+  reviewFrames = [];
   asr?.stop();
   setAsrButton(false);
   setAsrStatus(SpeechInput.supported ? "idle" : "unsupported");
@@ -1071,6 +1305,7 @@ async function startCamera() {
   setAsrStatus(SpeechInput.supported ? "idle" : "unsupported");
   demo?.stop();
   demo = null;
+  reviewFrames = [];
   clearError();
   setRunningUI(true);
   setCameraStatus("starting", "starting…");
@@ -1139,6 +1374,7 @@ async function startCamera() {
       els.practiceFeedback.className = "practice-feedback";
     }
     toast("Camera on.", { type: "success", duration: 1800 });
+    renderSignBank();
   } catch (error) {
     engine?.stop();
     engine = null;
@@ -1830,9 +2066,9 @@ function renderModelCards() {
   for (const language of LANGUAGES) {
     const model = language.model;
     if (!model) {
-      const review = language.review ?? { status: "pending", version: "0.1.0" };
+      const review = language.review ?? { status: "pending", version: "1.0.0" };
       cards.push(`<div class="model-card">
-        <div class="model-card-head"><strong>${escapeHTML(language.name)}</strong><span>${escapeHTML(review.status)} · v${escapeHTML(review.version)}</span></div>
+        <div class="model-card-head"><strong>${escapeHTML(language.name)}</strong><span>${escapeHTML(review.status)} · v${escapeHTML(language.version ?? review.version)}</span></div>
         <div class="model-metric"><span>mode</span><b>${escapeHTML(language.mode)} · rules</b></div>
         <div class="model-metric"><span>benchmark</span><b>none bundled</b></div>
         <div class="model-metric"><span>review</span><b>${escapeHTML(review.status)} · ${review.reviewers?.length ?? 0} reviewers</b></div>
@@ -1841,11 +2077,11 @@ function renderModelCards() {
     }
     const metrics = model.metrics ?? {};
     const perClass = model.perClass ?? {};
-    const review = language.review ?? { status: "pending", version: "0.1.0" };
+    const review = language.review ?? { status: "pending", version: "1.0.0" };
     const weakest = Object.entries(perClass).sort((a, b) => a[1] - b[1]).slice(0, 3);
     const confusions = (model.confusions ?? []).slice(0, 3);
     cards.push(`<div class="model-card">
-      <div class="model-card-head"><strong>${escapeHTML(language.shortName)} · ${escapeHTML(model.id)}</strong><span>${escapeHTML(review.status)} · v${escapeHTML(review.version)}</span></div>
+      <div class="model-card-head"><strong>${escapeHTML(language.shortName)} · ${escapeHTML(model.id)}</strong><span>${escapeHTML(review.status)} · v${escapeHTML(language.version ?? review.version)}</span></div>
       <div class="model-metric"><span>top-1 / top-3</span><b>${metrics.top1 ? pct(metrics.top1) : "—"} / ${metrics.top3 ? pct(metrics.top3) : "—"}</b></div>
       <div class="model-metric"><span>test samples</span><b>${metrics.testSamples ?? "—"}</b></div>
       <div class="model-metric"><span>split</span><b>${escapeHTML(metrics.split ?? "—")}</b></div>
@@ -2382,6 +2618,10 @@ function bindEvents() {
     renderTimeline();
   });
   els.exportBtn?.addEventListener("click", () => exportSession("txt"));
+  els.signBankCapture?.addEventListener("click", openSignBankDialog);
+  els.signBankSave?.addEventListener("click", saveSignBankEntry);
+  els.signBankExport?.addEventListener("click", exportSignBank);
+  els.signBankClear?.addEventListener("click", clearSignBank);
 
   $("export-txt")?.addEventListener("click", () => exportSession("txt"));
   $("export-csv")?.addEventListener("click", () => exportSession("csv"));
@@ -2547,6 +2787,9 @@ function boot() {
   runAndRenderSelfTest();
   renderDatasetList(els.datasetList, LANGUAGES);
   renderModelCards();
+  loadSignBank();
+  fillSignBankLanguages();
+  renderSignBank();
   renderLearnGrid(els.learnGrid, currentLearnLang);
   selectLearn(currentLearnLetter, currentLearnLang, { render: false });
   initOffline();

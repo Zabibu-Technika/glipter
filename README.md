@@ -4,7 +4,7 @@
 
 Glipter turns any camera into a two-way sign language conversation surface. It reads hand landmarks locally, classifies static handshapes, motion letters, and short signed phrases with bundled models and rule layers, then streams the result into gloss and readable English. The hearing side can reply by voice, typing, or a quick phrase; the reply is spoken by an embedded voice and shown back as a sign card or fingerspelling strip.
 
-A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator — not a validated accessibility tool, not a substitute for a professional interpreter.
+A **Zabibu Technika** product, led by **Tehillah Kachila**. **Tier 1 MVP · Deaf review pending** — engineering is ready for a Deaf-led pilot; it is not a validated accessibility tool and not a substitute for a professional interpreter.
 
 **Live:** [glipter.vercel.app](https://glipter.vercel.app)
 
@@ -33,10 +33,18 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 - **KSL word signs (pilot)** trained on the official KSL landmark split: `FATHER`, `HELLO`, `IS`, `MY`. Held-out top-1: **99.2%** across 124 sequences.
 - **KSL fingerspelling** uses the ASL handshape model as a documented proxy, with KSL text reordering.
 - **BSL two-handed fingerspelling** remains rule-based and experimental (A, B, L, V). No permissively licensed BSL landmark corpus is bundled yet.
-- **Phrase layer (ASL-derived, experimental):** ILY → “I love you”, HELP, HELLO wave, YES nod, and motion letters J and Z. The motion layer suppresses the starting static letter so a J attempt is not committed as I.
+- **Phrase layer (ASL-derived, experimental):** ILY → “I love you”, HELP, HELLO wave, YES nod, THANK YOU, PLEASE, SORRY, and motion letters J and Z. The motion layer suppresses the starting static letter so a J attempt is not committed as I.
+- **Rest-pose segmentation:** a hand starts a segment; six empty frames end it; the boundary closes the current word. The Details drawer shows the live `sign` / `rest` state.
 - **Decision margin:** ambiguous top-1/top-2 frames are shown but not committed; threshold and margin are configurable.
 - Angle-based finger detection, sliding-window debouncing, top-3 candidates, confidence threshold.
 - Live hand skeleton overlay on Canvas 2D, FPS and inference latency telemetry.
+
+### Sign bank and review
+
+- **Capture last two seconds:** landmark-only frames from the live camera or demo, with gloss, language, English, notes, and explicit consent.
+- Captures are stored locally and exported as unreviewed `glipter.signbank/1` JSON. No video, no signer names, no reviewer sign-off.
+- About shows engineering readiness and the human gate separately: `8 / 8`, `0 / 50` reviewed KSL signs, `0 / 20` Deaf KSL reviewers.
+- The current gate and next steps are in [`docs/TIER-1-READINESS.md`](docs/TIER-1-READINESS.md); the review protocol is [`docs/DEAF-REVIEW-KIT.md`](docs/DEAF-REVIEW-KIT.md).
 
 ### Voice bridge (ASR + TTS)
 
@@ -71,16 +79,16 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 ### Evaluation
 
-- 74 on-device checks in five layers: ASL fixtures, KSL fixtures, BSL rules, geometry, model/grammar integrity.
+- 77 on-device checks in six layers: ASL fixtures, KSL fixtures, BSL rules, geometry, model/grammar integrity, and the Tier 1 segmentation/sign-bank pipeline.
 - Self-test runs on load and is visible in the status bar and About view.
-- Node test suite: 19 tests covering feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, phrase/motion rules, spoken-language packs, telemetry, safe ASR/TTS degradation.
+- Node test suite: 22 tests covering feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, phrase/motion rules, rest-pose segmentation, sign-bank export, Tier 1 status, spoken-language packs, telemetry, and safe ASR/TTS degradation.
 - `npm run check` verifies every referenced element ID and every service-worker precache file.
 - A professional design/QA audit lives in [`docs/DESIGN-AUDIT.md`](docs/DESIGN-AUDIT.md), with raw measurements in [`docs/audit/audit-data.json`](docs/audit/audit-data.json) and screenshots in [`docs/audit/`](docs/audit/). It covers mobile/tablet/desktop, WCAG 2.2 AA, axe-core, offline reload, demo, and competitive positioning.
 - The recognition/mobile/two-way audit is [`docs/DEEP-AUDIT-2026-11-10.md`](docs/DEEP-AUDIT-2026-11-10.md).
 - The everyday-person UX research and redesign is [`docs/UX-REDESIGN-2026-11-10.md`](docs/UX-REDESIGN-2026-11-10.md).
 - Design principles and the rules behind the current layout: [`docs/DESIGN-PRINCIPLES.md`](docs/DESIGN-PRINCIPLES.md).
 - Execution status: [`docs/RECOMMENDATIONS-STATUS.md`](docs/RECOMMENDATIONS-STATUS.md).
-- Release gates and human work: [`docs/DEAF-REVIEW-KIT.md`](docs/DEAF-REVIEW-KIT.md), [`docs/SCREEN-READER-TEST.md`](docs/SCREEN-READER-TEST.md), [`docs/DEVICE-TEST-MATRIX.md`](docs/DEVICE-TEST-MATRIX.md).
+- Release gates and human work: [`docs/TIER-1-READINESS.md`](docs/TIER-1-READINESS.md), [`docs/DEAF-REVIEW-KIT.md`](docs/DEAF-REVIEW-KIT.md), [`docs/SCREEN-READER-TEST.md`](docs/SCREEN-READER-TEST.md), [`docs/DEVICE-TEST-MATRIX.md`](docs/DEVICE-TEST-MATRIX.md).
 - Architecture/design notes: [`docs/CONTINUOUS-SIGNING.md`](docs/CONTINUOUS-SIGNING.md), [`docs/COMMUNITY-PROFILES.md`](docs/COMMUNITY-PROFILES.md), [`docs/GLIPTIC-TYPOGRAPHY.md`](docs/GLIPTIC-TYPOGRAPHY.md).
 
 ### Re-run the audit

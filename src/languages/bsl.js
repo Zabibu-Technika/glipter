@@ -46,6 +46,7 @@ export const BSL = {
   name: "British Sign Language",
   shortName: "BSL",
   priority: 3,
+  version: "1.0.0",
   mode: "static",
   family: "two-handed fingerspelling (experimental)",
   wordGapMs: 2200,
@@ -62,7 +63,7 @@ export const BSL = {
   metrics: {
     note: "Rule-based. Not evaluated against a public BSL landmark benchmark.",
   },
-  review: { status: "pending", version: "0.1.0", reviewers: [], note: "No native Deaf BSL reviewer has signed off." },
+  review: { status: "pending", version: "1.0.0", reviewers: [], reviewedAt: null, note: "No native Deaf BSL reviewer has signed off." },
   note: "Experimental two-handed BSL fingerspelling (A, B, L, V only). BSL uses two hands as a grammar-bearing system; this rule set is a proof of generalisation, not a usable BSL recogniser. No permissively licensed BSL landmark corpus is bundled yet.",
   limitations: [
     "Only four handshapes are recognised.",

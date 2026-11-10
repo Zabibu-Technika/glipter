@@ -29,6 +29,8 @@ import { quickPhrasesFor, translateForSpeech } from "../src/text/spokenLanguages
 import { RestPoseSegmenter } from "../src/lib/segmentation.js";
 import { validateProfile } from "../src/data/profileSchema.js";
 import { ASL } from "../src/languages/asl.js";
+import { buildBundle, createEntry, validateEntry } from "../src/review/signBank.js";
+import { TIER1_ENGINEERING, tier1Status } from "../src/tier1/status.js";
 
 const OPEN_HAND = { thumb: true, index: true, middle: true, ring: true, pinky: true };
 const FIST = { thumb: false, index: false, middle: false, ring: false, pinky: false };
@@ -56,8 +58,8 @@ function framesFromFlat(frames) {
 test("on-device self-test passes every layer", () => {
   const result = runSelfTest();
   assert.equal(result.passed, result.total, "all self-test checks must pass");
-  assert.equal(result.layers.length, 5);
-  assert.equal(result.total, 74);
+  assert.equal(result.layers.length, 6);
+  assert.equal(result.total, 77);
 });
 
 test("ASL model classifies every held-out fixture", () => {
@@ -157,8 +159,7 @@ test("phrase vocabulary renders conversational signs as English", () => {
   assert.equal(phraseForText("something unknown"), null);
 });
 
-test("phrase recognizer finds ILY, HELP, and motion signs", () => {
-  const recognizer = new PhraseRecognizer();
+test("phrase recognizer finds ILY, HELP, and motion signs", () => {  const recognizer = new PhraseRecognizer();
   const ily = makeSyntheticHand({ thumb: true, index: true, middle: false, ring: false, pinky: true });
   const staticResult = recognizer.update({
     dominant: { landmarks: ily, fingers: { thumb: true, index: true, middle: false, ring: false, pinky: true } },
@@ -210,6 +211,41 @@ test("phrase recognizer finds ILY, HELP, and motion signs", () => {
   });
   assert.equal(zResult?.id, "Z");
   assert.equal(zResult?.kind, "motion");
+});
+
+test("phrase recognizer finds THANK YOU, PLEASE, and SORRY conservatively", () => {
+  const open = { thumb: true, index: true, middle: true, ring: true, pinky: true };
+  const fist = { thumb: false, index: false, middle: false, ring: false, pinky: false };
+
+  function runPath(state, path, start = 1000) {
+    const recognizer = new PhraseRecognizer();
+    let result = null;
+    path.forEach(([x, y], index) => {
+      const landmarks = makeSyntheticHand(state, { offsetX: x, offsetY: y });
+      result = recognizer.update({
+        dominant: { landmarks, fingers: state },
+        nonDominant: null,
+        timestamp: start + index * 45,
+      }) ?? result;
+    });
+    return result;
+  }
+
+  const thankYou = runPath(open, [
+    [0, -0.12], [0.01, -0.09], [0.02, -0.06], [0.03, -0.03],
+    [0.04, 0.01], [0.05, 0.05], [0.06, 0.09],
+  ], 12000);
+  assert.equal(thankYou?.id, "THANK-YOU");
+
+  const circle = [
+    [0.06, 0], [0.045, 0.045], [0, 0.06], [-0.045, 0.045], [-0.06, 0],
+    [-0.045, -0.045], [0, -0.06], [0.045, -0.045], [0.06, 0],
+  ];
+  assert.equal(runPath(open, circle, 14000)?.id, "PLEASE");
+  assert.equal(runPath(fist, circle, 16000)?.id, "SORRY");
+
+  const nod = [[0, 0], [0, 0.04], [0, 0.08], [0, 0.12], [0, 0.08], [0, 0.04], [0, 0]];
+  assert.equal(runPath(fist, nod, 18000)?.id, "YES");
 });
 
 test("spoken language packs drive phrases and spoken output", () => {
@@ -271,6 +307,54 @@ test("rest-pose segmenter starts on a hand and ends after a rest run", () => {
   assert.equal(segmenter.push({ hands: [] }).ended, false);
   assert.equal(segmenter.push({ hands: [] }).ended, true);
   assert.equal(segmenter.active, false);
+});
+
+test("sign-bank capture stays unreviewed and exports landmark-only JSON", () => {
+  const hand = makeSyntheticHand(OPEN_HAND).map((point) => [point.x, point.y, point.z]);
+  const frames = Array.from({ length: 10 }, (_, index) => ({
+    t: index * 40,
+    hands: [{ handedness: "Right", landmarks: hand }],
+  }));
+
+  const created = createEntry({
+    id: "cap_test",
+    language: "KSL",
+    gloss: "THANK-YOU",
+    english: "Thank you",
+    notes: "Test capture",
+    frames,
+    consent: true,
+    capturedAt: Date.UTC(2026, 10, 10),
+  });
+  assert.equal(created.ok, true, created.errors.join("; "));
+  assert.equal(created.entry.review.status, "unreviewed");
+  assert.equal(validateEntry(created.entry).ok, true);
+
+  const noConsent = createEntry({ language: "KSL", gloss: "THANK-YOU", frames, consent: false, id: "cap_no" });
+  assert.equal(noConsent.ok, false);
+
+  const normalized = createEntry({ language: "KSL", gloss: "thank you", frames, consent: true, id: "cap_lower" });
+  assert.equal(normalized.ok, true, normalized.errors.join("; "));
+  assert.equal(normalized.entry.gloss, "THANK YOU");
+
+  const invalidGloss = createEntry({ language: "KSL", gloss: "!!!", frames, consent: true, id: "cap_bad" });
+  assert.equal(invalidGloss.ok, false);
+
+  const bundle = buildBundle([created.entry], { exportedAt: Date.UTC(2026, 10, 10) });
+  assert.equal(bundle.reviewStatus, "unreviewed");
+  assert.equal(bundle.deafReviewers, 0);
+  assert.equal(bundle.counts.entries, 1);
+  assert.equal(JSON.parse(JSON.stringify(bundle)).entries[0].frames.length, 10);
+});
+
+test("Tier 1 status separates engineering from the Deaf validation gate", () => {
+  const status = tier1Status([]);
+  assert.equal(status.engineeringComplete, true);
+  assert.equal(status.engineeringDone, TIER1_ENGINEERING.length);
+  assert.equal(status.validationComplete, false);
+  assert.equal(status.kslSignsReviewed, 0);
+  assert.equal(status.deafReviewersConfirmed, 0);
+  assert.match(status.label, /Deaf review pending/);
 });
 
 test("community profile schema accepts a reviewed profile contract", () => {

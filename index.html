@@ -299,6 +299,11 @@
                 <div id="inspector-details" class="inspector-details hidden">
                   <div id="top3" class="top3" role="group" aria-label="Top three candidates"></div>
 
+                  <div class="segment-row">
+                    <span class="label">segment</span>
+                    <span id="segment-state" class="status-chip">rest</span>
+                  </div>
+
                   <div class="stream-block">
                     <div class="stream-head"><span class="label">recognised signs</span><span class="label-note">raw</span></div>
                     <div id="gloss-stream" class="stream gloss" data-placeholder="Raw recognised signs will appear here."></div>
@@ -536,7 +541,7 @@
                 <div class="credit-avatar alt">ZT</div>
                 <div><strong>Zabibu Technika</strong><span>Product studio · design, engineering & delivery</span></div>
               </div>
-              <p class="fine-print">Glipter is a Tier 0 demonstrator. It is not a validated accessibility tool and is not a substitute for a professional interpreter. Every language profile requires Deaf-led review before real-world use.</p>
+              <p class="fine-print"><strong>Tier 1 MVP.</strong> Engineering is complete; Deaf KSL review is pending. Not a validated accessibility tool and not a substitute for a professional interpreter.</p>
             </article>
 
             <article class="panel about-how">
@@ -562,11 +567,42 @@
               <p class="fine-print">Every profile is pending review by native Deaf signers of that language. A model card is not consent or validation.</p>
             </article>
 
+            <article class="panel about-tier">
+              <div class="panel-head compact">
+                <div class="panel-title"><span class="panel-eyebrow">Status</span><h2>Tier 1 readiness</h2></div>
+                <span id="tier-label" class="status-chip">Tier 1 MVP · Deaf review pending</span>
+              </div>
+              <div id="tier-status" class="tier-status"></div>
+              <div class="tier-progress">
+                <div><span class="label">engineering</span><strong id="tier-engineering">—</strong></div>
+                <div><span class="label">KSL signs reviewed</span><strong id="tier-signs">0 / 50</strong></div>
+                <div><span class="label">Deaf reviewers</span><strong id="tier-reviewers">0 / 20</strong></div>
+              </div>
+              <p id="tier-note" class="fine-print">Engineering readiness is separate from the human validation gate. The gate is not met until Deaf KSL reviewers sign off.</p>
+            </article>
+
+            <article class="panel about-signbank">
+              <div class="panel-head compact">
+                <div class="panel-title"><span class="panel-eyebrow">Contribute</span><h2>Sign bank</h2></div>
+                <span id="signbank-count" class="status-chip">0 captured</span>
+              </div>
+              <div id="signbank-preview" class="signbank-preview" aria-live="polite">
+                <p class="fine-print">Start the camera, sign, then capture the last two seconds.</p>
+              </div>
+              <div id="signbank-list" class="signbank-list"></div>
+              <div class="signbank-actions">
+                <button id="signbank-capture" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Capture</button>
+                <button id="signbank-export" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> Export</button>
+                <button id="signbank-clear" class="btn btn-ghost btn-sm" type="button">Clear</button>
+              </div>
+              <p class="fine-print">Landmarks only. No video, no names. Captures stay unreviewed.</p>
+            </article>
+
             <article class="panel about-limits">
               <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Limits</span><h2>Read this</h2></div></div>
               <ul class="limit-list">
-                <li>Static handshapes drive most ASL/KSL fingerspelling. J and Z now have motion rules; the rest of the alphabet is still static.</li>
-                <li>The KSL word model knows four glosses: FATHER, HELLO, IS, MY. ILY/HELP/HELLO/YES are ASL-derived experimental rules, not a KSL lexicon.</li>
+                <li>Static handshapes drive most ASL/KSL fingerspelling. J, Z, HELLO, YES, THANK YOU, PLEASE, and SORRY have motion rules; the rest of the alphabet is still static.</li>
+                <li>The KSL word model knows four glosses: FATHER, HELLO, IS, MY. The phrase rules are ASL-derived experiments, not a KSL lexicon.</li>
                 <li>BSL is rule-based and experimental. No permissively licensed BSL landmark corpus is bundled yet.</li>
                 <li>No facial grammar, mouthing, or non-manual signals — all of which are part of real sign languages.</li>
                 <li>Not validated by Deaf signers in any language. Do not use in medical, legal, or high-stakes settings.</li>
@@ -596,8 +632,8 @@
             <article class="panel about-roadmap">
               <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Roadmap</span><h2>What comes next</h2></div></div>
               <div class="roadmap">
-                <div class="roadmap-item done"><span>Tier 0</span><div><strong>Demonstrator</strong><p>Real datasets, offline PWA, self-tests, credits.</p></div></div>
-                <div class="roadmap-item"><span>Tier 1</span><div><strong>Working MVP</strong><p>Full alphabets, ~50 static signs, motion signs, transcript export, Deaf review loop.</p></div></div>
+                <div class="roadmap-item done"><span>Tier 1</span><div><strong>Working MVP · engineering</strong><p>Alphabets, rest-pose segmentation, motion phrases, sign-bank capture, transcript export, offline voice.</p></div></div>
+                <div class="roadmap-item"><span>Tier 1</span><div><strong>Deaf KSL review</strong><p>50 reviewed static signs, 5 motion signs, 20 Deaf reviewers, ≥70% task preference.</p></div></div>
                 <div class="roadmap-item"><span>Tier 2</span><div><strong>Real translator</strong><p>Continuous signing, sign segmentation, ~500 signs, language auto-detect, text → sign.</p></div></div>
                 <div class="roadmap-item"><span>Tier 3</span><div><strong>Community platform</strong><p>No-code profile authoring, dataset contribution, versioned review, ONNX plug-ins.</p></div></div>
                 <div class="roadmap-item"><span>Tier 4</span><div><strong>Universal edge</strong><p>Any supported SL, offline, sub-100 ms, kiosks and $30 devices, Deaf-led validation everywhere.</p></div></div>
@@ -667,6 +703,41 @@
       <div class="dialog-actions">
         <button class="btn btn-ghost" value="close">Cancel</button>
         <button id="correction-save" class="btn btn-primary" type="button">Save correction</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="signbank-dialog" class="settings-dialog signbank-dialog" aria-labelledby="signbank-title">
+    <form method="dialog" class="settings-form">
+      <div class="dialog-head">
+        <div><div class="panel-eyebrow">Review</div><h2 id="signbank-title">New sign</h2></div>
+        <button class="icon-btn" value="close" aria-label="Close capture"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+      </div>
+      <div id="signbank-sample" class="signbank-sample" aria-hidden="true"></div>
+      <label class="filter-field">
+        <span class="label">sign language</span>
+        <select id="signbank-language"></select>
+      </label>
+      <label class="filter-field">
+        <span class="label">gloss</span>
+        <input id="signbank-gloss" type="text" maxlength="32" placeholder="THANK-YOU" autocomplete="off" spellcheck="false" />
+      </label>
+      <label class="filter-field">
+        <span class="label">English</span>
+        <input id="signbank-english" type="text" maxlength="80" placeholder="Thank you" autocomplete="off" />
+      </label>
+      <label class="filter-field">
+        <span class="label">notes</span>
+        <input id="signbank-notes" type="text" maxlength="500" placeholder="Handshape, region, variant" autocomplete="off" />
+      </label>
+      <label class="setting-row">
+        <span><strong>Consent</strong><small>Share these landmark frames for review.</small></span>
+        <input id="signbank-consent" type="checkbox" />
+      </label>
+      <p id="signbank-error" class="form-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" value="close">Cancel</button>
+        <button id="signbank-save" class="btn btn-primary" type="button">Save</button>
       </div>
     </form>
   </dialog>

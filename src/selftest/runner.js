@@ -9,6 +9,8 @@ import { KSL_WORDS_FIXTURES } from "./fixtures/ksl-words.js";
 import { BSL_GOLDENS, GEOMETRY_GOLDENS, makeSyntheticHand } from "./goldens.js";
 import { BSL } from "../languages/bsl.js";
 import { reorderASL, reorderKSL, reorderBSL } from "../text/grammar.js";
+import { RestPoseSegmenter } from "../lib/segmentation.js";
+import { buildBundle, createEntry } from "../review/signBank.js";
 
 const aslModel = new GlipterModel(ASL_STATIC_MODEL);
 const kslModel = new GlipterModel(KSL_WORDS_MODEL);
@@ -229,6 +231,71 @@ function runModelIntegrity() {
   return summarize(layer);
 }
 
+function runPipeline() {
+  const layer = {
+    id: "pipeline",
+    name: "Tier 1 pipeline · segmentation + sign bank",
+    description: "Rest-pose boundaries and the landmark-only capture contract.",
+    results: [],
+  };
+  const lm = makeSyntheticHand(GEOMETRY_GOLDENS[0].fingers);
+  const frame = { hands: [{ landmarks: lm }] };
+
+  let started = null;
+  let ended = null;
+  let error = null;
+  try {
+    const segmenter = new RestPoseSegmenter({ restFrames: 2 });
+    started = segmenter.push(frame);
+    segmenter.push(frame);
+    segmenter.push({ hands: [] });
+    ended = segmenter.push({ hands: [] });
+  } catch (e) {
+    error = e.message;
+  }
+  add(layer, {
+    name: "rest-pose · start and end",
+    expected: "started then ended",
+    actual: `${started?.started ? "started" : "no start"} / ${ended?.ended ? "ended" : "no end"}`,
+    pass: started?.started === true && ended?.ended === true && !error,
+    error,
+  });
+
+  const frames = Array.from({ length: 8 }, (_, index) => ({
+    t: index * 40,
+    hands: [{ handedness: "Right", landmarks: lm.map((point) => [point.x, point.y, point.z]) }],
+  }));
+  let created = null;
+  error = null;
+  try {
+    created = createEntry({
+      id: "selftest",
+      language: "KSL",
+      gloss: "HELLO",
+      frames,
+      consent: true,
+    });
+  } catch (e) {
+    error = e.message;
+  }
+  add(layer, {
+    name: "sign bank · new captures are unreviewed",
+    expected: "unreviewed",
+    actual: created?.entry?.review?.status ?? "error",
+    pass: created?.ok === true && created?.entry?.review?.status === "unreviewed" && !error,
+    error,
+  });
+
+  const bundle = created?.entry ? buildBundle([created.entry], { exportedAt: 0 }) : null;
+  add(layer, {
+    name: "sign bank · export claims no reviewers",
+    expected: "0",
+    actual: String(bundle?.deafReviewers ?? "error"),
+    pass: bundle?.deafReviewers === 0 && bundle?.reviewStatus === "unreviewed",
+  });
+  return summarize(layer);
+}
+
 export function runSelfTest() {
   const layers = [
     runAslFixtures(),
@@ -236,6 +303,7 @@ export function runSelfTest() {
     runBslRules(),
     runGeometry(),
     runModelIntegrity(),
+    runPipeline(),
   ];
   const results = layers.flatMap((layer) => layer.results);
   const passed = layers.reduce((sum, layer) => sum + layer.passed, 0);

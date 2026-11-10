@@ -7,11 +7,12 @@ import { LM, handBounds, handCenter, palmSize } from "./landmarks.js";
  * The bundled neural models only know static ASL letters and four isolated KSL
  * words. This layer adds the conversational gestures we can recognise without
  * new training data: ILY ("I love you"), HELP, the motion letters J and Z, a
- * HELLO wave, and a YES nod.
+ * HELLO wave, a YES nod, and conservative THANK YOU / PLEASE / SORRY motion
+ * rules.
  *
  * It is deliberately conservative. A gesture must match a handshape gate and,
- * for motion signs, a trajectory gate. Everything is still a Tier 0
- * demonstrator: ASL-derived rules are not a substitute for a Deaf-led lexicon.
+ * for motion signs, a trajectory gate. These are ASL-derived rules, not a
+ * Deaf-reviewed KSL lexicon.
  */
 
 const SAMPLE_WINDOW_MS = 1000;
@@ -299,15 +300,68 @@ export class PhraseRecognizer {
           detail: "open-hand wave",
         };
       }
+
+      // THANK YOU: an open hand moving down and away from the chin. Forward
+      // movement is mostly toward the camera and is not visible in 2D, so the
+      // conservative evidence is a sustained downward sweep.
+      if (
+        motion.spanY > palm * 0.85
+        && motion.end.y - motion.start.y > palm * 0.35
+        && motion.spanX < palm * 2.2
+        && motion.changesX < 3
+        && motion.path > palm * 1.1
+      ) {
+        return {
+          id: "THANK-YOU",
+          label: "Thank you",
+          confidence: 0.78,
+          detail: "open hand sweeps down",
+        };
+      }
+
+      // PLEASE: an open palm circling on the chest. Require a closed loop so a
+      // wave or a one-way sweep cannot trigger it.
+      if (
+        motion.changesX + motion.changesY >= 3
+        && motion.spanX > palm * 0.45
+        && motion.spanY > palm * 0.45
+        && motion.spanX < palm * 1.8
+        && motion.spanY < palm * 1.6
+        && motion.closed < 0.7
+        && motion.path > palm * 1.3
+      ) {
+        return {
+          id: "PLEASE",
+          label: "Please",
+          confidence: 0.76,
+          detail: "open palm circles",
+        };
+      }
       return null;
     }
 
-    // YES: a fist nodding vertically in place.
+    // YES: a fist nodding vertically in place. Check SORRY first because a
+    // fist circle also changes y twice but has a much wider x span.
     if (gate === "YES") {
       if (
+        motion.changesX + motion.changesY >= 3
+        && motion.spanX > palm * 0.35
+        && motion.spanY > palm * 0.35
+        && motion.spanY < palm * 1.4
+        && motion.closed < 0.75
+        && motion.path > palm * 1.2
+      ) {
+        return {
+          id: "SORRY",
+          label: "Sorry",
+          confidence: 0.76,
+          detail: "fist circles",
+        };
+      }
+      if (
         motion.spanY > palm * 0.7
-        && motion.changesY >= 2
-        && motion.spanX < palm * 0.9
+        && motion.changesY >= 1
+        && motion.spanX < palm * 0.5
         && motion.path > palm * 0.9
       ) {
         return {

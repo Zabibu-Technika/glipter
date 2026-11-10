@@ -9,6 +9,7 @@ export const ASL = {
   name: "American Sign Language",
   shortName: "ASL",
   priority: 2,
+  version: "1.0.0",
   mode: "static",
   family: "one-handed fingerspelling",
   wordGapMs: 2200,
@@ -21,7 +22,7 @@ export const ASL = {
   model: ASL_STATIC_MODEL,
   dataset: ASL_STATIC_MODEL.dataset,
   metrics: ASL_STATIC_MODEL.metrics,
-  review: { status: "pending", version: "0.1.0", reviewers: [], note: "No native Deaf ASL reviewer has signed off." },
+  review: { status: "pending", version: "1.0.0", reviewers: [], reviewedAt: null, note: "No native Deaf ASL reviewer has signed off." },
   note: "Data-driven static alphabet (A–Z) trained on the CC0 ASL Alphabet Hand Landmarks dataset. J and Z are motion letters and are only approximate here. Held-out frames score 99.9%, but this is not signer-independent validation and has not been reviewed by Deaf ASL signers.",
   limitations: [
     "Static handshapes only; J and Z need motion.",

@@ -61,7 +61,7 @@ These are the rules the current UI is built against. They are not a mood board; 
 
 ## 8. Trust by design
 
-- Tier 0 badge, “not validated” copy, and model cards are visible.
+- “Tier 1 MVP · Deaf review pending” copy, model cards, and visible limitations.
 - Every language profile shows `review: pending`; no fake reviewers.
 - ASR network caveat is persistent; TTS notes whether a local voice exists.
 - Dataset and licence attribution is one click away in About.

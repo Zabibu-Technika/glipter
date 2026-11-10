@@ -76,8 +76,9 @@ Talk opens with:
 
 - **Start signing** as the primary button.
 - **See a demo** as the secondary escape hatch.
-- A plain-language explanation: “Sign naturally. Glipter translates on this device — nothing is uploaded.”
-- A clear three-step onboarding: choose languages → start signing or speaking → read the translation.
+- **“Show your hand to start.”** One line, no paragraph.
+- An empty thread that says **“Say hello.”**
+- A clear three-step onboarding: languages → start → translate.
 
 The technical camera toolbar is reduced to status, Demo, and an overflow menu.
 
@@ -131,9 +132,17 @@ The default theme is now **Light** — a calm neutral surface, one blue accent, 
 - Empty states explain what will happen rather than showing technical placeholders.
 - The quick phrase chips and reply input are the offline fallback when ASR is unavailable.
 
+### 8. Tier 1 evidence surface
+
+- About shows a **Tier 1 readiness** panel with engineering and validation counted separately: `8 / 8` engineering items, `0 / 50` reviewed KSL signs, `0 / 20` Deaf reviewers.
+- The same panel renders from `src/tier1/status.js`, so the UI cannot claim more than the data.
+- The **Sign bank** panel captures the last two seconds of live landmarks, asks for explicit consent, and exports unreviewed `glipter.signbank/1` JSON.
+- Captures never include video, signer names, reviewer names, or a `reviewed` flag.
+- The Details drawer shows the live **segment** state (`sign` / `rest`), so the rest-pose boundary is observable rather than hidden.
+
 ## What was intentionally not changed
 
-- The Tier 0 / preview limitation is still visible in About and onboarding. Simplicity must not become overclaiming.
+- The **Tier 1 MVP · Deaf review pending** limitation is visible in About, onboarding, model cards, and exports. Simplicity must not become overclaiming.
 - The technical model cards, self-test, and dataset provenance remain available.
 - The app still does not claim to be a substitute for an interpreter.
 - ASR is still browser-provided; the UI says so and offers phrase/typing fallbacks.

@@ -74,7 +74,7 @@ export class SessionLog {
         `${formatElapsed(entry.at - this.state.startedAt)}  ${entry.id.padEnd(10)}  ${(entry.confidence * 100).toFixed(0)}%  ${entry.label}`,
       );
     }
-    lines.push("", "This is a Tier 0 demonstrator. It has not been validated by Deaf signers and is not a substitute for a professional interpreter.");
+    lines.push("", "Tier 1 engineering build. Not validated by Deaf signers and not a substitute for a professional interpreter.");
     return lines.join("\n");
   }
 
@@ -96,7 +96,7 @@ export class SessionLog {
   toJSON() {
     return JSON.stringify({
       app: "Glipter",
-      tier: "Tier 0 demonstrator",
+      tier: "Tier 1 MVP · Deaf review pending",
       exportedAt: new Date().toISOString(),
       language: this.state.language,
       startedAt: new Date(this.state.startedAt).toISOString(),

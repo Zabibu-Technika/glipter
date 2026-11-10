@@ -961,6 +961,28 @@ html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-
 .model-card-head span { font-family: var(--mono); font-size: 0.52rem; color: var(--warn); }
 .model-metric { display: flex; justify-content: space-between; gap: 8px; font-size: 0.62rem; color: var(--muted); padding: 2px 0; }
 .model-metric b { color: var(--text-soft); font-family: var(--mono); font-weight: 600; max-width: 68%; text-align: right; overflow-wrap: anywhere; }
+.segment-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; }
+.tier-status { display: flex; flex-direction: column; gap: 4px; }
+.tier-item { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 0.64rem; color: var(--muted); }
+.tier-item strong { color: var(--text-soft); font-weight: 600; }
+.tier-item .tier-done { color: var(--success, #34d399); font-family: var(--mono); }
+.tier-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+.tier-progress div { padding: 7px 8px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface-2); }
+.tier-progress .label { display: block; font-size: 0.52rem; }
+.tier-progress strong { display: block; margin-top: 2px; font-family: var(--mono); font-size: 0.66rem; color: var(--text-soft); }
+.signbank-preview { min-height: 54px; display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+.signbank-preview .mini-hand { width: 52px; height: 62px; }
+.signbank-preview strong { font-size: 0.72rem; }
+.signbank-preview span { display: block; color: var(--muted); font-size: 0.6rem; }
+.signbank-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0 4px; }
+.signbank-list { display: flex; flex-direction: column; gap: 4px; max-height: 132px; overflow-y: auto; }
+.signbank-list:empty { display: none; }
+.signbank-list-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 5px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 0.62rem; color: var(--muted); }
+.signbank-list-row strong { color: var(--text-soft); font-family: var(--mono); font-size: 0.62rem; }
+.signbank-list-row .status-chip { font-size: 0.5rem; padding: 1px 5px; }
+.signbank-sample { display: flex; justify-content: center; padding: 4px 0 8px; }
+.signbank-sample svg { width: 84px; height: 100px; }
+.form-error { min-height: 1em; margin: 4px 0 0; color: var(--danger, #f87171); font-size: 0.66rem; }
 .type-to-sign { flex: 0 0 auto; padding-bottom: 12px; }
 .type-to-sign-body { padding: 10px 12px 0; }
 .type-field input { width: 100%; }

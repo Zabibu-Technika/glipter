@@ -1,11 +1,13 @@
 # Glipter Studio — Professional Design Audit
 
 **Date:** 5 November 2026
-**Product:** Glipter Studio (Tier 0 demonstrator)
+**Product:** Glipter Studio (Tier 1 MVP · Deaf review pending)
 **Audit scope:** UI/UX, QA, accessibility, ease of use, responsive behaviour (mobile, tablet, desktop), brand and competitive positioning
 **Prepared for:** Zabibu Technika · Tehillah Kachila
 
 > **Update, 10 November 2026:** the recognition, mobile-detection, phrase/motion, embedded-TTS, and two-way conversation work is covered in [`DEEP-AUDIT-2026-11-10.md`](DEEP-AUDIT-2026-11-10.md). The everyday-person navigation, language picker, and Light-theme redesign is in [`UX-REDESIGN-2026-11-10.md`](UX-REDESIGN-2026-11-10.md). This document remains the visual/accessibility audit.
+>
+> **Later update:** engineering has moved to the Tier 1 MVP build (rest-pose segmentation, sign bank, expanded motion phrases). Deaf KSL review is still pending; see [`TIER-1-READINESS.md`](TIER-1-READINESS.md).
 
 ---
 
@@ -13,7 +15,7 @@
 
 Glipter Studio now reads as a **credible edge product**, not a landing page. The app shell, split-pane studio, inspector, timeline, command palette, status bar, voice bridge, offline PWA, and dataset-backed models form a coherent product surface. The audit found a short list of real defects; the P0/P1 items were fixed during the audit, and the automated accessibility suite is now clean.
 
-**Verdict:** a strong Tier 0 seed and a differentiated product direction. It is **not yet iconic and not yet validated**. The next gains are in learning design, first-run onboarding, continuous recognition, and Deaf-led review — not more visual polish.
+**Verdict:** a strong Tier 1 engineering build and a differentiated product direction. It is **not yet iconic and not yet validated**. The next gains are in Deaf-led review, lexicon coverage, and continuous recognition — not more visual polish.
 
 ### Scorecard
 
@@ -27,9 +29,9 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 | Desktop UX | 4.5 / 5 | Strong split-pane composition; capped studio width at 1560 px; framing guide and ghost. |
 | Accessibility (WCAG 2.2 AA) | 4.5 / 5 | 0 axe violations across 7 view/theme runs; 0 targets below 24 px; contrast fixed. Screen-reader and Deaf usability sessions are still pending. |
 | Performance | 4.0 / 5 | ~1.24 MB cold transfer, ~1.38 s DCL on localhost, 9.5 MB cold heap. Vendor assets load on demand. |
-| Trust & ethics | 5.0 / 5 | Honest Tier 0 labels, dataset provenance, licences, credits, review metadata, model cards. |
+| Trust & ethics | 5.0 / 5 | Honest “Deaf review pending” labels, dataset provenance, licences, credits, review metadata, model cards. |
 | Learn / education | 4.0 / 5 | Legible upright handshapes, per-letter cues, watch→try→feedback practice, Gliptic Typography. Deaf-reviewed illustrations are the next step. |
-| QA | 4.5 / 5 | 19/19 tests, 74/74 self-tests, static check, offline reload, demo pass, CI audit workflow. Device lab and screen-reader runs remain. |
+| QA | 4.5 / 5 | 22/22 tests, 77/77 self-tests, static check, offline reload, demo pass, CI audit workflow. Device lab and screen-reader runs remain. |
 | Iconic potential | 4.0 / 5 | Studio theme + hand constellation + commit pulse + Gliptic Typography is a distinctive direction. The signature confidence ring and Deaf co-design are the next level. |
 
 ### What is working
@@ -42,7 +44,7 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 - **Real data, real models:** ASL 10,508 samples / 99.9% held-out; KSL 818 sequences / 99.2% held-out (same-corpus, not signer-independent).
 - **Learning loop:** per-letter cues, watch→try→feedback practice, Gliptic Typography.
 - **Two-way bridge:** browser ASR + local-first TTS, with honest network caveats.
-- **Trust signals:** Tier 0 badge, dataset cards, model cards, self-test 74/74, credits to Tehillah Kachila and Zabibu Technika.
+- **Trust signals:** explicit “Deaf review pending” copy, dataset cards, model cards, self-test 77/77, credits to Tehillah Kachila and Zabibu Technika.
 
 ### Top risks
 
@@ -96,8 +98,8 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 | Interactive targets under Apple HIG 44×44 on mobile | **0** at 320/390; 17 mouse-sized controls on tablet/desktop |
 | Console errors | **0** |
 | Uncaught page errors | **0** |
-| App self-test | **74/74** |
-| Node test suite | **19/19** |
+| App self-test | **77/77** |
+| Node test suite | **22/22** |
 | Static checker | Passing — all referenced IDs and precache files present; **0 runtime CDN loads** |
 | Offline reload | **Pass** — title, self-test, and shell restored offline |
 | Demo pipeline | **Pass** — `HELLO MY NAME IS GLIPTER` completes once, stops, and shows 5 tokens / 5 timeline items with the hand overlay present; replay starts clean |
@@ -295,9 +297,9 @@ Severity: **P0** blocks use or accessibility; **P1** major; **P2** polish; **P3*
 
 ### Passing
 
-- `npm test`: 19/19.
-- `npm run check`: passing (251 IDs, 52 service-worker references, 0 runtime CDN loads).
-- On-device self-test: 74/74.
+- `npm test`: 22/22.
+- `npm run check`: passing (273 IDs, 54 service-worker references, 0 runtime CDN loads).
+- On-device self-test: 77/77.
 - Demo pipeline: `HELLO MY NAME IS GLIPTER` completes once, stops, preserves the final English, and starts a clean session on replay.
 - Offline reload: shell, models, and self-test restored with the service worker offline.
 - No console or uncaught page errors.
@@ -536,7 +538,7 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 ## 14. Sign-off
 
 **Prepared for:** Zabibu Technika · Tehillah Kachila
-**Build audited:** Glipter Studio, Tier 0, source as of 5 November 2026
+**Build audited:** Glipter Studio, Tier 1 MVP · Deaf review pending, source as of 10 November 2026
 **Status:** All code-feasible audit recommendations executed; Studio theme shipped; 0 axe violations; 0 mobile targets below 44 px; offline reload and demo pass. Gating items remain human/research: Deaf-led review, real-device thermal/camera/mic validation, screen-reader sessions, continuous recognition, and offline ASR.
 
 *This is an internal design/QA audit, not a substitute for validation with Deaf signers or a professional accessibility certification.*

@@ -55,7 +55,7 @@ A profile may move from `experimental` to `reviewed` only when:
 ```js
 review: {
   status: "pending" | "in-review" | "reviewed" | "rejected",
-  version: "0.1.0",
+  version: "1.0.0",
   reviewers: [{ name: "…", org: "…", language: "KSL", consented: true }],
   reviewedAt: "2026-…",
   notes: "What was tested, what failed, what changed."
@@ -71,7 +71,7 @@ Reviewer: [name / organisation]
 Language: KSL
 Version reviewed: 0.1.0
 Scope: fingerspelling subset / four-word pilot
-Outcome: changes requested / approved for demonstrator
+Outcome: changes requested / approved for Tier 1 pilot
 Credit preference: name + organisation
 ```
 
@@ -88,3 +88,5 @@ Credit preference: name + organisation
 - KSL: **pending**
 - KSL words: **pending**
 - BSL: **pending**
+
+Captured sign-bank entries are exported from About → Sign bank as unreviewed `glipter.signbank/1` JSON. That export is input to this process, not evidence that review happened.

@@ -1,6 +1,6 @@
 # What it takes to be a real edge competitor to Signverse
 
-*Strategy note for Glipter Studio — written against the Tier 0 build in this repository.*
+*Strategy note for Glipter Studio — first written against the Tier 0 build. The engineering surface has since moved to the Tier 1 MVP; the Deaf validation gate in this note is still the target and is still unmet. See [`TIER-1-READINESS.md`](TIER-1-READINESS.md).*
 
 ---
 

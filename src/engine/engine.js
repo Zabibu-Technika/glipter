@@ -1,6 +1,7 @@
 import { FilesetResolver, HandLandmarker } from "../../vendor/mediapipe/tasks/vision_bundle.mjs";
 import { getFingerState } from "../lib/fingers.js";
 import { PhraseRecognizer } from "../lib/phraseRecognizer.js";
+import { RestPoseSegmenter } from "../lib/segmentation.js";
 
 const TASKS_BASE = new URL("../../vendor/mediapipe/tasks/", import.meta.url);
 const MODEL_URL = new URL("hand_landmarker.task", TASKS_BASE).href;
@@ -78,6 +79,7 @@ export class GlipterEngine {
     this.captureCanvas = null;
     this.captureCtx = null;
     this.phrase = new PhraseRecognizer();
+    this.segmenter = new RestPoseSegmenter({ restFrames: 6 });
   }
 
   get backend() {
@@ -95,6 +97,7 @@ export class GlipterEngine {
     this.sequenceFrames = [];
     this.frameCounter = 0;
     this.phrase.setEnabled(profile?.mode !== "sequence");
+    this.segmenter.reset();
   }
 
   resetSequence() {
@@ -320,6 +323,7 @@ export class GlipterEngine {
     if (!landmarks.length) {
       this.sequenceFrames = [];
       this.phrase.update({ hands: [], timestamp: now });
+      const segment = this.segmenter.push({ hands: [], timestamp: now });
       this.onFrame?.({
         hands: [],
         dominant: null,
@@ -327,6 +331,7 @@ export class GlipterEngine {
         gesture: null,
         sequenceGesture: null,
         phrase: null,
+        segment,
         motionPending: false,
         fps,
         latency: this.lastLatency,
@@ -341,6 +346,11 @@ export class GlipterEngine {
       fingers: getFingerState(lm),
     }));
 
+    // Rest-pose segmentation is the Tier 1 pause contract: a hand starts a
+    // segment, a short run of empty frames ends it. The segment boundary is
+    // exposed to the UI so a pause can close the current word cleanly.
+    const segment = this.segmenter.push({ hands, timestamp: now });
+
     // Prefer a right hand for one-handed signs. The model also runs mirrored
     // test-time augmentation, so left-handed signers are still covered.
     const domIdx = hands.findIndex((hand) => hand.handedness === "Right");
@@ -354,6 +364,7 @@ export class GlipterEngine {
       gesture: null,
       sequenceGesture: null,
       phrase: null,
+      segment,
       motionPending: false,
       fps,
       latency: this.lastLatency,
@@ -412,6 +423,7 @@ export class GlipterEngine {
     this.video = null;
     this.sequenceFrames = [];
     this.phrase.reset();
+    this.segmenter.reset();
     try {
       this.landmarker?.close?.();
     } catch {

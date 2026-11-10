@@ -18,10 +18,10 @@ This is the honest status of every recommendation in `docs/DESIGN-AUDIT.md`. “
 | D-12 | Persistent ASR network caveat + fallback | Done | `#asr-network` chip, offline warning, “Use text instead”; `desktop-voice.png`. |
 | D-13 | Audit in CI | Done | `.github/workflows/audit.yml` (manual + weekly), artifacts uploaded. |
 | D-14 | Device/browser/thermal matrix | Scaffolded | `docs/DEVICE-TEST-MATRIX.md`; phones/tablets/kiosk still need physical runs. |
-| D-15 | Camera framing/ghost/cue | Done | Corner brackets, dashed hand ghost, “Place one hand in frame”; `desktop-live.png`. |
+| D-15 | Camera framing/ghost/cue | Done | Corner brackets, dashed hand ghost, “Show your hand to start”; `desktop-live.png`. |
 | D-16 | Session clock starts at engine start | Done | `startSessionClock` / `stopSessionClock`; runs during demo/camera. |
 | D-17 | Error banner retry/dismiss | Done | `#error-retry` / `#error-dismiss`; friendly camera error mapping. |
-| D-18 | Transcript search/filter | Done | Search + confidence filter + “Showing X of Y”; `desktop-transcript.png`. |
+| D-18 | Transcript search/filter | Done | Search + confidence filter + “X of Y”; `desktop-transcript.png`. |
 | D-19 | Tablet rail labels | Done | `aria-label` on rail items; hover/focus tooltips at 701–900 px. |
 | D-20 | Wide-screen camera cap | Done | `.studio` max-width 1560 px and centred; wide layout re-measured. |
 | D-21 | Status-bar type scale | Done | 0.6 rem status bar / 0.54 rem group labels; no overflow at 768. |
@@ -33,8 +33,8 @@ This is the honest status of every recommendation in `docs/DESIGN-AUDIT.md`. “
 | D-27 | CSP / security headers | Done | CSP + Permissions-Policy + nosniff + referrer in `netlify.toml` and `serve.mjs`; MediaPipe assets verified under CSP. |
 | D-28 | Commit ring / hand constellation | Partly done | Commit animation/pulse + constellation hand glyphs; a true confidence ring is still a design refinement. |
 | D-29 | Gliptic Typography | Partly done | Learn → Type to handshape, A–Z glyph strip, labelled experimental; orientation/motion/location and Deaf review missing. |
-| D-30 | Reviewer badges / versioned profiles | Partly done | `review` metadata on every profile; model cards show status/version/0 reviewers. Real names require consent. |
-| P3 | Continuous KSL recognition | Scaffolded | `src/lib/segmentation.js` + `docs/CONTINUOUS-SIGNING.md`; no trained continuous model yet. |
+| D-30 | Reviewer badges / versioned profiles | Done (engineering) | `review` + `version` metadata on every profile; sign-bank capture/export; model cards show status/version/0 reviewers. Real names require consent. |
+| P3 | Continuous KSL recognition | Partly done | Rest-pose segmentation is wired into the live engine; no trained continuous model yet. See `docs/CONTINUOUS-SIGNING.md`. |
 | P3 | Community profile authoring | Scaffolded | `src/data/profileSchema.js` + `docs/COMMUNITY-PROFILES.md`; no authoring UI yet. |
 | P3 | Kiosk mode | Done | `#kiosk-exit`, `?kiosk=1`, Settings → Workspace; hides app chrome. |
 | Design | Integrate the supplied lilac/cream, thick-outline, playful hand references | Done | **Studio** theme default; Midnight/Daylight retained; hand glyphs, sticker cards, pill actions, onboarding/practice restyled. |
@@ -49,7 +49,7 @@ This is the honest status of every recommendation in `docs/DESIGN-AUDIT.md`. “
 - **0 horizontal overflow** at 320, 390, 768, 1024, 1440, 1920.
 - **0 controls under 24 px**; **0 controls under 44 px on mobile**.
 - **0 console / page errors** in the audit sweep.
-- **19/19 Node tests**, **74/74 self-test**, static check passing.
+- **22/22 Node tests**, **77/77 self-test**, static check passing.
 - **Offline reload pass**, demo pass (HELLO committed; next sign in progress).
 - **Onboarding, practice, kiosk, transcript filters, type-to-sign, model cards** smoke-tested.
 

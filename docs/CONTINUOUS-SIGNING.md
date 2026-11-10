@@ -21,7 +21,7 @@ A static handshape classifier cannot solve these by adding more classes.
 - `src/lib/features.js` resamples sequences to 24 frames and builds mean/std/min/max/delta/motion summaries.
 - `src/languages/kslWords.js` wraps the four-word model.
 - `src/engine/demo.js` can replay sequences without a camera.
-- `src/lib/segmentation.js` provides a rest-pose/segmenter scaffold (hand presence + motion energy); it is not yet a learned segmenter.
+- `src/lib/segmentation.js` provides the Tier 1 rest-pose/pause segmenter. It is wired into the live engine: a hand starts a segment, a six-frame rest run ends it, and the boundary closes the current word. It is not a learned boundary model.
 
 ## Target architecture
 
@@ -65,7 +65,7 @@ camera → landmarks (+ face/pose later)
 
 ## Next implementation steps
 
-1. Add rest-pose segmentation tests and wire the segmenter into the KSL buffer.
+1. ~~Add rest-pose segmentation tests and wire the segmenter into the KSL buffer.~~ Done: live engine + Node test + self-test layer.
 2. Record a 100-sentence KSL pilot with boundaries and Deaf review.
 3. Train a small TCN on landmark sequences; compare against the current summary MLP.
 4. Add a signer-independent evaluation split and publish it.
