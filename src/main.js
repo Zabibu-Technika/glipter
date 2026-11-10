@@ -225,7 +225,6 @@ const els = {
   talkListen: $("talk-listen"),
   talkSpeak: $("talk-speak"),
   talkAutoSpeak: $("talk-auto-speak"),
-  talkNote: $("talk-note"),
   transcriptList: $("transcript-list"),
   transcriptEmpty: $("transcript-empty"),
   transcriptCount: $("transcript-count"),
@@ -554,7 +553,7 @@ function renderLearnDetail(letter, language) {
       : "No prototype is bundled for this language yet.");
     if (els.learnPractice) {
       els.learnPractice.disabled = language === "BSL";
-      els.learnPractice.textContent = language === "BSL" ? "Practice unavailable" : `Practise ${letter}`;
+      els.learnPractice.textContent = language === "BSL" ? "Unavailable" : "Practise";
     }
     return;
   }
@@ -573,14 +572,14 @@ function renderLearnDetail(letter, language) {
   setText(els.learnConfidence, confidenceText);
   const hint = LETTER_HINTS[letter] ?? "";
   const context = language === "KSL"
-    ? "KSL uses this ASL-derived handshape as a documented proxy; KSL-specific variants and Deaf review are still required."
+    ? "ASL-based reference. KSL review pending."
     : language === "ASL"
-      ? "Rendered from the medoid of the ASL training set. J and Z are motion letters and are only approximate as static frames."
-      : "Reference sample from the bundled dataset.";
+      ? "ASL reference."
+      : "Reference sample.";
   setText(els.learnNote, `${hint} ${context}`.trim());
   if (els.learnPractice) {
     els.learnPractice.disabled = language === "BSL";
-    els.learnPractice.textContent = `Practise ${letter}`;
+    els.learnPractice.textContent = `Practise`;
   }
 }
 
@@ -632,8 +631,8 @@ function startPractice(letter) {
   els.practiceBanner?.classList.remove("hidden");
   showView("live");
   if (!engine && !demo) {
-    setText(els.practiceFeedback, `Start camera or demo to practise ${practiceTargetLetter}.`);
-    toast("Start camera or play the demo to practise.", { type: "info", duration: 3000 });
+    setText(els.practiceFeedback, "Start the camera.");
+    toast("Start the camera to practise.", { type: "info", duration: 2600 });
   }
 }
 
@@ -737,7 +736,7 @@ function displayPrediction(prediction, now) {
   if (!shown) lastPrediction = null;
 
   setText(els.currentSign, shown?.id ?? "—");
-  setText(els.currentLabel, shown?.label ?? (els.handCount.textContent === "0" ? "no gesture" : "no confident sign"));
+  setText(els.currentLabel, shown?.label ?? "no sign");
   els.currentSign.classList.toggle("is-active", Boolean(shown));
   els.currentSign.classList.toggle("is-empty", !shown);
   const confidence = shown?.confidence ?? 0;
@@ -749,15 +748,15 @@ function displayPrediction(prediction, now) {
   els.confidenceValue.dataset.state = confidenceState;
   setText(els.confidenceValue, shown ? pct(confidence) : "—");
   if (els.signState) {
-    let stateText = "Start the camera or demo to begin.";
+    let stateText = "Ready.";
     if (shown) {
       stateText = confidence >= 0.8
-        ? "Sign committed — keep going, or pause to finish the word."
+        ? "Got it."
         : confidence >= settings.threshold
-          ? "Almost — hold the sign steady."
-          : "Hold steady — not sure yet.";
+          ? "Hold steady."
+          : "Not sure.";
     } else if (engine || demo) {
-      stateText = "Waiting for a sign — hold one hand in frame.";
+      stateText = "Show your hand.";
     }
     setText(els.signState, stateText);
     els.signState.className = `sign-state ${confidenceState}`;
@@ -998,7 +997,7 @@ function setRunningUI(running) {
 
 function resetLiveReadout() {
   setText(els.currentSign, "—");
-  setText(els.currentLabel, "no gesture");
+  setText(els.currentLabel, "no sign");
   els.currentSign.classList.remove("is-active");
   els.currentSign.classList.add("is-empty");
   els.confidenceBar.style.width = "0%";
@@ -1008,7 +1007,7 @@ function resetLiveReadout() {
   setText(els.englishStream, "");
   setText(els.spokenTranslation, "");
   setSignalRing("idle");
-  setText(els.signState, "Start the camera or demo to begin.");
+  setText(els.signState, "Ready.");
   if (els.signState) els.signState.className = "sign-state idle";
   els.top3.innerHTML = "";
   lastTop3Signature = "";
@@ -1048,7 +1047,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   setCameraStatus("idle", "camera off");
   if (els.engineBackend) setText(els.engineBackend, "detector");
   stopSpeaking();
-  if (!silent) toast("Stopped. Your transcript is still here.", { type: "info", duration: 2200 });
+  if (!silent) toast("Stopped.", { type: "info", duration: 1800 });
 }
 
 async function startCamera() {
@@ -1133,13 +1132,13 @@ async function startCamera() {
     els.cameraStage.classList.toggle("mirror", settings.mirror);
     els.cameraStage.classList.add("is-active");
     startSessionClock();
-    setText(els.signState, "Waiting for a sign — hold one hand in frame.");
+    setText(els.signState, "Show your hand.");
     if (els.signState) els.signState.className = "sign-state idle";
     if (practiceMode) {
       setText(els.practiceFeedback, `Show ${practiceTargetLetter} to the camera.`);
       els.practiceFeedback.className = "practice-feedback";
     }
-    toast("Camera running. Everything stays on this device.", { type: "success", duration: 2400 });
+    toast("Camera on.", { type: "success", duration: 1800 });
   } catch (error) {
     engine?.stop();
     engine = null;
@@ -1184,7 +1183,7 @@ function startDemo() {
     setText(els.practiceFeedback, `Show ${practiceTargetLetter} to the camera.`);
     els.practiceFeedback.className = "practice-feedback";
   }
-  toast("Playing a real landmark demo. No camera, no network.", { type: "success", duration: 2600 });
+  toast("Demo playing.", { type: "success", duration: 1800 });
 }
 
 /* ── Accumulator, timeline, stats ──────────────────────────── */
@@ -1207,7 +1206,7 @@ function renderTranscriptView() {
     query: transcriptQuery,
     minConfidence: transcriptMinConfidence,
   });
-  setText(els.transcriptFilterCount, `Showing ${result.visible} of ${result.total}`);
+  setText(els.transcriptFilterCount, `${result.visible} of ${result.total}`);
 }
 
 function renderTimeline() {
@@ -1330,7 +1329,7 @@ function renderTalkSignPreview(text) {
   if (!els.talkSignPreview) return;
   const clean = String(text ?? "").trim();
   if (!clean) {
-    els.talkSignPreview.innerHTML = `<span class="talk-preview-hint">Speech-to-sign preview appears here.</span>`;
+    els.talkSignPreview.innerHTML = "";
     return;
   }
   const phrase = phraseForText(clean);
@@ -1562,7 +1561,7 @@ function clearSession({ silent = false } = {}) {
   renderTimeline();
   renderTranscriptView();
   renderStatsFromAccumulator();
-  if (!silent) toast("Session cleared.", { type: "info", duration: 1800 });
+  if (!silent) toast("Cleared.", { type: "info", duration: 1600 });
 }
 
 async function copyText(text) {
@@ -1597,7 +1596,7 @@ async function copyEnglish() {
 
 function exportSession(format = "txt") {
   if (!sessionLog.count) {
-    toast("There are no signs to export yet.", { type: "info" });
+    toast("Nothing to export.", { type: "info" });
     return;
   }
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
@@ -1615,11 +1614,11 @@ function exportSession(format = "txt") {
 function speakEnglish() {
   const text = els.englishStream.textContent?.trim();
   if (!text || text === "—") {
-    toast("There is no English to speak yet.", { type: "info" });
+    toast("Nothing to speak yet.", { type: "info" });
     return;
   }
   if (!canSpeak()) {
-    toast("Speech synthesis is not supported in this browser.", { type: "error" });
+    toast("Speech not available.", { type: "error" });
     return;
   }
   speak(translateForSpeech(text, settings.ttsLang), {

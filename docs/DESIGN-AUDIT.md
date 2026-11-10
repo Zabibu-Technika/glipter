@@ -296,7 +296,7 @@ Severity: **P0** blocks use or accessibility; **P1** major; **P2** polish; **P3*
 ### Passing
 
 - `npm test`: 19/19.
-- `npm run check`: passing (252 IDs, 52 service-worker references, 0 runtime CDN loads).
+- `npm run check`: passing (251 IDs, 52 service-worker references, 0 runtime CDN loads).
 - On-device self-test: 74/74.
 - Demo pipeline: `HELLO MY NAME IS GLIPTER` completes once, stops, preserves the final English, and starts a clean session on replay.
 - Offline reload: shell, models, and self-test restored with the service worker offline.

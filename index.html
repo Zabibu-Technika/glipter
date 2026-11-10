@@ -129,7 +129,6 @@
               <section id="camera-panel" class="panel camera-panel is-idle" aria-labelledby="live-title">
                 <div class="panel-head">
                   <div class="panel-title">
-                    <span class="panel-eyebrow">Sign → voice</span>
                     <h1 id="live-title">Talk</h1>
                   </div>
                   <div class="panel-tools">
@@ -174,9 +173,7 @@
                   <div class="framing-guide" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
                   <div id="camera-placeholder" class="camera-placeholder">
                     <div class="placeholder-mark"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg></div>
-                    <strong>Start signing</strong>
-                    <span>Sign naturally. Glipter translates on this device — nothing is uploaded.</span>
-                    <span class="placement-cue">Place one hand in the frame, palm toward the camera.</span>
+                    <strong>Show your hand to start</strong>
                     <div class="placeholder-actions">
                       <button id="hero-start" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Start signing</button>
                     </div>
@@ -224,7 +221,6 @@
             <section class="panel conversation-panel" data-sheet="half" aria-labelledby="conversation-title">
                 <div class="panel-head compact">
                   <div class="panel-title">
-                    <span class="panel-eyebrow">Two-way conversation</span>
                     <h2 id="conversation-title">Conversation</h2>
                   </div>
                   <div class="panel-tools">
@@ -239,14 +235,11 @@
 
                 <div id="talk-thread" class="talk-thread" aria-live="polite">
                   <div id="talk-empty" class="talk-empty">
-                    <strong>Start a conversation</strong>
-                    <span>Signed English appears here. Use the microphone, a quick phrase, or type a reply for the signing person.</span>
+                    <strong>Say hello</strong>
                   </div>
                 </div>
 
-                <div id="talk-sign-preview" class="talk-sign-preview" aria-live="polite">
-                  <span class="talk-preview-hint">Speech-to-sign preview appears here.</span>
-                </div>
+                <div id="talk-sign-preview" class="talk-sign-preview" aria-live="polite"></div>
 
                 <form id="talk-form" class="talk-composer">
                   <label class="sr-only" for="talk-input">Type a spoken reply</label>
@@ -259,7 +252,6 @@
                   <button id="talk-speak" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg> Play translation</button>
                   <label class="talk-toggle"><input id="talk-auto-speak" type="checkbox" /> Speak automatically</label>
                 </div>
-                <p id="talk-note" class="fine-print">Signs are translated to English first, then spoken in your chosen language using a small offline phrase pack. Unusual sentences stay in English. The embedded eSpeak voice needs no OS voice; speech input is the only optional network surface.</p>
               </section>
 
               <div class="hidden" aria-hidden="true">
@@ -288,7 +280,7 @@
                     <div class="current-main">
                       <div class="label">sign</div>
                       <div id="current-sign" class="current-sign is-empty">—</div>
-                      <div id="current-label" class="current-label">no gesture</div>
+                      <div id="current-label" class="current-label">no sign</div>
                     </div>
                     <div class="confidence-wrap">
                       <div class="label">confidence</div>
@@ -296,7 +288,7 @@
                       <div id="confidence-value" class="confidence-value mono">—</div>
                     </div>
                   </div>
-                  <div id="sign-state" class="sign-state">Start the camera or demo to begin.</div>
+                  <div id="sign-state" class="sign-state">Ready.</div>
                 </div>
 
                 <button id="inspector-toggle" class="details-toggle" type="button" aria-expanded="false" aria-controls="inspector-details">
@@ -326,11 +318,6 @@
                   </div>
                   <p id="language-note" class="lang-note"></p>
                 </div>
-
-                <div class="inspector-tip">
-                  <div class="tip-head"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg><strong>How to sign</strong></div>
-                  <p>Hold one hand in frame, palm toward the camera. Keep it steady until the sign commits; pause to finish a word.</p>
-                </div>
               </div>
             </section>
           </div>
@@ -340,9 +327,7 @@
         <section id="view-transcript" class="view app-view hidden" aria-labelledby="transcript-title">
           <div class="page-toolbar">
             <div class="page-heading">
-              <span class="panel-eyebrow">Your conversation</span>
               <h1 id="transcript-title">History</h1>
-              <p>Every sign and reply from this session, with timestamps. Nothing leaves your device.</p>
             </div>
             <div class="toolbar-actions">
               <button id="export-txt" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg> TXT</button>
@@ -354,11 +339,11 @@
 
           <div class="transcript-filters">
             <label class="filter-field">
-              <span class="label">search signs</span>
-              <input id="transcript-search" type="search" placeholder="Search sign or label…" autocomplete="off" />
+              <span class="label">search</span>
+              <input id="transcript-search" type="search" placeholder="Search" autocomplete="off" />
             </label>
             <label class="filter-field">
-              <span class="label">min confidence</span>
+              <span class="label">confidence</span>
               <select id="transcript-confidence">
                 <option value="0">All signs</option>
                 <option value="0.8">80% and above</option>
@@ -379,8 +364,7 @@
           <div class="panel transcript-card">
             <div id="transcript-empty" class="empty-state">
               <div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-transcript"></use></svg></div>
-              <h3>No conversation yet</h3>
-              <p>Start signing or play the demo. Your signs and replies will appear here.</p>
+              <h3>No signs yet.</h3>
               <button class="btn btn-primary btn-sm" type="button" data-view-jump="live"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Go to Talk</button>
             </div>
             <div id="transcript-list" class="transcript-list" aria-live="polite"></div>
@@ -391,9 +375,7 @@
         <section id="view-learn" class="view app-view hidden" aria-labelledby="learn-title">
           <div class="page-toolbar">
             <div class="page-heading">
-              <span class="panel-eyebrow">Reference</span>
-              <h1 id="learn-title">Handshape library</h1>
-              <p>Landmark references, not photos. The language follows the top language button. KSL cards are ASL-based proxies pending Deaf KSL review.</p>
+              <h1 id="learn-title">Learn</h1>
             </div>
             <div class="toolbar-actions">
               <span id="learn-language" class="status-chip">KSL</span>
@@ -407,15 +389,13 @@
 
           <div class="practice-hero">
             <div class="practice-hero-copy">
-              <span class="panel-eyebrow">Guided practice</span>
-              <h2>Learn by doing</h2>
-              <p>Watch the handshape, try it with the camera or demo, and get instant feedback. One letter at a time.</p>
+              <h2>Practice</h2>
             </div>
             <div class="practice-hero-target">
               <span class="label">target</span>
               <strong id="practice-hero-letter">A</strong>
             </div>
-            <button id="practice-hero-start" class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Start practice</button>
+            <button id="practice-hero-start" class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Start</button>
           </div>
 
           <div class="library">
@@ -424,42 +404,32 @@
             </div>
             <section class="panel learn-detail" aria-label="Selected handshape">
               <div class="panel-head compact">
-                <div class="panel-title"><span class="panel-eyebrow">Selected</span><h2>Handshape</h2></div>
+                <div class="panel-title"><h2>Handshape</h2></div>
                 <span class="status-chip">reference</span>
               </div>
               <div id="learn-svg" class="learn-svg" aria-hidden="true"></div>
               <h3 id="learn-title-sign">A</h3>
-              <p id="learn-note">Select a card to inspect the landmark sample.</p>
+              <p id="learn-note">Select a letter.</p>
               <div class="learn-meta">
                 <div><span class="label">source</span><strong id="learn-source">—</strong></div>
                 <div><span class="label">reference check</span><strong id="learn-confidence">—</strong></div>
               </div>
-              <button id="learn-practice" class="btn btn-primary btn-block" type="button">Practise this language</button>
+              <button id="learn-practice" class="btn btn-primary btn-block" type="button">Practise</button>
             </section>
-          </div>
-
-          <div class="panel how-to">
-            <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Workflow</span><h2>How to use Glipter</h2></div></div>
-            <div class="how-grid">
-              <article><span class="step-num">01</span><h3>Pick a language</h3><p>KSL is the default. ASL uses the static alphabet model. KSL words is a four-sign pilot.</p></article>
-              <article><span class="step-num">02</span><h3>Start the camera</h3><p>Hold one hand in frame, palm toward the camera. Keep the hand steady until the sign commits.</p></article>
-              <article><span class="step-num">03</span><h3>Watch the gloss</h3><p>Letters join into words after a pause. The English panel applies the language's surface reordering.</p></article>
-              <article><span class="step-num">04</span><h3>Export the session</h3><p>Copy the English or export the transcript with timestamps, confidence, and language metadata.</p></article>
-            </div>
           </div>
 
           <div class="panel type-to-sign">
             <div class="panel-head compact">
-              <div class="panel-title"><span class="panel-eyebrow">Experimental</span><h2>Gliptic Typography — type to handshape</h2></div>
+              <div class="panel-title"><h2>Type to handshape</h2></div>
               <span class="status-chip">text → handshape</span>
             </div>
             <div class="type-to-sign-body">
               <label class="filter-field type-field">
-                <span class="label">type a word or phrase</span>
+                <span class="label">word or phrase</span>
                 <input id="type-to-sign-input" type="text" maxlength="42" value="HELLO" autocomplete="off" spellcheck="false" />
               </label>
               <div id="type-to-sign-output" class="glyph-strip" aria-live="polite"></div>
-              <p class="fine-print">A visual shorthand built from the bundled ASL/KSL handshape samples. It shows handshape only; orientation, motion, location, facial grammar, and Deaf review are still required. Not a full text-to-sign system.</p>
+              <p class="fine-print">Handshapes only. Motion and facial grammar not shown.</p>
             </div>
           </div>
         </section>
@@ -468,9 +438,7 @@
         <section id="view-voice" class="view app-view hidden" aria-labelledby="voice-title">
           <div class="page-toolbar">
             <div class="page-heading">
-              <span class="panel-eyebrow">Two-way bridge</span>
               <h1 id="voice-title">Voice</h1>
-              <p>Speech → text for hearing speakers, and text → speech for the signed conversation. The embedded voice works offline; browser ASR is the only optional network surface.</p>
             </div>
             <div class="toolbar-actions">
               <button class="btn btn-ghost btn-sm" type="button" data-view-jump="live"><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg> Back to Talk</button>
@@ -507,7 +475,7 @@
                   <button id="asr-copy" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
                   <button id="asr-speak" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg> Speak</button>
                 </div>
-                <p id="asr-note" class="fine-print">Browser speech recognition may use an online service. If you are offline, type in the Speak panel instead.</p>
+                <p id="asr-note" class="fine-print hidden">Browser speech recognition may use an online service. If you are offline, type or use a quick phrase.</p>
               </div>
             </section>
 
@@ -531,7 +499,7 @@
                   <button id="tts-copy" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
                 </div>
                 <div id="quick-phrases" class="quick-phrases" aria-label="Quick phrases"></div>
-                <p id="tts-note" class="fine-print">The embedded eSpeak NG voice runs inside Glipter: English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, and Tigrinya. No OS voice is required.</p>
+                <p id="tts-note" class="fine-print hidden">The embedded eSpeak NG voice runs inside Glipter. No OS voice is required.</p>
               </div>
             </section>
           </div>
@@ -541,9 +509,8 @@
         <section id="view-about" class="view app-view hidden" aria-labelledby="about-title">
           <div class="page-toolbar">
             <div class="page-heading">
-              <span class="panel-eyebrow">About</span>
-              <h1 id="about-title">Built for the places the cloud forgot.</h1>
-              <p>Glipter is an edge-AI sign language engine from <strong>Zabibu Technika</strong>, led by Tehillah Kachila. It reads sign through any camera, runs on the device, and prioritises Kenyan Sign Language.</p>
+              <h1 id="about-title">About Glipter</h1>
+              <p>A <strong>Zabibu Technika</strong> product, led by Tehillah Kachila.</p>
             </div>
             <div class="toolbar-actions">
               <button class="btn btn-ghost btn-sm" type="button" data-view-jump="live"><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg> Back to Talk</button>
@@ -661,28 +628,28 @@
       </div>
       <div class="onboarding-step is-active" data-onboarding-step="0">
         <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
-        <h2 id="onboarding-title">Choose your languages</h2>
-        <p>Pick how you sign and how you speak or hear. You can change this any time from the language button at the top.</p>
-        <div class="onboarding-chips"><span>KSL</span><span>ASL</span><span>BSL</span><span>English</span><span>Kiswahili</span><span>+5 more</span></div>
+        <h2 id="onboarding-title">Languages</h2>
+        <p>Sign and speak. Change any time.</p>
+        <div class="onboarding-chips"><span>KSL</span><span>ASL</span><span>BSL</span><span>English</span><span>Kiswahili</span></div>
       </div>
       <div class="onboarding-step" data-onboarding-step="1" hidden>
         <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
-        <h2>Start signing or speaking</h2>
-        <p>Start signing with the camera. When the other person replies, use Speak reply or type. No camera? See a demo.</p>
+        <h2>Start</h2>
+        <p>Tap Start signing.</p>
         <div class="onboarding-actions"><button id="onboarding-start" class="btn btn-primary btn-sm" type="button">Start signing</button> <button id="onboarding-demo" class="btn btn-secondary btn-sm" type="button">See a demo</button></div>
       </div>
       <div class="onboarding-step" data-onboarding-step="2" hidden>
         <div class="onboarding-visual"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 30V16a2 2 0 0 1 4 0v6-10a2 2 0 0 1 4 0v10-7a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v7c0 5-3.6 8-8 8h-1.8a7 7 0 0 1-5.6-2.8L8 27a2 2 0 0 1 4-2.8Z"/></svg></div>
-        <h2>Read the translation</h2>
-        <p>Your signs appear as English in the Talk thread. Tap Advanced details if you want the technical view.</p>
-        <div class="onboarding-chips"><span>Talk</span><span>Translation</span><span>History</span><span>Embedded voice</span></div>
+        <h2>Translate</h2>
+        <p>Your signs appear in the thread.</p>
+        <div class="onboarding-chips"><span>Talk</span><span>History</span><span>Voice</span></div>
       </div>
       <div class="onboarding-footer">
         <button id="onboarding-back" class="btn btn-ghost btn-sm" type="button" disabled>Back</button>
         <div class="onboarding-dots" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
         <button id="onboarding-next" class="btn btn-primary btn-sm" type="button">Next</button>
       </div>
-      <p class="onboarding-note">Preview build · not validated by Deaf signers · not a substitute for an interpreter.</p>
+      <p class="onboarding-note">Preview · not a substitute for an interpreter.</p>
     </div>
   </dialog>
 
@@ -692,7 +659,7 @@
         <div><div class="panel-eyebrow">Fix a word</div><h2 id="correction-title">Correct this word</h2></div>
         <button class="icon-btn" value="close" aria-label="Close correction"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
       </div>
-      <p class="language-intro">Glipter wasn’t sure about this word. Type what you meant and the conversation bubble will update.</p>
+      <p class="language-intro">Type the correction.</p>
       <label class="filter-field">
         <span class="label">Corrected word</span>
         <input id="correction-input" type="text" autocomplete="off" spellcheck="false" />
@@ -711,18 +678,18 @@
         <button class="icon-btn" value="close" aria-label="Close languages"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
       </div>
 
-      <p class="language-intro">Choose how you sign and how you want to speak or hear. The embedded voice, speech recognition, quick phrases, and sign-back preview follow the spoken language.</p>
+      <p class="language-intro">Pick how you sign and speak.</p>
 
       <div class="settings-group">
-        <label class="setting-row"><span><strong>I sign</strong><small>KSL is the default. ASL and BSL are also available.</small></span>
+        <label class="setting-row"><span><strong>I sign</strong><small>KSL, ASL, or BSL.</small></span>
           <select id="language-select" aria-label="Sign language"></select>
         </label>
-        <label class="setting-row"><span><strong>I speak / hear</strong><small>English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, or Tigrinya.</small></span>
+        <label class="setting-row"><span><strong>I speak / hear</strong><small>Also used for voice and speech input.</small></span>
           <select id="spoken-language-select" aria-label="Spoken language"></select>
         </label>
       </div>
 
-      <p class="fine-print">The voice is embedded and works offline. Speech recognition is browser-provided and may not support every language; quick phrases and typing always work. Signed English is spoken through a small offline phrase pack, not a general translator.</p>
+      <p class="fine-print">Voice works offline. Speech input depends on your browser.</p>
 
       <div class="dialog-actions">
         <button class="btn btn-ghost" value="close">Cancel</button>
@@ -740,40 +707,40 @@
 
       <div class="settings-group">
         <h3>Display</h3>
-        <label class="setting-row"><span><strong>Theme</strong><small>Follow the system or force a mode.</small></span>
+        <label class="setting-row"><span><strong>Theme</strong></span>
           <select id="setting-theme"><option value="light">Light</option><option value="studio">Studio · lilac</option><option value="dark">Midnight</option><option value="system">System</option></select>
         </label>
-        <label class="setting-row"><span><strong>Text size</strong><small>Larger type across the interface.</small></span>
+        <label class="setting-row"><span><strong>Text size</strong></span>
           <select id="setting-text-size"><option value="normal">Normal</option><option value="large">Large</option><option value="xlarge">Extra large</option></select>
         </label>
-        <label class="setting-row"><span><strong>High contrast</strong><small>Stronger borders and text contrast.</small></span>
+        <label class="setting-row"><span><strong>High contrast</strong></span>
           <input id="setting-contrast" type="checkbox" />
         </label>
-        <label class="setting-row"><span><strong>Reduce motion</strong><small>Disable decorative animation.</small></span>
+        <label class="setting-row"><span><strong>Reduce motion</strong></span>
           <input id="setting-motion" type="checkbox" />
         </label>
-        <label class="setting-row"><span><strong>Haptic confirmation</strong><small>Vibrate briefly when a sign commits, on supported devices.</small></span>
+        <label class="setting-row"><span><strong>Haptic confirmation</strong></span>
           <input id="setting-haptics" type="checkbox" checked />
         </label>
       </div>
 
       <div class="settings-group">
         <h3>Camera</h3>
-        <label class="setting-row"><span><strong>Mirror preview</strong><small>Selfie-style preview and overlay.</small></span>
+        <label class="setting-row"><span><strong>Mirror preview</strong></span>
           <input id="setting-mirror" type="checkbox" checked />
         </label>
-        <label class="setting-row"><span><strong>Show skeleton</strong><small>Draw the 21-point hand overlay.</small></span>
+        <label class="setting-row"><span><strong>Show skeleton</strong></span>
           <input id="setting-skeleton" type="checkbox" checked />
         </label>
-        <label class="setting-row"><span><strong>Low-power mode</strong><small>One hand, lite model, ~15 fps inference, reduced load.</small></span>
+        <label class="setting-row"><span><strong>Low-power mode</strong><small>One hand, lite model.</small></span>
           <input id="setting-low-power" type="checkbox" />
         </label>
         <details class="settings-advanced">
           <summary>Advanced camera</summary>
-          <label class="setting-row"><span><strong>Model quality</strong><small>Full is more accurate; lite is faster on old phones.</small></span>
+          <label class="setting-row hidden"><span><strong>Model quality</strong><small>Full is more accurate; lite is faster on old phones.</small></span>
             <select id="setting-complexity"><option value="0">Lite</option><option value="1">Full</option></select>
           </label>
-          <label class="setting-row"><span><strong>Inference backend</strong><small>Auto tries GPU, then CPU/WASM. CPU works without WebGL, which is the safe path on many phones.</small></span>
+          <label class="setting-row"><span><strong>Inference backend</strong><small>Auto: GPU → CPU.</small></span>
             <select id="setting-inference"><option value="auto">Auto · GPU → CPU</option><option value="cpu">CPU / WASM only</option><option value="gpu">GPU only</option></select>
           </label>
         </details>
@@ -781,30 +748,30 @@
 
       <div class="settings-group">
         <h3>Recognition</h3>
-        <label class="setting-row"><span><strong>Speak recognised English</strong><small>Uses the embedded voice by default. May need a local voice if you switch to the system engine.</small></span>
+        <label class="setting-row"><span><strong>Speak recognised English</strong><small>Uses the embedded voice.</small></span>
           <input id="setting-speech" type="checkbox" />
         </label>
-        <label class="setting-row"><span><strong>Voice engine</strong><small>Embedded eSpeak NG covers English and African languages. System voices depend on the OS.</small></span>
+        <label class="setting-row"><span><strong>Voice engine</strong><small>Offline.</small></span>
           <select id="setting-tts-engine"><option value="espeak">Embedded multilingual · eSpeak NG</option><option value="system">System voice</option></select>
         </label>
-        <label class="setting-row"><span><strong>Spoken language</strong><small>eSpeak covers Kiswahili, Afrikaans, Amharic, Setswana, Oromo, Tigrinya, and more.</small></span>
+        <label class="setting-row"><span><strong>Spoken language</strong><small>Also sets speech input.</small></span>
           <select id="setting-tts-lang"></select>
         </label>
-        <label class="setting-row"><span><strong>Speech rate</strong><small>How fast the synthesised voice speaks.</small></span>
+        <label class="setting-row"><span><strong>Speech rate</strong></span>
           <span class="range-wrap"><input id="setting-rate" type="range" min="0.6" max="1.4" step="0.05" value="0.95" /><output id="setting-rate-value">0.95</output></span>
         </label>
         <details class="settings-advanced">
           <summary>Advanced recognition</summary>
-          <label class="setting-row"><span><strong>Commit confidence</strong><small>Signs below this score are shown but not committed.</small></span>
+          <label class="setting-row"><span><strong>Commit confidence</strong></span>
             <span class="range-wrap"><input id="setting-threshold" type="range" min="0.2" max="0.95" step="0.05" value="0.55" /><output id="setting-threshold-value">0.55</output></span>
           </label>
-          <label class="setting-row"><span><strong>Decision margin</strong><small>Reject ambiguous frames where the top two guesses are close.</small></span>
+          <label class="setting-row"><span><strong>Decision margin</strong></span>
             <span class="range-wrap"><input id="setting-margin" type="range" min="0" max="0.3" step="0.01" value="0.08" /><output id="setting-margin-value">0.08</output></span>
           </label>
-          <label class="setting-row"><span><strong>Word gap</strong><small>Pause length before a letter run becomes a word.</small></span>
+          <label class="setting-row"><span><strong>Word gap</strong></span>
             <span class="range-wrap"><input id="setting-word-gap" type="range" min="800" max="4000" step="100" value="2200" /><output id="setting-word-gap-value">2.2s</output></span>
           </label>
-          <label class="setting-row"><span><strong>System voice</strong><small>Only used when the voice engine is set to System voice.</small></span>
+          <label class="setting-row"><span><strong>System voice</strong></span>
             <select id="setting-voice"></select>
           </label>
         </details>
@@ -813,19 +780,19 @@
       <div class="settings-group">
         <h3>Workspace</h3>
         <div class="setting-row">
-          <span><strong>Kiosk mode</strong><small>Full-screen capture with no app chrome. Best for tablets and public counters.</small></span>
+          <span><strong>Kiosk mode</strong><small>Full-screen.</small></span>
           <button id="setting-kiosk" class="btn btn-secondary btn-sm" type="button">Enter kiosk</button>
         </div>
         <div class="setting-row">
-          <span><strong>Onboarding</strong><small>Replay the three-step introduction.</small></span>
+          <span><strong>Onboarding</strong><small>Replay guide.</small></span>
           <button id="setting-onboarding" class="btn btn-ghost btn-sm" type="button">Replay</button>
         </div>
         <div class="setting-row">
-          <span><strong>Voice & speech</strong><small>Microphone, voice language, and the embedded voice.</small></span>
+          <span><strong>Voice & speech</strong><small>Microphone and voice.</small></span>
           <button id="setting-voice-view" class="btn btn-secondary btn-sm" type="button">Open</button>
         </div>
         <div class="setting-row">
-          <span><strong>About Glipter</strong><small>Credits, data sources, model limits, and the full self-test.</small></span>
+          <span><strong>About Glipter</strong><small>Credits and limits.</small></span>
           <button id="setting-about-view" class="btn btn-ghost btn-sm" type="button">Open</button>
         </div>
       </div>

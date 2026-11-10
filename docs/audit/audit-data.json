@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T12:41:04.069Z",
+  "generatedAt": "2026-11-10T12:58:52.617Z",
   "base": "http://127.0.0.1:3000/",
   "viewports": [
     {
@@ -16,7 +16,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 823,
+        "scrollHeight": 808,
         "clientHeight": 518
       },
       "rects": {
@@ -36,13 +36,13 @@
           "x": 7,
           "y": 57,
           "w": 306,
-          "h": 750
+          "h": 735
         },
         "camera": {
           "x": 7,
           "y": 57,
           "w": 306,
-          "h": 477
+          "h": 462
         },
         "inspector": {
           "x": 0,
@@ -108,7 +108,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 937,
+        "scrollHeight": 904,
         "clientHeight": 794
       },
       "rects": {
@@ -128,7 +128,7 @@
           "x": 7,
           "y": 57,
           "w": 376,
-          "h": 864
+          "h": 831
         },
         "camera": {
           "x": 7,
@@ -200,7 +200,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1014,
+        "scrollHeight": 970,
         "clientHeight": 970
       },
       "rects": {
@@ -220,13 +220,13 @@
           "x": 73,
           "y": 63,
           "w": 686,
-          "h": 996
+          "h": 952
         },
         "camera": {
           "x": 73,
           "y": 63,
           "w": 686,
-          "h": 601
+          "h": 609
         },
         "inspector": {
           "x": 0,
@@ -1027,13 +1027,13 @@
   "console": [],
   "pageErrors": [],
   "performance": {
-    "domContentLoadedMs": 1744,
-    "loadMs": 1745,
+    "domContentLoadedMs": 710,
+    "loadMs": 711,
     "resources": 36,
     "transferKB": 0,
     "decodedKB": 2281,
     "scriptCount": 34,
-    "heapMB": 18.4
+    "heapMB": 28
   },
   "offline": {
     "status": "reloaded-offline",

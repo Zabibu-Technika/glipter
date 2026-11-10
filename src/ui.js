@@ -119,10 +119,10 @@ export function renderLearnGrid(container, language = "ASL") {
   container.innerHTML = letters.map((letter) => {
     const prototype = prototypeFor(language, letter);
     const note = language === "KSL"
-      ? "ASL-based · KSL review pending"
+      ? "ASL-based · pending"
       : language === "BSL"
         ? "BSL · rules"
-        : "ASL · review pending";
+        : "ASL · pending";
     return `<button class="learn-card" type="button" data-letter="${escapeHTML(letter)}" data-language="${escapeHTML(language)}">
       ${handSvg(prototype?.landmarks, { label: `${language} ${letter}`, decorative: true })}
       <strong>${escapeHTML(letter)}</strong>

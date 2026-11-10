@@ -42,11 +42,26 @@ Signed English is no longer pushed into a small technical box. It appears in the
 - **Face-to-face** mode rotates the thread on tablet portrait for the person across the table.
 - On phones the conversation card has **peek / half / full** heights controlled by one handle.
 
-### 0d. Navigation and Learn
+### 0d. Copy rules
+
+Every sentence now has to earn its place:
+
+- Camera empty state: **“Show your hand to start.”** One line, one button.
+- Conversation empty state: **“Say hello.”**
+- History empty state: **“No signs yet.”**
+- Page headers: title + actions only; no repeated subtitle.
+- Technical explanations live in About or the Details drawer.
+- Voice caveats are hidden until needed; the main Talk screen has no ASR/TTS paragraph.
+- Learn cards use a short **“ASL-based · pending”** label; the full review caveat is in the detail panel.
+- Settings descriptions are removed where the control label is already clear.
+
+The test is simple: a Deaf user who reads KSL more comfortably than written English should not have to read a paragraph before starting.
+
+### 0e. Navigation and Learn
 
 - About, Voice, model cards, datasets, and roadmap moved behind Settings / About. Talk, History and Learn are the only primary destinations.
 - Learn now follows the one top-bar language picker; the duplicate ASL/KSL/BSL toggle is hidden.
-- Learn cards say **“ASL-based · KSL review pending”** instead of implying verified KSL, and the detail panel says “reference only” rather than showing a misleading 100% learner score.
+- Learn cards say **“ASL-based · pending”** with the full “KSL review pending” context in the detail panel, instead of implying verified KSL. The detail panel says “reference only” rather than a misleading 100% learner score.
 - The main header/footer no longer shows timers, fps, latency, model names, self-test, or a Tier 0 badge.
 
 ### 1. Three primary destinations
