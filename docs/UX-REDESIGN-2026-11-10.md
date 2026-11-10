@@ -16,6 +16,39 @@ The redesign follows the current mobile-first consensus rather than adding decor
 
 ## What changed
 
+### 0. Three zones, one screen
+
+The old split was camera + conversation + translation panel. The translation panel is gone from Talk. The screen is now:
+
+1. **Camera** — hero on the left (desktop) or full width (phone).
+2. **Conversation** — one thread with signed and spoken bubbles.
+3. **Controls** — quick phrases, type, Speak reply, Play translation, all under the thread.
+
+Signed English is no longer pushed into a small technical box. It appears in the latest-caption overlay and in the signed bubble. The old inspector survives only as a **Details** drawer opened from the camera header.
+
+### 0b. Calm feedback and correction
+
+- A thin **status ring** around the camera moves through idle → hand found → committing → committed instead of showing “0 hands”, fps, or latency.
+- Low-confidence words get a **dotted underline** in the thread; tapping one opens a correction dialog.
+- The commit still triggers the existing haptic pulse and animation.
+- Technical readouts (confidence, top-3, gloss, stats, backend) live in the Details drawer.
+
+### 0c. One thread, two voices
+
+- Every bubble carries a small language chip: KSL, English, Kiswahili, etc.
+- Signed bubbles show English plus the spoken-language translation when the phrase pack has one.
+- Spoken and typed replies sit in the same thread, with the speech-to-sign preview directly below.
+- **Present** mode widens the thread for a hearing partner on desktop.
+- **Face-to-face** mode rotates the thread on tablet portrait for the person across the table.
+- On phones the conversation card has **peek / half / full** heights controlled by one handle.
+
+### 0d. Navigation and Learn
+
+- About, Voice, model cards, datasets, and roadmap moved behind Settings / About. Talk, History and Learn are the only primary destinations.
+- Learn now follows the one top-bar language picker; the duplicate ASL/KSL/BSL toggle is hidden.
+- Learn cards say **“ASL-based · KSL review pending”** instead of implying verified KSL, and the detail panel says “reference only” rather than showing a misleading 100% learner score.
+- The main header/footer no longer shows timers, fps, latency, model names, self-test, or a Tier 0 badge.
+
 ### 1. Three primary destinations
 
 The rail/bottom bar is now **Talk · History · Learn**. Settings is a single top-bar action. Voice and About are secondary screens reached from Settings, not equal-weight tabs.

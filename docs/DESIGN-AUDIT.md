@@ -296,7 +296,7 @@ Severity: **P0** blocks use or accessibility; **P1** major; **P2** polish; **P3*
 ### Passing
 
 - `npm test`: 19/19.
-- `npm run check`: passing (239 IDs, 52 service-worker references, 0 runtime CDN loads).
+- `npm run check`: passing (252 IDs, 52 service-worker references, 0 runtime CDN loads).
 - On-device self-test: 74/74.
 - Demo pipeline: `HELLO MY NAME IS GLIPTER` completes once, stops, preserves the final English, and starts a clean session on replay.
 - Offline reload: shell, models, and self-test restored with the service worker offline.
@@ -486,12 +486,12 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 |---|---|---|---|---|---|---|---|
 | 320×568 | No | 306×366 | 306×636 | 306×? scroll | 320×58 bottom | 0 | 0 |
 | 390×844 | No | 376×370 | 376×620 | 376×? scroll | 390×58 bottom | 0 | 0 |
-| 768×1024 | No | 686×601 | 686×477 | 686×93 | 64×944 side | 23 | 0 |
-| 1024×768 | No | 594×559 | 310×664 | 594×93 | 84×688 side | 23 | 0 |
-| 1440×900 | No | 948×691 | 372×796 | 948×93 | 84×820 side | 23 | 0 |
-| 1920×1080 | No | 1176×871 | 372×976 | 1176×93 | 84×1000 side | 23 | 0 |
+| 768×1024 | No | 686×601 | 686×477 | 686×93 | 64×944 side | 22 | 0 |
+| 1024×768 | No | 594×559 | 310×664 | 594×93 | 84×688 side | 22 | 0 |
+| 1440×900 | No | 948×691 | 372×796 | 948×93 | 84×820 side | 22 | 0 |
+| 1920×1080 | No | 1176×871 | 372×976 | 1176×93 | 84×1000 side | 22 | 0 |
 
-> The 23 <44 controls on tablet/desktop are mouse-sized secondary buttons and quick-phrase chips. WCAG 2.2 AA’s 24 px minimum passes everywhere. Mobile (320/390) has **zero** controls under 44 px. The Light theme caps the wide camera at 1176 px inside a 1560 px studio.
+> The 22 <44 controls on tablet/desktop are mouse-sized secondary buttons and quick-phrase chips. WCAG 2.2 AA’s 24 px minimum passes everywhere. Mobile (320/390) has **zero** controls under 44 px. The Light theme caps the wide camera at 1176 px inside a 1560 px studio.
 
 ### Axe runs
 
@@ -526,8 +526,6 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 | `desktop-settings.png` | Settings with theme, camera, recognition, speech, low-power, kiosk. |
 | `desktop-demo-hand.png` | Demo with visible hand skeleton and live recognition. |
 | `demo-complete.png` | Demo finish state: `Hello my name is Glipter` in English, 5 timeline signs, demo stopped. |
-| `talk-final-mobile.png` | Mobile Talk thread: quick phrases, spoken reply, signed English, sign-back preview. |
-| `talk-desktop.png` | Desktop camera + Talk + inspector layout. |
 | `simple-mobile.png` | Final Light-theme mobile Talk with three-tab navigation and language button. |
 | `language-dialog-mobile.png` | One-screen sign + spoken language picker. |
 | `offline-live.png` | Offline reload with self-test. |

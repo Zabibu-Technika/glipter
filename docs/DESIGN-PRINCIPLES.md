@@ -74,10 +74,14 @@ These are the rules the current UI is built against. They are not a mood board; 
 
 ## 10. Conversation first, phone first
 
-- The primary surface is **Talk**: signed English, spoken replies, and a speech-to-sign preview in one thread.
+- The primary surface is **Talk** with three zones: camera, one conversation thread, and controls. They rearrange by screen size but never multiply.
+- Signed English appears in the thread and in a floating live caption; the old separate Translation panel is gone from Talk.
 - Primary navigation is **Talk · History · Learn**; Settings is one action. Voice and About are secondary.
 - Language is **one decision**: a single picker drives sign language, spoken language, ASR, quick phrases, and the sign-back preview.
-- Mobile order is camera → Talk → translation; desktop adds the translation column instead of shrinking the phone layout.
+- Low-confidence words carry a dotted underline and can be corrected by tapping.
+- Technical readouts live in a **Details drawer**, not on the default screen.
+- **Present** widens the thread; **Face-to-face** rotates it on tablet portrait; phone thread has peek/half/full heights.
+- Mobile order is camera → conversation; desktop uses a camera + thread split.
 - Replies can arrive by microphone, typing, or a quick phrase. The quick phrase board is the offline path when ASR is unavailable.
 - The voice is **embedded** (eSpeak NG), not an OS voice. It covers English and African languages and works with the network off.
 - Camera detection and TTS degrade explicitly: no WebGL → demo/phrase board; no system voice → embedded voice; no ASR → quick phrases/typing.

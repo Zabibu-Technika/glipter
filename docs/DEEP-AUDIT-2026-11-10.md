@@ -123,7 +123,7 @@ New `src/lib/phraseRecognizer.js`:
 |---|---|
 | Node tests | **19/19** |
 | In-app self-test | **74/74** |
-| Static checker | **239 IDs, 52 precache references, 0 runtime CDN loads** |
+| Static checker | **252 IDs, 52 precache references, 0 runtime CDN loads** |
 | Demo | `Hello my name is Glipter`, 5 timeline signs, stops and stays stopped |
 | Talk quick phrase | “I love you” → spoken bubble + ILY sign card |
 | Talk typed reply | “Thank you” → spoken bubble + sign preview |
@@ -150,8 +150,10 @@ New `src/lib/phraseRecognizer.js`:
 
 ## 7. Evidence files
 
-- `docs/audit/talk-mobile.png` — mobile Talk thread with quick phrases and sign preview.
-- `docs/audit/talk-desktop.png` — desktop two-column Talk layout.
+- `docs/audit/simple-mobile.png` — final mobile Talk layout with camera, thread, and language button.
+- `docs/audit/desktop-live.png` — desktop camera + thread split.
+- `docs/audit/desktop-details.png` — the Details drawer with diagnostics.
+- `docs/audit/language-dialog-mobile.png` — one-screen language picker.
 - `docs/audit/demo-complete.png` — complete demo sentence.
 - `docs/DESIGN-AUDIT.md` — earlier visual/accessibility audit.
 - `docs/DESIGN-PRINCIPLES.md` — design contract.

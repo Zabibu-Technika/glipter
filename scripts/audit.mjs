@@ -195,10 +195,14 @@ for (const viewport of viewports) {
 await page.setViewportSize({ width: 1440, height: 900 });
 await navigate(page, "live");
 await runAxe(page, "desktop-live");
+await page.click("#details-btn");
+await page.waitForTimeout(200);
 await page.click("#inspector-toggle");
 await page.waitForTimeout(150);
 await capture(page, "desktop-details");
 await page.click("#inspector-toggle");
+await page.click("#details-close");
+await page.waitForTimeout(150);
 await page.click("#camera-more");
 await page.waitForTimeout(150);
 await capture(page, "desktop-camera-menu");
@@ -307,7 +311,8 @@ let offlineStatus = "unknown";
 try {
   await offlinePage.waitForFunction(
     () => document.getElementById("offline-text")?.textContent === "Offline ready",
-    { timeout: 45000 },
+    undefined,
+    { timeout: 90000 },
   );
   offlineStatus = "ready";
   await offlineContext.setOffline(true);

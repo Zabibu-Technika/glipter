@@ -64,6 +64,7 @@ let lastMotionAt = 0;
 let lastAsrFinal = "";
 let talkMessages = [];
 let lastTalkSignAt = 0;
+let correctionTarget = null;
 let speechTimer = 0;
 let pwa = null;
 let installAvailable = false;
@@ -95,10 +96,15 @@ function haptic(pattern = [12]) {
 
 function flashCommit() {
   if (!els.currentSign) return;
+  setSignalRing("committed");
   els.currentSign.classList.remove("is-committed");
   void els.currentSign.offsetWidth;
   els.currentSign.classList.add("is-committed");
-  setTimeout(() => els.currentSign?.classList.remove("is-committed"), 480);
+  setTimeout(() => {
+    els.currentSign?.classList.remove("is-committed");
+    if (engine || demo) setSignalRing("found");
+    else setSignalRing("idle");
+  }, 520);
 }
 
 const LETTER_HINTS = {
@@ -139,11 +145,22 @@ const els = {
   languageDialog: $("language-dialog"),
   spokenLanguageSelect: $("spoken-language-select"),
   languageApply: $("language-apply"),
+  correctionDialog: $("correction-dialog"),
+  correctionInput: $("correction-input"),
+  correctionSave: $("correction-save"),
   cameraPanel: $("camera-panel"),
   cameraMore: $("camera-more"),
   cameraMenu: $("camera-menu"),
   cameraSettings: $("camera-settings"),
+  cameraFacing: $("camera-facing"),
   cameraKiosk: $("camera-kiosk"),
+  detailsBtn: $("details-btn"),
+  detailsDrawer: $("details-drawer"),
+  detailsBackdrop: $("details-backdrop"),
+  detailsClose: $("details-close"),
+  presentBtn: $("present-btn"),
+  threadExpand: $("thread-expand"),
+  liveCaptionLang: $("live-caption-lang"),
   cameraStage: $("camera-stage"),
   cameraPlaceholder: $("camera-placeholder"),
   cameraStatus: $("camera-status"),
@@ -219,6 +236,7 @@ const els = {
   transcriptFilterCount: $("transcript-filter-count"),
   learnGrid: $("learn-grid"),
   learnFilter: $("learn-filter"),
+  learnLanguage: $("learn-language"),
   learnSvg: $("learn-svg"),
   learnTitleSign: $("learn-title-sign"),
   learnNote: $("learn-note"),
@@ -316,7 +334,6 @@ const els = {
   ttsNote: $("tts-note"),
   quickPhrases: $("quick-phrases"),
   heroStart: $("hero-start"),
-  heroDemo: $("hero-demo"),
 };
 
 const ctx = els.overlay.getContext("2d", { alpha: true });
@@ -363,7 +380,7 @@ function applyLanguage(next, { initial = false } = {}) {
   }
 
   setText(els.workspaceTitle, profile.name);
-  setText(els.modelPill, `${profile.shortName} · ${profile.mode === "sequence" ? "word model v1" : "static model v1"}`);
+  setText(els.modelPill, profile.shortName);
   setText(els.statModel, profile.shortName);
   setText(els.statusModel, profile.shortName);
   if (els.languageNote) {
@@ -414,6 +431,7 @@ function fillAsrLanguages() {
 function updateLanguageSummary() {
   const spoken = spokenLanguage(settings.ttsLang);
   setText(els.languageSummary, `${profile.shortName} · ${spoken.label}`);
+  setText(els.liveCaptionLang, `${profile.shortName} → ${spoken.label}`);
   if (els.languageBtn) {
     const summary = `${profile.shortName} · ${spoken.label}`;
     els.languageBtn.title = `Languages: ${summary}. Sign: ${profile.name}. Speak: ${spoken.english}.`;
@@ -507,6 +525,7 @@ function selectLearn(letter, language, { render = true, view = false } = {}) {
   currentLearnLang = language;
   currentLearnLetter = letter;
   setText(els.practiceHeroLetter, letter);
+  setText(els.learnLanguage, language);
   if (els.practiceHeroStart) {
     els.practiceHeroStart.disabled = language === "BSL";
     els.practiceHeroStart.title = language === "BSL" ? "Practice is available for ASL/KSL handshape modes." : "";
@@ -542,14 +561,14 @@ function renderLearnDetail(letter, language) {
 
   els.learnSvg.innerHTML = handSvg(prototype.landmarks, { label: `${language} ${letter}` });
   setText(els.learnSource, prototype.source ?? "training sample");
-  let confidenceText = "—";
+  let confidenceText = "reference only";
   try {
     const reference = getById(language);
     const landmarks = prototype.landmarks.map(([x, y, z]) => ({ x, y, z }));
     const prediction = reference.classify?.(landmarks, null);
-    if (prediction?.confidence) confidenceText = pct(prediction.confidence);
+    if (prediction?.confidence) confidenceText = "reference only";
   } catch {
-    confidenceText = "—";
+    confidenceText = "reference only";
   }
   setText(els.learnConfidence, confidenceText);
   const hint = LETTER_HINTS[letter] ?? "";
@@ -690,6 +709,7 @@ function showView(name, { scroll = true } = {}) {
   if (name === "voice") {
     populateVoices();
   }
+  if (name !== "live") closeDetails();
   history.replaceState(null, "", `#${name}`);
   if (scroll) els.appMain?.scrollTo({ top: 0, behavior: settings.reduceMotion ? "auto" : "smooth" });
 }
@@ -723,6 +743,8 @@ function displayPrediction(prediction, now) {
   const confidence = shown?.confidence ?? 0;
   els.confidenceBar.style.width = `${Math.round(confidence * 100)}%`;
   const confidenceState = !shown ? "idle" : confidence >= 0.8 ? "high" : confidence >= settings.threshold ? "mid" : "low";
+  if (shown) setSignalRing(confidence >= 0.8 ? "committed" : "committing");
+  else setSignalRing(els.handCount.textContent === "0" ? "idle" : "found");
   els.confidenceBar.dataset.state = confidenceState;
   els.confidenceValue.dataset.state = confidenceState;
   setText(els.confidenceValue, shown ? pct(confidence) : "—");
@@ -895,7 +917,7 @@ function friendlyCameraError(error) {
 function showError(message) {
   setText(els.errorText, `⚠ ${message}`);
   els.errorBanner?.classList.remove("hidden");
-  setCameraStatus("error", "error");
+  setCameraStatus("error", "problem");
   toast(message, { type: "error", duration: 5000 });
 }
 
@@ -907,6 +929,54 @@ function clearError() {
 function closeCameraMenu() {
   els.cameraMenu?.classList.add("hidden");
   els.cameraMore?.setAttribute("aria-expanded", "false");
+}
+
+function setSignalRing(state) {
+  if (!els.cameraPanel) return;
+  els.cameraPanel.dataset.signal = state;
+}
+
+function openDetails() {
+  if (!els.detailsDrawer) return;
+  els.detailsDrawer.classList.remove("is-closed");
+  els.detailsDrawer.setAttribute("aria-hidden", "false");
+  els.detailsBackdrop?.classList.remove("hidden");
+  els.detailsBtn?.setAttribute("aria-expanded", "true");
+  els.detailsClose?.focus?.();
+}
+
+function closeDetails() {
+  if (!els.detailsDrawer) return;
+  els.detailsDrawer.classList.add("is-closed");
+  els.detailsDrawer.setAttribute("aria-hidden", "true");
+  els.detailsBackdrop?.classList.add("hidden");
+  els.detailsBtn?.setAttribute("aria-expanded", "false");
+}
+
+function togglePresent() {
+  const on = !document.body.classList.contains("present");
+  document.body.classList.toggle("present", on);
+  els.presentBtn?.setAttribute("aria-pressed", String(on));
+  if (els.presentBtn) setText(els.presentBtn, on ? "Exit present" : "Present");
+  toast(on ? "Present mode: the conversation is larger for the hearing partner." : "Present mode off.", { type: "info", duration: 2400 });
+}
+
+function cycleThreadSheet() {
+  if (!els.threadExpand) return;
+  const states = ["peek", "half", "full"];
+  const panel = els.threadExpand.closest(".conversation-panel");
+  const current = panel?.dataset.sheet ?? "half";
+  const next = states[(states.indexOf(current) + 1) % states.length];
+  if (panel) panel.dataset.sheet = next;
+  els.threadExpand.setAttribute("aria-expanded", String(next === "full"));
+  els.threadExpand.setAttribute("aria-label", next === "full" ? "Collapse conversation" : "Expand conversation");
+  toast(`Conversation ${next}.`, { type: "info", duration: 1200 });
+}
+
+function toggleFaceToFace() {
+  const on = !document.body.classList.contains("face-to-face");
+  document.body.classList.toggle("face-to-face", on);
+  toast(on ? "Face-to-face mode: the conversation is rotated for the person across the table." : "Face-to-face mode off.", { type: "info", duration: 3000 });
 }
 
 function toggleCameraMenu() {
@@ -937,6 +1007,7 @@ function resetLiveReadout() {
   setText(els.confidenceValue, "—");
   setText(els.englishStream, "");
   setText(els.spokenTranslation, "");
+  setSignalRing("idle");
   setText(els.signState, "Start the camera or demo to begin.");
   if (els.signState) els.signState.className = "sign-state idle";
   els.top3.innerHTML = "";
@@ -974,7 +1045,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   clearOverlay(ctx);
   resetLiveReadout();
   stopSessionClock();
-  setCameraStatus("idle", "idle");
+  setCameraStatus("idle", "camera off");
   if (els.engineBackend) setText(els.engineBackend, "detector");
   stopSpeaking();
   if (!silent) toast("Stopped. Your transcript is still here.", { type: "info", duration: 2200 });
@@ -1010,17 +1081,6 @@ async function startCamera() {
     engine = new GlipterEngine({
       onFrame: handleFrame,
       onError: (error) => showError(error.message ?? String(error)),
-      onStatus: (status) => {
-        if (status === "running") {
-          setCameraStatus("running", "running");
-          els.liveChip.classList.remove("hidden");
-        }
-        if (status === "stopped") setCameraStatus("idle", "idle");
-        if (status === "error") {
-          setCameraStatus("error", "error");
-          setRunningUI(false);
-        }
-      },
       complexity: settings.lowPower ? 0 : settings.complexity,
       maxHands: settings.lowPower ? 1 : 2,
       inference: settings.inference,
@@ -1039,9 +1099,9 @@ async function startCamera() {
         }
       },
       onStatus: (status) => {
-        if (status === "loading") setCameraStatus("loading", "loading model…");
+        if (status === "loading") setCameraStatus("loading", "preparing…");
         if (status === "running") {
-          setCameraStatus("running", els.engineBackend?.textContent ? `running · ${els.engineBackend.textContent}` : "running");
+          setCameraStatus("running", "live");
           els.liveChip.classList.remove("hidden");
         }
         if (status === "cpu-fallback") {
@@ -1051,9 +1111,9 @@ async function startCamera() {
           setText(els.engineBackend, "no WebGL");
           toast("This browser has no WebGL context. The demo, phrase board, and TTS still work; camera hand tracking needs a WebGL-capable browser.", { type: "info", duration: 6200 });
         }
-        if (status === "stopped") setCameraStatus("idle", "idle");
+        if (status === "stopped") setCameraStatus("idle", "camera off");
         if (status === "error") {
-          setCameraStatus("error", "error");
+          setCameraStatus("error", "problem");
           setRunningUI(false);
         }
       },
@@ -1104,7 +1164,7 @@ function startDemo() {
     onFrame: handleFrame,
     onStatus: (status) => {
       if (status === "demo") setCameraStatus("demo", "demo");
-      if (status === "stopped") setCameraStatus("idle", "idle");
+      if (status === "stopped") setCameraStatus("idle", "camera off");
       if (status === "complete") {
         stopEverything({ silent: true, keepPractice: true });
         accumulator.emit();
@@ -1187,11 +1247,16 @@ function updateTalkMode() {
   else setText(els.talkMode, localAsr ? "Mic ready" : "Mic may need internet");
 }
 
-function addTalkMessage(role, text, { label = "", update = false } = {}) {
+function addTalkMessage(role, text, { label = "", update = false, uncertain = [], lang = "" } = {}) {
   const clean = String(text ?? "").trim();
   if (!clean) return;
   const translation = role === "sign" ? translateForSpeech(clean, settings.ttsLang) : "";
   const showTranslation = translation && translation.toLowerCase() !== clean.toLowerCase();
+  const chip = lang || (role === "sign"
+    ? profile.shortName
+    : role === "spoken"
+      ? spokenLanguage(settings.ttsLang).label
+      : "Glipter");
   const now = Date.now();
   if (role === "sign" && update && talkMessages.length) {
     const last = talkMessages[talkMessages.length - 1];
@@ -1199,6 +1264,8 @@ function addTalkMessage(role, text, { label = "", update = false } = {}) {
       last.text = clean;
       last.label = label || last.label;
       last.translation = showTranslation ? translation : "";
+      last.uncertain = uncertain;
+      last.lang = chip;
       last.at = now;
       lastTalkSignAt = now;
       renderTalkThread();
@@ -1210,6 +1277,8 @@ function addTalkMessage(role, text, { label = "", update = false } = {}) {
     text: clean,
     label,
     translation: showTranslation ? translation : "",
+    uncertain,
+    lang: chip,
     at: now,
   });
   if (talkMessages.length > 40) talkMessages.shift();
@@ -1217,11 +1286,22 @@ function addTalkMessage(role, text, { label = "", update = false } = {}) {
   renderTalkThread();
 }
 
+function messageTextHTML(message, index) {
+  const uncertain = new Set((message.uncertain ?? []).map((word) => word.toLowerCase()));
+  return message.text.split(/(\s+)/).map((part) => {
+    const clean = part.replace(/[^\p{L}\p{N}']/gu, "").toLowerCase();
+    if (clean && uncertain.has(clean)) {
+      return `<button class="uncertain-word" type="button" data-message="${index}" data-word="${escapeHTML(part)}" title="Tap to correct this word">${escapeHTML(part)}</button>`;
+    }
+    return escapeHTML(part);
+  }).join("");
+}
+
 function renderTalkThread() {
   if (!els.talkThread) return;
   const hasMessages = talkMessages.length > 0;
   els.talkEmpty?.classList.toggle("hidden", hasMessages);
-  const messages = talkMessages.map((message) => {
+  const messages = talkMessages.map((message, index) => {
     const time = new Date(message.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     const roleLabel = message.role === "sign"
       ? "Signed"
@@ -1229,8 +1309,11 @@ function renderTalkThread() {
         ? "Spoken"
         : "System";
     return `<article class="talk-message ${escapeHTML(message.role)}">
-      <div class="talk-message-head"><span>${escapeHTML(roleLabel)}</span><time>${escapeHTML(time)}</time></div>
-      <p>${escapeHTML(message.text)}</p>
+      <div class="talk-message-head">
+        <span>${escapeHTML(roleLabel)} · <b class="talk-chip">${escapeHTML(message.lang ?? "")}</b></span>
+        <time>${escapeHTML(time)}</time>
+      </div>
+      <p>${messageTextHTML(message, index)}</p>
       ${message.translation ? `<small class="talk-translation">Spoken: ${escapeHTML(message.translation)}</small>` : ""}
       ${message.label ? `<small>${escapeHTML(message.label)}</small>` : ""}
     </article>`;
@@ -1316,9 +1399,36 @@ function clearTalk() {
   talkMessages = [];
   lastAsrFinal = "";
   lastTalkSignAt = 0;
+  correctionTarget = null;
   renderTalkThread();
   renderTalkSignPreview("");
   updateTalkMode();
+}
+
+function openCorrection(index, word) {
+  const message = talkMessages[index];
+  if (!message || !els.correctionDialog || !els.correctionInput) return;
+  correctionTarget = { index, word };
+  els.correctionInput.value = word;
+  els.correctionDialog.showModal();
+  setTimeout(() => {
+    els.correctionInput.focus();
+    els.correctionInput.select();
+  }, 0);
+}
+
+function saveCorrection() {
+  if (!correctionTarget) return;
+  const { index, word } = correctionTarget;
+  const message = talkMessages[index];
+  const replacement = String(els.correctionInput?.value ?? "").trim();
+  if (!message || !replacement) return;
+  message.text = message.text.split(word).join(replacement);
+  message.uncertain = (message.uncertain ?? []).filter((item) => item !== word);
+  correctionTarget = null;
+  els.correctionDialog?.close();
+  renderTalkThread();
+  toast("Correction saved in this conversation.", { type: "success", duration: 2200 });
 }
 
 function initTalk() {
@@ -1333,6 +1443,15 @@ function initTalk() {
   els.talkForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     sendSpokenText(els.talkInput?.value);
+  });
+  els.talkThread?.addEventListener("click", (event) => {
+    const button = event.target.closest(".uncertain-word");
+    if (!button) return;
+    openCorrection(Number(button.dataset.message), button.dataset.word);
+  });
+  els.correctionSave?.addEventListener("click", saveCorrection);
+  els.correctionDialog?.addEventListener("click", (event) => {
+    if (event.target === els.correctionDialog) els.correctionDialog.close();
   });
   els.talkClear?.addEventListener("click", () => {
     clearTalk();
@@ -1393,6 +1512,9 @@ function onAccumulatorState(state) {
     setText(els.signAnnouncer, `Signed ${latest.label ?? latest.id}`);
     addTalkMessage("sign", state.english || latest.label || latest.id, {
       label: latest.label ?? phraseLabel(latest.id) ?? latest.id,
+      uncertain: state.tokens
+        .filter((token) => token.confidence && token.confidence < settings.threshold)
+        .map((token) => token.label ?? token.id),
       update: true,
     });
     lastAnnouncedTokenCount = state.tokens.length;
@@ -2170,6 +2292,11 @@ function bindKeyboard() {
       closeCameraMenu();
       return;
     }
+    if (event.key === "Escape" && !els.detailsDrawer?.classList.contains("is-closed")) {
+      event.preventDefault();
+      closeDetails();
+      return;
+    }
     if (event.key === "Escape" && kioskMode) {
       event.preventDefault();
       exitKiosk();
@@ -2216,10 +2343,22 @@ function bindEvents() {
     closeCameraMenu();
     openSettings();
   });
+  els.cameraFacing?.addEventListener("click", () => {
+    closeCameraMenu();
+    toggleFaceToFace();
+  });
   els.cameraKiosk?.addEventListener("click", () => {
     closeCameraMenu();
     enterKiosk();
   });
+  els.detailsBtn?.addEventListener("click", () => {
+    if (els.detailsDrawer?.classList.contains("is-closed")) openDetails();
+    else closeDetails();
+  });
+  els.detailsClose?.addEventListener("click", closeDetails);
+  els.detailsBackdrop?.addEventListener("click", closeDetails);
+  els.presentBtn?.addEventListener("click", togglePresent);
+  els.threadExpand?.addEventListener("click", cycleThreadSheet);
   document.addEventListener("click", (event) => {
     if (event.target.closest("#camera-menu, #camera-more")) return;
     closeCameraMenu();
@@ -2227,7 +2366,6 @@ function bindEvents() {
   els.kioskExit?.addEventListener("click", exitKiosk);
   els.stopBtn?.addEventListener("click", () => stopEverything());
   els.demoBtn?.addEventListener("click", startDemo);
-  els.heroDemo?.addEventListener("click", startDemo);
 
   els.inspectorToggle?.addEventListener("click", () => {
     const open = els.inspectorDetails.classList.toggle("hidden") === false;

@@ -133,10 +133,11 @@
                     <h1 id="live-title">Talk</h1>
                   </div>
                   <div class="panel-tools">
-                    <span id="camera-status" class="status-chip"><span class="status-dot"></span> idle</span>
+                    <span id="camera-status" class="status-chip"><span class="status-dot"></span> camera off</span>
                     <button id="start-btn" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Start</button>
                     <button id="stop-btn" class="btn btn-secondary btn-sm" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop</button>
                     <button id="demo-btn" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> Demo</button>
+                    <button id="details-btn" class="icon-btn icon-btn-sm" type="button" aria-label="Open details" aria-controls="details-drawer" aria-expanded="false" title="Details"><svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg></button>
                     <button id="camera-more" class="icon-btn icon-btn-sm" type="button" aria-label="Camera options" aria-expanded="false" aria-controls="camera-menu" title="Camera options"><svg class="icon" aria-hidden="true"><use href="#i-more"></use></svg></button>
                   </div>
                 </div>
@@ -152,6 +153,7 @@
                   </label>
                   <div class="menu-divider" aria-hidden="true"></div>
                   <button id="camera-settings" class="menu-action" type="button"><svg class="icon" aria-hidden="true"><use href="#i-settings"></use></svg> Settings</button>
+                  <button id="camera-facing" class="menu-action" type="button"><svg class="icon" aria-hidden="true"><use href="#i-globe"></use></svg> Face-to-face mode</button>
                   <button id="camera-kiosk" class="menu-action" type="button"><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg> Kiosk mode</button>
                 </div>
 
@@ -177,12 +179,24 @@
                     <span class="placement-cue">Place one hand in the frame, palm toward the camera.</span>
                     <div class="placeholder-actions">
                       <button id="hero-start" class="btn btn-primary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg> Start signing</button>
-                      <button id="hero-demo" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg> See a demo</button>
                     </div>
                   </div>
-                  <div class="stage-chips">
+                  <div class="stage-chips hidden">
                     <span id="live-chip" class="chip chip-live hidden"><span class="live-dot"></span> live</span>
                     <span class="chip chip-mono"><span id="hand-count">0</span> <span id="hand-label">hands</span></span>
+                  </div>
+                  <div id="live-caption" class="live-caption">
+                    <div class="live-caption-head">
+                      <span class="label">Live translation</span>
+                      <span id="live-caption-lang" class="language-chip">KSL → English</span>
+                    </div>
+                    <div id="english-stream" class="live-caption-text" data-placeholder="Your translation will appear here."></div>
+                    <div id="spoken-translation" class="spoken-translation" aria-live="polite"></div>
+                    <div class="live-caption-actions">
+                      <button id="speak-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Speak translation" title="Speak translation"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg> Speak</button>
+                      <button id="copy-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Copy translation" title="Copy translation"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
+                      <button class="btn btn-ghost btn-sm" type="button" data-view-jump="transcript">History</button>
+                    </div>
                   </div>
                   <div id="error-banner" class="error-banner hidden" role="alert">
                     <span id="error-text"></span>
@@ -205,8 +219,9 @@
                   </div>
                 </div>
               </section>
+            </div>
 
-              <section class="panel conversation-panel" aria-labelledby="conversation-title">
+            <section class="panel conversation-panel" data-sheet="half" aria-labelledby="conversation-title">
                 <div class="panel-head compact">
                   <div class="panel-title">
                     <span class="panel-eyebrow">Two-way conversation</span>
@@ -214,6 +229,8 @@
                   </div>
                   <div class="panel-tools">
                     <span id="talk-mode" class="status-chip">on-device</span>
+                    <button id="present-btn" class="btn btn-ghost btn-sm" type="button" title="Make the conversation bigger for the hearing partner">Present</button>
+                    <button id="thread-expand" class="icon-btn icon-btn-sm" type="button" aria-label="Expand conversation" aria-expanded="false" title="Expand conversation"><svg class="icon" aria-hidden="true"><use href="#i-chevron"></use></svg></button>
                     <button id="talk-clear" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Clear</button>
                   </div>
                 </div>
@@ -251,15 +268,18 @@
                 <div id="timeline"></div>
                 <div id="timeline-empty"></div>
               </div>
-            </div>
 
-            <section class="panel inspector" aria-labelledby="inspector-title">
+            <div id="details-backdrop" class="drawer-backdrop hidden"></div>
+            <section id="details-drawer" class="panel inspector is-closed" role="dialog" aria-modal="true" aria-labelledby="inspector-title" aria-hidden="true">
               <div class="panel-head compact">
                 <div class="panel-title">
-                  <span class="panel-eyebrow">Live translation</span>
-                  <h2 id="inspector-title">Translation</h2>
+                  <span class="panel-eyebrow">Live details</span>
+                  <h2 id="inspector-title">Details</h2>
                 </div>
-                <span id="model-pill" class="pill pill-accent">KSL · static model v1</span>
+                <div class="panel-tools">
+                  <span id="model-pill" class="pill pill-accent">KSL</span>
+                  <button id="details-close" class="icon-btn icon-btn-sm" type="button" aria-label="Close details" title="Close details"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+                </div>
               </div>
 
               <div class="inspector-scroll">
@@ -277,17 +297,6 @@
                     </div>
                   </div>
                   <div id="sign-state" class="sign-state">Start the camera or demo to begin.</div>
-                </div>
-
-                <div class="primary-output">
-                  <div class="stream-head"><span class="label">English</span><span class="label-note">live</span></div>
-                  <div class="english-wrap">
-                    <div id="english-stream" class="stream english" data-placeholder="Your English translation will appear here."></div>
-                    <button id="speak-btn" class="icon-btn icon-btn-sm" type="button" aria-label="Speak English" title="Speak English"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg></button>
-                    <button id="copy-btn" class="icon-btn icon-btn-sm" type="button" aria-label="Copy English" title="Copy English"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button>
-                  </div>
-                  <div id="spoken-translation" class="spoken-translation" aria-live="polite"></div>
-                  <button class="btn btn-ghost btn-sm primary-link" type="button" data-view-jump="transcript">Open transcript <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
                 </div>
 
                 <button id="inspector-toggle" class="details-toggle" type="button" aria-expanded="false" aria-controls="inspector-details">
@@ -384,9 +393,12 @@
             <div class="page-heading">
               <span class="panel-eyebrow">Reference</span>
               <h1 id="learn-title">Handshape library</h1>
-              <p>Every card is rendered from a real landmark sample in the bundled dataset. Select a card, then practise in Live.</p>
+              <p>Landmark references, not photos. The language follows the top language button. KSL cards are ASL-based proxies pending Deaf KSL review.</p>
             </div>
-            <div id="learn-filter" class="segmented" role="group" aria-label="Reference language">
+            <div class="toolbar-actions">
+              <span id="learn-language" class="status-chip">KSL</span>
+            </div>
+            <div id="learn-filter" class="segmented hidden" role="group" aria-label="Reference language" hidden>
               <button class="seg is-active" type="button" data-learn-lang="ASL">ASL</button>
               <button class="seg" type="button" data-learn-lang="KSL">KSL</button>
               <button class="seg" type="button" data-learn-lang="BSL">BSL</button>
@@ -420,7 +432,7 @@
               <p id="learn-note">Select a card to inspect the landmark sample.</p>
               <div class="learn-meta">
                 <div><span class="label">source</span><strong id="learn-source">—</strong></div>
-                <div><span class="label">model confidence</span><strong id="learn-confidence">—</strong></div>
+                <div><span class="label">reference check</span><strong id="learn-confidence">—</strong></div>
               </div>
               <button id="learn-practice" class="btn btn-primary btn-block" type="button">Practise this language</button>
             </section>
@@ -672,6 +684,24 @@
       </div>
       <p class="onboarding-note">Preview build · not validated by Deaf signers · not a substitute for an interpreter.</p>
     </div>
+  </dialog>
+
+  <dialog id="correction-dialog" class="settings-dialog correction-dialog" aria-labelledby="correction-title">
+    <form method="dialog" class="settings-form">
+      <div class="dialog-head">
+        <div><div class="panel-eyebrow">Fix a word</div><h2 id="correction-title">Correct this word</h2></div>
+        <button class="icon-btn" value="close" aria-label="Close correction"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+      </div>
+      <p class="language-intro">Glipter wasn’t sure about this word. Type what you meant and the conversation bubble will update.</p>
+      <label class="filter-field">
+        <span class="label">Corrected word</span>
+        <input id="correction-input" type="text" autocomplete="off" spellcheck="false" />
+      </label>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" value="close">Cancel</button>
+        <button id="correction-save" class="btn btn-primary" type="button">Save correction</button>
+      </div>
+    </form>
   </dialog>
 
   <dialog id="language-dialog" class="settings-dialog language-dialog" aria-labelledby="language-title">

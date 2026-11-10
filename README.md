@@ -14,14 +14,16 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 ### App shell
 
-- Native-app-style layout: **three primary destinations** — Talk, History, Learn. Settings is one top-bar action; Voice and About are secondary screens. **Language button** in the top bar opens one picker for sign language + spoken language.
-- **Two-way conversation thread:** signed English appears as it commits; spoken/typed replies appear beside it, with a speech-to-sign preview.
+- **Three zones, one screen:** camera (hero), one conversation thread, and controls. Technical diagnostics live in a **Details** drawer; the old separate Translation panel is gone from Talk.
+- **Two-way conversation thread:** signed and spoken/typed replies share one messaging thread, each with a small language chip; signed English also appears in a floating live caption.
+- **Calm feedback:** a thin camera status ring (idle → hand found → committing → committed), haptic commit, and dotted-underline correction for low-confidence words.
+- **Modes for real use:** **Present** widens the thread for a hearing partner; **Face-to-face** rotates it on tablet portrait; phone conversation has peek / half / full heights.
 - **Task-first flow:** one primary action per state; advanced camera controls live in the overflow menu.
-- **Progressive disclosure:** the inspector leads with the sign, confidence, state, and English; gloss, top-3, stats, and model notes are under **Advanced details**.
+- **Progressive disclosure:** confidence, top-3, gloss, stats, backend, and model notes are in the Details drawer or About; the main screen stays clean.
 - **Light** theme (default): calm neutral surfaces, one blue accent, soft borders. **Studio** (lilac/sticker), **Midnight**, and **System** remain available.
 - Dense keyboard workflow: `1–3` primary views, `4` Voice, `5` About, `S` start/stop, `D` demo, `M` mic, `T` speak, `C` clear, `E` export, `⌘K` / `Ctrl+K` commands.
 - **Scripted demo that actually finishes:** signs `HELLO MY NAME IS GLIPTER` once, commits all five words, stops at the end of the sentence, and clears the session on replay.
-- Responsive: mobile order is camera → Talk thread → Translation; tablet/desktop add the inspector column. Tested at 320–1920 px.
+- Responsive: mobile order is camera → conversation; tablet/desktop use a camera + thread split. Tested at 320–1920 px.
 - High contrast, large text, reduced motion, print styles.
 - Accessible focus states, ARIA live regions for recognized signs and transcripts, skip link, labelled controls.
 
