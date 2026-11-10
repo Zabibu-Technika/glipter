@@ -22,8 +22,9 @@ Glipter is a Tier 0 demonstrator. It is not a validated accessibility tool, and 
 
 ## Runtime
 
-- **MediaPipe Hands** — Google — Apache-2.0. Vendored locally in `vendor/mediapipe/hands`.
-- **Web Speech API** — browser-provided speech synthesis (TTS) and speech recognition (ASR). The app does not upload audio itself; browser ASR may use the browser vendor's service.
+- **MediaPipe Tasks Vision / HandLandmarker** — Google — Apache-2.0. Vendored locally in `vendor/mediapipe/tasks`.
+- **eSpeak NG** — eSpeak NG contributors — GPL-3.0. Embedded multilingual text-to-speech (English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, Tigrinya, and more), vendored in `vendor/tts/espeak`.
+- **Web Speech API** — optional browser-provided speech recognition and system voices. The app does not upload audio itself; browser ASR may use the browser vendor's service. The embedded eSpeak voice does not use the OS or the network.
 - **Inter / system font stack** — the UI uses the operating system's native sans-serif and monospace fonts, so no font files are fetched at runtime.
 
 ## Review status

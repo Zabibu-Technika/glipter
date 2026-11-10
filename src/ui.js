@@ -223,8 +223,12 @@ export function renderDatasetList(container, languages) {
     </div>`);
   }
   items.push(`<div class="dataset-item">
-    <strong>MediaPipe Hands</strong>
-    <span>Google · Apache-2.0 · vendored locally in <span class="mono">vendor/mediapipe/hands</span></span>
+    <strong>MediaPipe Tasks Vision / HandLandmarker</strong>
+    <span>Google · Apache-2.0 · vendored locally in <span class="mono">vendor/mediapipe/tasks</span></span>
+  </div>`);
+  items.push(`<div class="dataset-item">
+    <strong>eSpeak NG</strong>
+    <span>eSpeak NG contributors · GPL-3.0 · embedded multilingual voice in <span class="mono">vendor/tts/espeak</span></span>
   </div>`);
   container.innerHTML = items.join("");
 }

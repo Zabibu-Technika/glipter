@@ -7,7 +7,8 @@ Glipter's **source code** is MIT-licensed (see `LICENSE`). Bundled models, datas
 | Component | License | Notes |
 |---|---|---|
 | Glipter application code | MIT | © 2026 Tehillah Kachila and Zabibu Technika |
-| `vendor/mediapipe/hands/*` | Apache-2.0 | Google MediaPipe Hands, vendored from `@mediapipe/hands@0.4.1675469240`. Full license in `vendor/mediapipe/LICENSE`. |
+| `vendor/mediapipe/tasks/*` | Apache-2.0 | Google MediaPipe Tasks Vision 1.2.2 (`vision_bundle.mjs`, WASM image pipeline) and the float16 HandLandmarker model. Full license in `vendor/mediapipe/LICENSE`; notice in `vendor/mediapipe/NOTICE`. |
+| `vendor/tts/espeak/*` | **GPL-3.0** | eSpeak NG multilingual speech synthesiser compiled to WebAssembly, with `espeak-ng.data`. Full licence in `vendor/tts/espeak/COPYING`. Isolated optional component; see the licensing note below. |
 | `src/selftest/fixtures/asl.js` | CC0-1.0 (derived) | Held-out landmark samples from the CC0 ASL dataset. |
 | `src/data/models/asl-static.js` | CC0-1.0 (derived model) | Trained on the CC0 ASL landmark dataset. |
 | `src/selftest/fixtures/ksl-words.js` | Apache-2.0 (derived) | Held-out sequences from the Apache-2.0 KSL landmark dataset. |
@@ -58,8 +59,15 @@ Glipter's **source code** is MIT-licensed (see `LICENSE`). Bundled models, datas
 
 ## Runtime APIs
 
-- **Web Speech API (SpeechSynthesis / SpeechRecognition):** browser-provided. Glipter does not upload audio itself. Browser ASR may use the browser vendor's online service; TTS may use a local or remote voice. The UI labels this.
-- **MediaPipe Hands:** hand landmarks are computed locally in the browser from the camera stream.
+- **Web Speech API (SpeechRecognition):** browser-provided. Glipter does not upload audio itself. Browser ASR may use the browser vendor's online service; newer browsers may offer on-device recognition. The UI labels this.
+- **eSpeak NG (embedded):** the default text-to-speech engine is compiled to WebAssembly and runs locally. It does not use the OS voice or a network service.
+- **MediaPipe Tasks Vision:** hand landmarks are computed locally in the browser from the camera stream.
+
+## Licensing note: eSpeak NG (GPL-3.0)
+
+The embedded multilingual voice in `vendor/tts/espeak/` is **eSpeak NG**, licensed under **GPL-3.0**. It is kept in an isolated folder with its `COPYING` file. The rest of the Glipter source is MIT, but a redistributed build that includes eSpeak NG must comply with GPL-3.0 for that combined distribution (source availability, notices, and the GPL terms).
+
+If you need a permissive-only build, remove `vendor/tts/espeak/`, the `espeak` engine option, and the eSpeak TTS path. The optional system voice and the sign-recognition path remain.
 
 ## What "derived model" means
 

@@ -1,7 +1,7 @@
 {
   "name": "Glipter — Edge Sign Language Engine",
   "short_name": "Glipter",
-  "description": "Offline-first, on-device sign language recognition. Built for Kenyan Sign Language, ASL, and BSL, with no cloud dependency.",
+  "description": "Offline-first, on-device sign language conversation. Built for Kenyan Sign Language, ASL, and BSL, with embedded multilingual speech and no cloud dependency.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -41,9 +41,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Live recognition",
-      "short_name": "Live",
-      "description": "Open the camera workspace",
+      "name": "Talk",
+      "short_name": "Talk",
+      "description": "Open the two-way conversation workspace",
       "url": "./#live",
       "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
     },

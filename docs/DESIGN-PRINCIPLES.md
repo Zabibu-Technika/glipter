@@ -72,7 +72,15 @@ These are the rules the current UI is built against. They are not a mood board; 
 - Practice shows a target, success/wrong feedback, progress, and haptics.
 - Gliptic Typography is labelled experimental and handshape-only.
 
-## 10. Performance as UX
+## 10. Conversation first, phone first
+
+- The primary surface is **Talk**: signed English, spoken replies, and a speech-to-sign preview in one thread.
+- Mobile order is camera → Talk → inspector → timeline; desktop adds the inspector column instead of shrinking the phone layout.
+- Replies can arrive by microphone, typing, or a quick phrase. The quick phrase board is the offline path when ASR is unavailable.
+- The voice is **embedded** (eSpeak NG), not an OS voice. It covers English and African languages and works with the network off.
+- Camera detection and TTS degrade explicitly: no WebGL → demo/phrase board; no system voice → embedded voice; no ASR → quick phrases/typing.
+
+## 11. Performance as UX
 
 - Critical app shell ≈1.2 MB; vendor MediaPipe loads only when the camera starts.
 - Lite model, low-power preset, and ~15 fps option for weak devices.

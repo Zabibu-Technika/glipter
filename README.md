@@ -2,7 +2,7 @@
 
 **Edge sign language engine — offline-first, on-device, no backend.**
 
-Glipter turns any camera into a sign language interface. It reads hand landmarks locally, classifies static handshapes or short word sequences with small bundled neural networks, and streams the result into a gloss line and readable English. It also includes a two-way **Voice** bridge: browser ASR for speech → text, and device TTS for text → speech.
+Glipter turns any camera into a two-way sign language conversation surface. It reads hand landmarks locally, classifies static handshapes, motion letters, and short signed phrases with bundled models and rule layers, then streams the result into gloss and readable English. The hearing side can reply by voice, typing, or a quick phrase; the reply is spoken by an embedded voice and shown back as a sign card or fingerspelling strip.
 
 A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator — not a validated accessibility tool, not a substitute for a professional interpreter.
 
@@ -14,32 +14,36 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 ### App shell
 
-- Native-app-style layout: app bar, rail navigation, split-pane studio, inspector, timeline, status bar, command palette.
-- **Task-first Live flow:** one primary action per state (Start in the empty state, Stop when running); advanced controls live in the camera overflow menu.
+- Native-app-style layout: **mobile-first Talk**, rail navigation, split-pane studio, inspector, timeline, status bar, command palette.
+- **Two-way conversation thread:** signed English appears as it commits; spoken/typed replies appear beside it, with a speech-to-sign preview.
+- **Task-first flow:** one primary action per state; advanced camera controls live in the overflow menu.
 - **Progressive disclosure:** the inspector leads with the sign, confidence, state, and English; gloss, top-3, stats, and model notes live under **Details**.
 - **Studio** theme (default): lilac/cream surfaces, deep ink outlines, sticker cards, green/purple hand glyphs. **Midnight** and **Daylight** are included, plus system.
 - Dense keyboard workflow: `1–5` views, `S` start/stop, `D` demo, `M` mic, `T` speak, `C` clear, `E` export, `⌘K` / `Ctrl+K` commands.
 - **Scripted demo that actually finishes:** signs `HELLO MY NAME IS GLIPTER` once, commits all five words, stops at the end of the sentence, and clears the session on replay.
-- Responsive: rail on desktop/tablet; bottom tab bar on phones; tested at 320–1920 px.
+- Responsive: mobile order is camera → Talk thread → inspector → timeline; tablet/desktop add the inspector column. Tested at 320–1920 px.
 - High contrast, large text, reduced motion, print styles.
 - Accessible focus states, ARIA live regions for recognized signs and transcripts, skip link, labelled controls.
 
 ### Recognition
 
-- **ASL static alphabet (A–Z)** trained on 10,508 real MediaPipe hand-landmark samples. Held-out top-1: **99.9%** (same-corpus, not signer-independent).
+- **ASL static alphabet (A–Z)** trained on 10,508 real hand-landmark samples. Held-out top-1: **99.9%** (same-corpus, not signer-independent).
 - **KSL word signs (pilot)** trained on the official KSL landmark split: `FATHER`, `HELLO`, `IS`, `MY`. Held-out top-1: **99.2%** across 124 sequences.
 - **KSL fingerspelling** uses the ASL handshape model as a documented proxy, with KSL text reordering.
 - **BSL two-handed fingerspelling** remains rule-based and experimental (A, B, L, V). No permissively licensed BSL landmark corpus is bundled yet.
+- **Phrase layer (ASL-derived, experimental):** ILY → “I love you”, HELP, HELLO wave, YES nod, and motion letters J and Z. The motion layer suppresses the starting static letter so a J attempt is not committed as I.
+- **Decision margin:** ambiguous top-1/top-2 frames are shown but not committed; threshold and margin are configurable.
 - Angle-based finger detection, sliding-window debouncing, top-3 candidates, confidence threshold.
-- Live hand skeleton overlay, FPS and inference latency telemetry.
+- Live hand skeleton overlay on Canvas 2D, FPS and inference latency telemetry.
 
 ### Voice bridge (ASR + TTS)
 
 > Strategic context: `docs/EDGE-COMPETITOR.md` lays out what it would take to become a true local/edge competitor to cloud-avatar products — data, continuous signing, runtime budget, Deaf-led validation, and distribution.
 
-- **Listen** — browser `SpeechRecognition` with interim results, continuous mode, auto-restart, four language options (English US/UK/Kenya, Kiswahili Kenya). It is labelled honestly: browser ASR may use an online service; Glipter itself does not upload audio.
-- **Speak** — `SpeechSynthesis` with local-first voice selection, rate control, quick phrases, copy, and stop.
-- **Speak current English** from the recognition inspector.
+- **Listen** — browser `SpeechRecognition` with interim results, continuous mode, auto-restart, and four language options (English US/UK/Kenya, Kiswahili Kenya). It is labelled honestly: browser ASR may use an online service; Glipter itself does not upload audio. Newer browsers may expose on-device recognition; offline, the quick phrase board and typing still work.
+- **Speak** — **embedded eSpeak NG WebAssembly**, bundled with the app. It needs no OS voice and no network. Languages include English, **Kiswahili**, **Afrikaans**, **Amharic**, **Setswana**, **Oromo**, and **Tigrinya**.
+- **System voice** is an optional fallback, not a requirement.
+- **Two-way Talk** — signed English can be spoken automatically; spoken/typed replies appear in the thread and are rendered as a sign card or fingerspelling strip.
 - Optional automatic speech of recognized English in Settings.
 - Text fallback works fully offline when ASR is unavailable.
 
@@ -55,19 +59,22 @@ A **Zabibu Technika** product, led by **Tehillah Kachila**. Tier 0 demonstrator 
 
 ### Offline / PWA
 
-- MediaPipe Hands (JS + WASM + TFLite models) is **vendored locally** in `vendor/mediapipe/hands`; no runtime CDN.
-- `sw.js` precaches the app shell, models, fixtures, icons, and MediaPipe assets.
+- MediaPipe **Tasks Vision** (`vision_bundle.mjs` + WASM + HandLandmarker model) is **vendored locally** in `vendor/mediapipe/tasks`; no runtime CDN.
+- **eSpeak NG** (`espeak-ng.js` + `espeak-ng.data`) is vendored in `vendor/tts/espeak`; no runtime CDN and no OS voice.
+- `sw.js` precaches the app shell, models, fixtures, icons, MediaPipe tasks assets, and the embedded voice.
 - Installable manifest with 192/512/maskable icons.
 - After the first successful load, the app can be relaunched with no network.
 - No backend in the recognition path. Camera frames never leave the browser.
+- **Size:** the offline cache is about 47 MB (tasks vision ~22 MB + eSpeak ~25 MB). That is the cost of embedded detection and multilingual TTS.
 
 ### Evaluation
 
 - 74 on-device checks in five layers: ASL fixtures, KSL fixtures, BSL rules, geometry, model/grammar integrity.
 - Self-test runs on load and is visible in the status bar and About view.
-- Node test suite: feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, telemetry, safe ASR/TTS degradation.
+- Node test suite: 18 tests covering feature shapes, model dimensions, fixture accuracy, debouncer, accumulator, grammar, phrase/motion rules, telemetry, safe ASR/TTS degradation.
 - `npm run check` verifies every referenced element ID and every service-worker precache file.
 - A professional design/QA audit lives in [`docs/DESIGN-AUDIT.md`](docs/DESIGN-AUDIT.md), with raw measurements in [`docs/audit/audit-data.json`](docs/audit/audit-data.json) and screenshots in [`docs/audit/`](docs/audit/). It covers mobile/tablet/desktop, WCAG 2.2 AA, axe-core, offline reload, demo, and competitive positioning.
+- The recognition/mobile/two-way audit is [`docs/DEEP-AUDIT-2026-11-10.md`](docs/DEEP-AUDIT-2026-11-10.md).
 - Design principles and the rules behind the current layout: [`docs/DESIGN-PRINCIPLES.md`](docs/DESIGN-PRINCIPLES.md).
 - Execution status: [`docs/RECOMMENDATIONS-STATUS.md`](docs/RECOMMENDATIONS-STATUS.md).
 - Release gates and human work: [`docs/DEAF-REVIEW-KIT.md`](docs/DEAF-REVIEW-KIT.md), [`docs/SCREEN-READER-TEST.md`](docs/SCREEN-READER-TEST.md), [`docs/DEVICE-TEST-MATRIX.md`](docs/DEVICE-TEST-MATRIX.md).
@@ -149,37 +156,43 @@ Dataset acquisition notes are in `datasets/README.md`. BSL data is intentionally
 ## Structure
 
 ```
-index.html                 app shell + vendored MediaPipe script
+index.html                 app shell
 manifest.webmanifest       PWA metadata
 sw.js                      generated service worker (npm run build:sw)
 assets/                    app icons, favicon
-vendor/mediapipe/hands/    MediaPipe Hands JS/WASM/TFLite, Apache-2.0
+vendor/mediapipe/tasks/    MediaPipe Tasks Vision + HandLandmarker, Apache-2.0
+vendor/tts/espeak/         eSpeak NG WASM multilingual voice, GPL-3.0
 datasets/                  manifests + raw reproducible datasets
 scripts/                   training, static server, SW builder, checks
 src/
   main.js                  application orchestration
   styles.css               app design system
   asr.js                   SpeechRecognition wrapper
-  speech.js                SpeechSynthesis wrapper
+  speech.js                embedded TTS + optional system voice
   pwa.js                   service worker + install prompt
   settings.js              persisted preferences
   telemetry.js             transcript + TXT/CSV/JSON export
   ui.js                    panels, hand SVG, self-test rendering, toasts
-  engine/engine.js         camera + MediaPipe + busy-guarded loop
+  engine/engine.js         camera + Tasks Vision + busy-guarded loop
   engine/demo.js           camera-free landmark demo player
   lib/landmarks.js         constants + math
   lib/fingers.js           angle-based finger extension
   lib/features.js          deterministic feature extraction
   lib/model.js             tiny MLP inference runtime
   lib/debouncer.js         sliding-window voting
-  lib/overlay.js           mirrored skeleton renderer
+  lib/overlay.js           mirrored Canvas 2D skeleton renderer
+  lib/phraseRecognizer.js  ILY/HELP/J/Z/wave/nod rules
+  tts/espeak.js            embedded multilingual TTS
+  tts/languages.js         African language catalogue
   languages/               ASL, KSL, KSL words, BSL profiles
   text/accumulator.js      letter runs, word gaps, transcript
   text/grammar.js          ASL/KSL/BSL surface reordering
+  text/phrases.js          phrase vocabulary + speech-to-sign map
   data/models/             bundled trained models
   data/prototypes.js       real medoid handshapes for Learn
   selftest/                goldens, fixtures, runner
 tests/                     Node test suite
+docs/DEEP-AUDIT-2026-11-10.md  recognition/mobile/two-way audit
 docs/EDGE-COMPETITOR.md    what it takes to compete at the edge
 ```
 
@@ -187,13 +200,16 @@ docs/EDGE-COMPETITOR.md    what it takes to compete at the edge
 
 ## Honest limitations
 
-- Static handshapes only for ASL/KSL fingerspelling. J and Z are motion letters and are approximate here.
+- Static handshapes drive most of ASL/KSL recognition. J and Z now have motion rules, but the rest of the alphabet is static.
 - The KSL word model knows four glosses. It is not a conversation system and not a KSL lexicon.
+- The ILY/HELP/J/Z/HELLO/YES phrase layer is **ASL-derived and rule-based**, not a trained or Deaf-reviewed KSL lexicon. Treat it as experimental.
 - BSL is rule-based, two-handed, and experimental.
 - No facial grammar, mouthing, or non-manual signals — all of which are part of real sign languages.
 - Dataset accuracy is held-out from the same public corpora, **not signer-independent validation**.
 - **No language profile has been reviewed by native Deaf signers yet.** That review is the gate before any real-world deployment.
-- Browser ASR may use an online service. TTS may use a remote voice if no local voice is installed. The UI says so.
+- Browser ASR may use an online service. The embedded eSpeak voice does not. System voices are optional and may depend on the OS.
+- MediaPipe's WASM graph still needs a WebGL context for image conversion. Glipter now uses WebGL 1/2 where available, offers a CPU delegate, downscales frames, and falls back to the demo/phrase board when no GL context exists.
+- eSpeak NG is **GPL-3.0**; see the licensing note in `ATTRIBUTION.md`. Remove `vendor/tts/espeak/` for an MIT-only build.
 - Not for medical, legal, or high-stakes use.
 
 ---
@@ -204,9 +220,11 @@ docs/EDGE-COMPETITOR.md    what it takes to compete at the edge
 **Product studio / design / engineering:** Zabibu Technika
 
 Datasets: Boris Graudt (ASL, CC0-1.0), Joan Wachuka (KSL, Apache-2.0), Alif Sathar (BSL, Apache-2.0, reference), Google MediaPipe (Apache-2.0), eKitabu and MARS-KSL (reference only).
+Embedded voice: eSpeak NG (GPL-3.0). MediaPipe Tasks Vision and HandLandmarker (Apache-2.0).
 
 See `CREDITS.md`, `ATTRIBUTION.md`, and `datasets/MANIFEST.json` for details.
 
 ## License
 
 Code: MIT. Data and model artifacts: upstream licenses, documented in `ATTRIBUTION.md`.
+The bundled eSpeak NG voice is GPL-3.0; redistributed builds that include it must comply with GPL-3.0.

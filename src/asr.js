@@ -5,13 +5,16 @@
  * recogniser. The UI labels this honestly and provides a text fallback.
  */
 export class SpeechInput {
-  constructor({ lang = "en-US", onTranscript, onStatus, onError } = {}) {
+  constructor({ lang = "en-US", onTranscript, onStatus, onError, onMode, preferLocal = true } = {}) {
     this.lang = lang;
     this.onTranscript = onTranscript ?? (() => {});
     this.onStatus = onStatus ?? (() => {});
     this.onError = onError ?? (() => {});
+    this.onMode = onMode ?? (() => {});
+    this.preferLocal = preferLocal;
     this.recognition = null;
     this.listening = false;
+    this.mode = "unknown";
     this.finalText = "";
     this.interimText = "";
     this.restartTimer = 0;
@@ -21,6 +24,12 @@ export class SpeechInput {
   static get supported() {
     return typeof window !== "undefined"
       && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
+  }
+
+  static get localRecognitionSupported() {
+    if (typeof window === "undefined") return false;
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    return Boolean(Recognition && "processLocally" in Recognition.prototype);
   }
 
   get supported() {
@@ -55,9 +64,22 @@ export class SpeechInput {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
+    if (this.preferLocal) {
+      try {
+        if ("processLocally" in recognition) recognition.processLocally = true;
+      } catch {
+        // Older implementations reject the assignment; browser ASR still works.
+      }
+    }
 
     recognition.onstart = () => {
       this.listening = true;
+      try {
+        this.mode = recognition.processLocally ? "local" : "browser";
+      } catch {
+        this.mode = "browser";
+      }
+      this.onMode(this.mode);
       this.onStatus("listening");
     };
 
@@ -167,6 +189,7 @@ export class SpeechInput {
   clear() {
     this.finalText = "";
     this.interimText = "";
+    this.mode = "unknown";
     this._emit();
   }
 }

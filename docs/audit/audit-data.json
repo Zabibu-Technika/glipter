@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T20:44:13.779Z",
+  "generatedAt": "2026-11-10T11:25:11.564Z",
   "base": "http://127.0.0.1:3000/",
   "viewports": [
     {
@@ -16,7 +16,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1269,
+        "scrollHeight": 1825,
         "clientHeight": 518
       },
       "rects": {
@@ -36,7 +36,7 @@
           "x": 7,
           "y": 57,
           "w": 306,
-          "h": 1196
+          "h": 1752
         },
         "camera": {
           "x": 7,
@@ -46,13 +46,13 @@
         },
         "inspector": {
           "x": 7,
-          "y": 556,
+          "y": 1112,
           "w": 306,
           "h": 560
         },
         "timeline": {
           "x": 7,
-          "y": 1127,
+          "y": 1683,
           "w": 306,
           "h": 126
         },
@@ -75,14 +75,18 @@
           "h": 0
         }
       },
-      "controls": 19,
+      "controls": 33,
       "under44": 0,
       "under24": 0,
       "under44Samples": [],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -98,10 +102,10 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
-      "offline": "Caching 24/52"
+      "offline": "Caching 48/50"
     },
     {
       "label": "mobile",
@@ -117,7 +121,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1147,
+        "scrollHeight": 1608,
         "clientHeight": 794
       },
       "rects": {
@@ -137,7 +141,7 @@
           "x": 7,
           "y": 57,
           "w": 376,
-          "h": 1074
+          "h": 1535
         },
         "camera": {
           "x": 7,
@@ -147,13 +151,13 @@
         },
         "inspector": {
           "x": 7,
-          "y": 437,
+          "y": 898,
           "w": 376,
           "h": 556
         },
         "timeline": {
           "x": 7,
-          "y": 1006,
+          "y": 1466,
           "w": 376,
           "h": 126
         },
@@ -176,14 +180,18 @@
           "h": 0
         }
       },
-      "controls": 19,
+      "controls": 33,
       "under44": 0,
       "under24": 0,
       "under44Samples": [],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -199,10 +207,10 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
-      "offline": "Caching 48/52"
+      "offline": "Offline ready"
     },
     {
       "label": "tablet",
@@ -218,7 +226,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 1216,
+        "scrollHeight": 1598,
         "clientHeight": 944
       },
       "rects": {
@@ -238,7 +246,7 @@
           "x": 73,
           "y": 63,
           "w": 686,
-          "h": 1198
+          "h": 1580
         },
         "camera": {
           "x": 73,
@@ -248,13 +256,13 @@
         },
         "inspector": {
           "x": 73,
-          "y": 671,
+          "y": 1053,
           "w": 686,
           "h": 480
         },
         "timeline": {
           "x": 73,
-          "y": 1164,
+          "y": 1546,
           "w": 686,
           "h": 98
         },
@@ -277,8 +285,8 @@
           "h": 0
         }
       },
-      "controls": 20,
-      "under44": 13,
+      "controls": 34,
+      "under44": 26,
       "under24": 0,
       "under44Samples": [
         {
@@ -339,44 +347,55 @@
         },
         {
           "tag": "button",
-          "id": "",
-          "label": "View all",
-          "w": 63,
-          "h": 33
-        },
-        {
-          "tag": "button",
-          "id": "clear-timeline",
+          "id": "talk-clear",
           "label": "Clear",
           "w": 69,
           "h": 33
         },
         {
           "tag": "button",
-          "id": "speak-btn",
-          "label": "Speak English",
-          "w": 28,
-          "h": 28
-        },
-        {
-          "tag": "button",
-          "id": "copy-btn",
-          "label": "Copy English",
-          "w": 28,
+          "id": "",
+          "label": "Hello",
+          "w": 37,
           "h": 28
         },
         {
           "tag": "button",
           "id": "",
-          "label": "Open transcript",
-          "w": 114,
-          "h": 33
+          "label": "Thank you",
+          "w": 58,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Please",
+          "w": 42,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Yes",
+          "w": 29,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "No",
+          "w": 28,
+          "h": 28
         }
       ],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -392,8 +411,8 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
       "offline": "Offline ready"
     },
@@ -411,7 +430,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 688,
+        "scrollHeight": 914,
         "clientHeight": 688
       },
       "rects": {
@@ -431,23 +450,23 @@
           "x": 96,
           "y": 66,
           "w": 916,
-          "h": 664
+          "h": 890
         },
         "camera": {
           "x": 96,
           "y": 66,
           "w": 594,
-          "h": 554
+          "h": 398
         },
         "inspector": {
           "x": 702,
           "y": 66,
           "w": 310,
-          "h": 664
+          "h": 890
         },
         "timeline": {
           "x": 96,
-          "y": 632,
+          "y": 858,
           "w": 594,
           "h": 98
         },
@@ -470,8 +489,8 @@
           "h": 0
         }
       },
-      "controls": 20,
-      "under44": 13,
+      "controls": 34,
+      "under44": 26,
       "under24": 0,
       "under44Samples": [
         {
@@ -532,44 +551,55 @@
         },
         {
           "tag": "button",
-          "id": "",
-          "label": "View all",
-          "w": 63,
-          "h": 33
-        },
-        {
-          "tag": "button",
-          "id": "clear-timeline",
+          "id": "talk-clear",
           "label": "Clear",
           "w": 69,
           "h": 33
         },
         {
           "tag": "button",
-          "id": "speak-btn",
-          "label": "Speak English",
-          "w": 28,
-          "h": 28
-        },
-        {
-          "tag": "button",
-          "id": "copy-btn",
-          "label": "Copy English",
-          "w": 28,
+          "id": "",
+          "label": "Hello",
+          "w": 37,
           "h": 28
         },
         {
           "tag": "button",
           "id": "",
-          "label": "Open transcript",
-          "w": 114,
-          "h": 33
+          "label": "Thank you",
+          "w": 58,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Please",
+          "w": 42,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Yes",
+          "w": 29,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "No",
+          "w": 28,
+          "h": 28
         }
       ],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -585,8 +615,8 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
       "offline": "Offline ready"
     },
@@ -604,7 +634,7 @@
       },
       "horizontalOverflow": false,
       "mainScroll": {
-        "scrollHeight": 820,
+        "scrollHeight": 914,
         "clientHeight": 820
       },
       "rects": {
@@ -624,23 +654,23 @@
           "x": 96,
           "y": 66,
           "w": 1332,
-          "h": 796
+          "h": 890
         },
         "camera": {
           "x": 96,
           "y": 66,
           "w": 948,
-          "h": 686
+          "h": 398
         },
         "inspector": {
           "x": 1056,
           "y": 66,
           "w": 372,
-          "h": 796
+          "h": 890
         },
         "timeline": {
           "x": 96,
-          "y": 764,
+          "y": 858,
           "w": 948,
           "h": 98
         },
@@ -663,8 +693,8 @@
           "h": 0
         }
       },
-      "controls": 20,
-      "under44": 13,
+      "controls": 34,
+      "under44": 26,
       "under24": 0,
       "under44Samples": [
         {
@@ -725,44 +755,55 @@
         },
         {
           "tag": "button",
-          "id": "",
-          "label": "View all",
-          "w": 63,
-          "h": 33
-        },
-        {
-          "tag": "button",
-          "id": "clear-timeline",
+          "id": "talk-clear",
           "label": "Clear",
           "w": 69,
           "h": 33
         },
         {
           "tag": "button",
-          "id": "speak-btn",
-          "label": "Speak English",
-          "w": 28,
-          "h": 28
-        },
-        {
-          "tag": "button",
-          "id": "copy-btn",
-          "label": "Copy English",
-          "w": 28,
+          "id": "",
+          "label": "Hello",
+          "w": 37,
           "h": 28
         },
         {
           "tag": "button",
           "id": "",
-          "label": "Open transcript",
-          "w": 114,
-          "h": 33
+          "label": "Thank you",
+          "w": 58,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Please",
+          "w": 42,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Yes",
+          "w": 29,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "No",
+          "w": 28,
+          "h": 28
         }
       ],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -778,8 +819,8 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
       "offline": "Offline ready"
     },
@@ -823,7 +864,7 @@
           "x": 222,
           "y": 66,
           "w": 1176,
-          "h": 866
+          "h": 484
         },
         "inspector": {
           "x": 1410,
@@ -856,8 +897,8 @@
           "h": 0
         }
       },
-      "controls": 20,
-      "under44": 13,
+      "controls": 34,
+      "under44": 26,
       "under24": 0,
       "under44Samples": [
         {
@@ -918,44 +959,55 @@
         },
         {
           "tag": "button",
-          "id": "",
-          "label": "View all",
-          "w": 63,
-          "h": 33
-        },
-        {
-          "tag": "button",
-          "id": "clear-timeline",
+          "id": "talk-clear",
           "label": "Clear",
           "w": 69,
           "h": 33
         },
         {
           "tag": "button",
-          "id": "speak-btn",
-          "label": "Speak English",
-          "w": 28,
-          "h": 28
-        },
-        {
-          "tag": "button",
-          "id": "copy-btn",
-          "label": "Copy English",
-          "w": 28,
+          "id": "",
+          "label": "Hello",
+          "w": 37,
           "h": 28
         },
         {
           "tag": "button",
           "id": "",
-          "label": "Open transcript",
-          "w": 114,
-          "h": 33
+          "label": "Thank you",
+          "w": 58,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Please",
+          "w": 42,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "Yes",
+          "w": 29,
+          "h": 28
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "label": "No",
+          "w": 28,
+          "h": 28
         }
       ],
       "headings": [
         {
           "tag": "H1",
-          "text": "Translate"
+          "text": "Talk"
+        },
+        {
+          "tag": "H2",
+          "text": "Talk thread"
         },
         {
           "tag": "H2",
@@ -971,8 +1023,8 @@
       "lang": "en",
       "buttonsWithoutName": 0,
       "imagesWithoutAlt": 0,
-      "asr": "ASR ready",
-      "tts": "TTS · 3 voices",
+      "asr": "ASR · local capable",
+      "tts": "TTS · embedded · EN + African languages",
       "selfTest": "self-test ✓ 74/74",
       "offline": "Offline ready"
     }
@@ -999,8 +1051,9 @@
     {
       "label": "desktop-live",
       "violations": [],
-      "passes": 40,
+      "passes": 43,
       "incomplete": [
+        "aria-prohibited-attr",
         "color-contrast",
         "video-caption"
       ]
@@ -1024,8 +1077,9 @@
     {
       "label": "desktop-light-live",
       "violations": [],
-      "passes": 40,
+      "passes": 43,
       "incomplete": [
+        "aria-prohibited-attr",
         "color-contrast",
         "video-caption"
       ]
@@ -1033,8 +1087,9 @@
     {
       "label": "desktop-dark-live",
       "violations": [],
-      "passes": 40,
+      "passes": 43,
       "incomplete": [
+        "aria-prohibited-attr",
         "color-contrast",
         "video-caption"
       ]
@@ -1043,13 +1098,13 @@
   "console": [],
   "pageErrors": [],
   "performance": {
-    "domContentLoadedMs": 1715,
-    "loadMs": 1725,
-    "resources": 31,
+    "domContentLoadedMs": 814,
+    "loadMs": 815,
+    "resources": 36,
     "transferKB": 0,
-    "decodedKB": 1279,
-    "scriptCount": 30,
-    "heapMB": 20.7
+    "decodedKB": 2257,
+    "scriptCount": 34,
+    "heapMB": 64.8
   },
   "offline": {
     "status": "reloaded-offline",

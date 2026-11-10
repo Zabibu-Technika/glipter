@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Glipter — an offline-first, on-device sign language engine. A Zabibu Technika product, led by Tehillah Kachila.",
+  "description": "Glipter — an offline-first, on-device sign language conversation engine with embedded multilingual speech. A Zabibu Technika product, led by Tehillah Kachila.",
   "author": "Zabibu Technika · Tehillah Kachila",
   "license": "MIT",
   "homepage": "https://glipter.vercel.app",

@@ -9,8 +9,12 @@ export const DEFAULT_SETTINGS = Object.freeze({
   skeleton: true,
   complexity: 0,
   threshold: 0.55,
+  minMargin: 0.08,
   wordGapMs: 2200,
+  inference: "auto",
   speech: false,
+  ttsEngine: "espeak",
+  ttsLang: "en",
   voiceURI: "",
   ttsRate: 0.95,
   asrLang: "en-US",
@@ -95,6 +99,7 @@ export function onSettingsChange(listener) {
 
 export function initSettings() {
   current = { ...DEFAULT_SETTINGS, ...readStored() };
+  if (current.ttsEngine === "embedded") current.ttsEngine = "espeak";
   apply();
 
   if (mediaTheme) mediaTheme.removeEventListener("change", apply);

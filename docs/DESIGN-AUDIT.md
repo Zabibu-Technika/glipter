@@ -5,6 +5,8 @@
 **Audit scope:** UI/UX, QA, accessibility, ease of use, responsive behaviour (mobile, tablet, desktop), brand and competitive positioning
 **Prepared for:** Zabibu Technika · Tehillah Kachila
 
+> **Update, 10 November 2026:** the recognition, mobile-detection, phrase/motion, embedded-TTS, and two-way conversation work is covered in [`DEEP-AUDIT-2026-11-10.md`](DEEP-AUDIT-2026-11-10.md). This document remains the visual/accessibility audit.
+
 ---
 
 ## 1. Executive summary
@@ -27,7 +29,7 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 | Performance | 4.0 / 5 | ~1.24 MB cold transfer, ~1.38 s DCL on localhost, 9.5 MB cold heap. Vendor assets load on demand. |
 | Trust & ethics | 5.0 / 5 | Honest Tier 0 labels, dataset provenance, licences, credits, review metadata, model cards. |
 | Learn / education | 4.0 / 5 | Legible upright handshapes, per-letter cues, watch→try→feedback practice, Gliptic Typography. Deaf-reviewed illustrations are the next step. |
-| QA | 4.5 / 5 | 16/16 tests, 74/74 self-tests, static check, offline reload, demo pass, CI audit workflow. Device lab and screen-reader runs remain. |
+| QA | 4.5 / 5 | 18/18 tests, 74/74 self-tests, static check, offline reload, demo pass, CI audit workflow. Device lab and screen-reader runs remain. |
 | Iconic potential | 4.0 / 5 | Studio theme + hand constellation + commit pulse + Gliptic Typography is a distinctive direction. The signature confidence ring and Deaf co-design are the next level. |
 
 ### What is working
@@ -95,7 +97,7 @@ Glipter Studio now reads as a **credible edge product**, not a landing page. The
 | Console errors | **0** |
 | Uncaught page errors | **0** |
 | App self-test | **74/74** |
-| Node test suite | **16/16** |
+| Node test suite | **18/18** |
 | Static checker | Passing — all referenced IDs and precache files present; **0 runtime CDN loads** |
 | Offline reload | **Pass** — title, self-test, and shell restored offline |
 | Demo pipeline | **Pass** — `HELLO MY NAME IS GLIPTER` completes once, stops, and shows 5 tokens / 5 timeline items with the hand overlay present; replay starts clean |
@@ -293,8 +295,8 @@ Severity: **P0** blocks use or accessibility; **P1** major; **P2** polish; **P3*
 
 ### Passing
 
-- `npm test`: 16/16.
-- `npm run check`: passing (210 IDs, 53 service-worker references, 0 runtime CDN loads).
+- `npm test`: 18/18.
+- `npm run check`: passing (231 IDs, 52 service-worker references, 0 runtime CDN loads).
 - On-device self-test: 74/74.
 - Demo pipeline: `HELLO MY NAME IS GLIPTER` completes once, stops, preserves the final English, and starts a clean session on replay.
 - Offline reload: shell, models, and self-test restored with the service worker offline.
@@ -484,12 +486,12 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 |---|---|---|---|---|---|---|---|
 | 320×568 | No | 306×366 | 306×636 | 306×? scroll | 320×58 bottom | 0 | 0 |
 | 390×844 | No | 376×370 | 376×620 | 376×? scroll | 390×58 bottom | 0 | 0 |
-| 768×1024 | No | 686×601 | 686×477 | 686×93 | 64×944 side | 13 | 0 |
-| 1024×768 | No | 594×559 | 310×664 | 594×93 | 84×688 side | 13 | 0 |
-| 1440×900 | No | 948×691 | 372×796 | 948×93 | 84×820 side | 13 | 0 |
-| 1920×1080 | No | 1176×871 | 372×976 | 1176×93 | 84×1000 side | 13 | 0 |
+| 768×1024 | No | 686×601 | 686×477 | 686×93 | 64×944 side | 26 | 0 |
+| 1024×768 | No | 594×559 | 310×664 | 594×93 | 84×688 side | 26 | 0 |
+| 1440×900 | No | 948×691 | 372×796 | 948×93 | 84×820 side | 26 | 0 |
+| 1920×1080 | No | 1176×871 | 372×976 | 1176×93 | 84×1000 side | 26 | 0 |
 
-> The 13 <44 controls on tablet/desktop are mouse-sized secondary buttons (icon buttons, small text actions). WCAG 2.2 AA’s 24 px minimum passes everywhere. Mobile (320/390) has **zero** controls under 44 px. The Studio theme caps the wide camera at 1176 px inside a 1560 px studio.
+> The 26 <44 controls on tablet/desktop are mouse-sized secondary buttons and quick-phrase chips. WCAG 2.2 AA’s 24 px minimum passes everywhere. Mobile (320/390) has **zero** controls under 44 px. The Studio theme caps the wide camera at 1176 px inside a 1560 px studio.
 
 ### Axe runs
 
@@ -524,6 +526,8 @@ Glipter already has raw material: 21 landmarks, a cyan/ink palette, a hand mark,
 | `desktop-settings.png` | Settings with theme, camera, recognition, speech, low-power, kiosk. |
 | `desktop-demo-hand.png` | Demo with visible hand skeleton and live recognition. |
 | `demo-complete.png` | Demo finish state: `Hello my name is Glipter` in English, 5 timeline signs, demo stopped. |
+| `talk-final-mobile.png` | Mobile Talk thread: quick phrases, spoken reply, signed English, sign-back preview. |
+| `talk-desktop.png` | Desktop camera + Talk + inspector layout. |
 | `offline-live.png` | Offline reload with self-test. |
 | `audit-data.json` | Raw measurements and axe results. |
 

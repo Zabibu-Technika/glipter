@@ -1,4 +1,5 @@
 import { joinLetterRuns, reorderFor, toSentenceCase } from "./grammar.js";
+import { phraseLabel } from "./phrases.js";
 
 /**
  * Gloss accumulator: turns a stream of committed signs into a gloss line and
@@ -65,6 +66,7 @@ export class TextAccumulator {
     const confidence = typeof gesture === "object"
       ? (gesture.confidence ?? meta.confidence ?? 0)
       : (meta.confidence ?? 0);
+    const label = typeof gesture === "object" ? gesture.label : meta.label;
     const now = Date.now();
     const gap = now - this.lastPushAt;
     this.lastPushAt = now;
@@ -76,15 +78,15 @@ export class TextAccumulator {
       this.currentConfidence = Math.max(this.currentConfidence, confidence);
     } else {
       this.commitWord();
-      this.pushToken(id, confidence);
+      this.pushToken(id, confidence, label);
     }
     this.emit();
   }
 
-  pushToken(id, confidence = 0) {
+  pushToken(id, confidence = 0, label = null) {
     this.tokens.push({
       id,
-      label: this.profile?.labels?.[id] ?? id,
+      label: label ?? this.profile?.labels?.[id] ?? phraseLabel(id) ?? id,
       at: Date.now(),
       confidence,
     });

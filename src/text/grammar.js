@@ -7,6 +7,8 @@
  * replace these rules with language-specific grammar data.
  */
 
+import { PHRASE_ENGLISH } from "./phrases.js";
+
 const KSL_VERBS = new Set([
   "EAT", "DRINK", "GO", "COME", "SEE", "WANT", "LIKE", "COOK", "READ", "WRITE",
   "GIVE", "TAKE", "HELP", "TEACH", "LEARN", "HEAR", "IS", "ARE", "AM",
@@ -50,6 +52,7 @@ export function capitalize(sentence) {
 export function toSentenceCase(words) {
   const out = words.map((word) => {
     if (!word) return word;
+    if (PHRASE_ENGLISH[word]) return PHRASE_ENGLISH[word];
     if (PROPER_NOUNS.has(word)) return PROPER_NOUNS.get(word);
     if (ACRONYMS.has(word)) return word;
     if (word.length > 1 && word === word.toUpperCase()) return word.toLowerCase();

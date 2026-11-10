@@ -33,7 +33,7 @@ camera → landmarks (+ face/pose later)
        → text
 ```
 
-- **Front-end:** MediaPipe Hands now; add a lightweight holistic/non-manual model later.
+- **Front-end:** MediaPipe Tasks HandLandmarker now; add a lightweight holistic/non-manual model later.
 - **Temporal model:** 30–120 frames, quantised int8, <15 MB.
 - **Segmentation:** start with rest-pose + pause contract (Tier 1), then a learned boundary head (Tier 2).
 - **Decoder:** constrained lexicon, not an unconstrained LLM. KSL grammar is not English.

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#7c3aed" />
-  <meta name="description" content="Glipter Studio — an offline-first, on-device sign language engine. Real hand tracking, real datasets, zero cloud dependency." />
+  <meta name="description" content="Glipter Studio — an offline-first, on-device sign language engine with two-way conversation, motion signs, and an embedded multilingual voice." />
   <meta name="application-name" content="Glipter" />
   <meta name="author" content="Zabibu Technika · Tehillah Kachila" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -107,9 +107,9 @@
 
     <div class="app-body">
       <nav class="side-rail" aria-label="Workspace">
-        <button class="rail-item is-active" type="button" data-view="live" title="Live (1)" aria-label="Live">
+        <button class="rail-item is-active" type="button" data-view="live" title="Talk (1)" aria-label="Talk">
           <svg class="icon" aria-hidden="true"><use href="#i-camera"></use></svg>
-          <span>Live</span>
+          <span>Talk</span>
           <kbd>1</kbd>
         </button>
         <button class="rail-item" type="button" data-view="transcript" title="Transcript (2)" aria-label="Transcript">
@@ -148,8 +148,8 @@
               <section id="camera-panel" class="panel camera-panel is-idle" aria-labelledby="live-title">
                 <div class="panel-head">
                   <div class="panel-title">
-                    <span class="panel-eyebrow">Capture</span>
-                    <h1 id="live-title">Translate</h1>
+                    <span class="panel-eyebrow">Sign → voice</span>
+                    <h1 id="live-title">Talk</h1>
                   </div>
                   <div class="panel-tools">
                     <span id="camera-status" class="status-chip"><span class="status-dot"></span> idle</span>
@@ -215,6 +215,7 @@
                 <div class="camera-footer">
                   <div class="transport-metrics">
                     <span class="privacy-chip"><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg> on-device</span>
+                    <span id="engine-backend" class="backend-chip" title="Hand detector backend">detector</span>
                     <span><b id="fps">—</b> fps</span>
                     <span><b id="latency">—</b> ms</span>
                   </div>
@@ -222,6 +223,45 @@
                     <kbd>S</kbd> start/stop <span>·</span> <kbd>D</kbd> demo <span>·</span> <kbd>⌘K</kbd> commands
                   </div>
                 </div>
+              </section>
+
+              <section class="panel conversation-panel" aria-labelledby="conversation-title">
+                <div class="panel-head compact">
+                  <div class="panel-title">
+                    <span class="panel-eyebrow">Two-way conversation</span>
+                    <h2 id="conversation-title">Talk thread</h2>
+                  </div>
+                  <div class="panel-tools">
+                    <span id="talk-mode" class="status-chip">on-device</span>
+                    <button id="talk-clear" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Clear</button>
+                  </div>
+                </div>
+
+                <div id="talk-quick" class="talk-quick" aria-label="Quick spoken replies"></div>
+
+                <div id="talk-thread" class="talk-thread" aria-live="polite">
+                  <div id="talk-empty" class="talk-empty">
+                    <strong>Start a conversation</strong>
+                    <span>Signed English appears here. Use the microphone, a quick phrase, or type a reply for the signing person.</span>
+                  </div>
+                </div>
+
+                <div id="talk-sign-preview" class="talk-sign-preview" aria-live="polite">
+                  <span class="talk-preview-hint">Speech-to-sign preview appears here.</span>
+                </div>
+
+                <form id="talk-form" class="talk-composer">
+                  <label class="sr-only" for="talk-input">Type a spoken reply</label>
+                  <input id="talk-input" type="text" placeholder="Type a reply for the signing person…" autocomplete="off" />
+                  <button class="btn btn-primary btn-sm" type="submit"><svg class="icon" aria-hidden="true"><use href="#i-send"></use></svg> Send</button>
+                </form>
+
+                <div class="talk-actions">
+                  <button id="talk-listen" class="btn btn-secondary btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Listen</button>
+                  <button id="talk-speak" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-volume"></use></svg> Read signed English</button>
+                  <label class="talk-toggle"><input id="talk-auto-speak" type="checkbox" /> Auto-speak</label>
+                </div>
+                <p id="talk-note" class="fine-print">Sign recognition and speech output run on this device. The embedded eSpeak NG voice needs no OS voice and covers English plus African languages. Speech input is the only optional network surface; quick phrases, typed replies, and the sign preview work offline.</p>
               </section>
 
               <section class="panel timeline-panel" aria-labelledby="timeline-title">
@@ -495,6 +535,8 @@
               <div class="voice-stage">
                 <textarea id="tts-text" class="tts-text" rows="4" placeholder="Type something to say…">Hello. I am using Glipter, an on-device sign language assistant.</textarea>
                 <div class="voice-controls">
+                  <label class="voice-field"><span class="label">engine</span><select id="tts-engine"><option value="espeak">Embedded multilingual · eSpeak NG</option><option value="system">System voice</option></select></label>
+                  <label class="voice-field"><span class="label">language</span><select id="tts-lang"></select></label>
                   <label class="voice-field"><span class="label">voice</span><select id="tts-voice"></select></label>
                   <label class="voice-field"><span class="label">rate</span><span class="range-wrap"><input id="tts-rate" type="range" min="0.6" max="1.4" step="0.05" value="0.95" /><output id="tts-rate-value">0.95</output></span></label>
                 </div>
@@ -503,7 +545,7 @@
                   <button id="tts-copy" class="btn btn-ghost btn-sm" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg> Copy</button>
                 </div>
                 <div id="quick-phrases" class="quick-phrases" aria-label="Quick phrases"></div>
-                <p id="tts-note" class="fine-print">TTS uses the device's speech synthesiser. Local voices work offline.</p>
+                <p id="tts-note" class="fine-print">The embedded eSpeak NG voice runs inside Glipter: English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, and Tigrinya. No OS voice is required.</p>
               </div>
             </section>
           </div>
@@ -545,10 +587,10 @@
               <div class="panel-head compact"><div class="panel-title"><span class="panel-eyebrow">Pipeline</span><h2>How it works</h2></div></div>
               <ol class="pipeline">
                 <li><span>01</span><div><strong>Camera</strong><p>getUserMedia, entirely local.</p></div></li>
-                <li><span>02</span><div><strong>Landmarks</strong><p>MediaPipe Hands, vendored locally, 21 points per hand.</p></div></li>
+                <li><span>02</span><div><strong>Landmarks</strong><p>MediaPipe Tasks HandLandmarker, vendored locally, 21 points per hand. GPU delegate with CPU/WASM fallback.</p></div></li>
                 <li><span>03</span><div><strong>Features</strong><p>Wrist-centred, scale-normalised coordinates + pairwise distances + joint angles.</p></div></li>
-                <li><span>04</span><div><strong>Model</strong><p>A tiny neural network runs in plain JavaScript. No server, no GPU.</p></div></li>
-                <li><span>05</span><div><strong>Grammar</strong><p>Letters become words; KSL gets a conservative S-O-V verb move.</p></div></li>
+                <li><span>04</span><div><strong>Recognition</strong><p>A tiny neural network runs in JavaScript, with rule layers for ILY, HELP, J/Z, HELLO, and YES.</p></div></li>
+                <li><span>05</span><div><strong>Conversation</strong><p>Letters and phrases become English; the embedded voice speaks it. Replies come back as sign cards or fingerspelling.</p></div></li>
               </ol>
             </article>
 
@@ -692,6 +734,9 @@
         <label class="setting-row"><span><strong>Model quality</strong><small>Full is more accurate; lite is faster on old phones.</small></span>
           <select id="setting-complexity"><option value="0">Lite</option><option value="1">Full</option></select>
         </label>
+        <label class="setting-row"><span><strong>Inference backend</strong><small>Auto tries GPU, then CPU/WASM. CPU works without WebGL, which is the safe path on many phones.</small></span>
+          <select id="setting-inference"><option value="auto">Auto · GPU → CPU</option><option value="cpu">CPU / WASM only</option><option value="gpu">GPU only</option></select>
+        </label>
         <label class="setting-row"><span><strong>Low-power mode</strong><small>One hand, lite model, ~15 fps inference, reduced load.</small></span>
           <input id="setting-low-power" type="checkbox" />
         </label>
@@ -702,11 +747,20 @@
         <label class="setting-row"><span><strong>Commit confidence</strong><small>Signs below this score are shown but not committed.</small></span>
           <span class="range-wrap"><input id="setting-threshold" type="range" min="0.2" max="0.95" step="0.05" value="0.55" /><output id="setting-threshold-value">0.55</output></span>
         </label>
+        <label class="setting-row"><span><strong>Decision margin</strong><small>Reject ambiguous frames where the top two guesses are close.</small></span>
+          <span class="range-wrap"><input id="setting-margin" type="range" min="0" max="0.3" step="0.01" value="0.08" /><output id="setting-margin-value">0.08</output></span>
+        </label>
         <label class="setting-row"><span><strong>Word gap</strong><small>Pause length before a letter run becomes a word.</small></span>
           <span class="range-wrap"><input id="setting-word-gap" type="range" min="800" max="4000" step="100" value="2200" /><output id="setting-word-gap-value">2.2s</output></span>
         </label>
-        <label class="setting-row"><span><strong>Speak recognised English</strong><small>Uses the device's speech synthesiser. May need a local voice.</small></span>
+        <label class="setting-row"><span><strong>Speak recognised English</strong><small>Uses the embedded voice by default. May need a local voice if you switch to the system engine.</small></span>
           <input id="setting-speech" type="checkbox" />
+        </label>
+        <label class="setting-row"><span><strong>Voice engine</strong><small>Embedded eSpeak NG covers English and African languages. System voices depend on the OS.</small></span>
+          <select id="setting-tts-engine"><option value="espeak">Embedded multilingual · eSpeak NG</option><option value="system">System voice</option></select>
+        </label>
+        <label class="setting-row"><span><strong>Spoken language</strong><small>eSpeak covers Kiswahili, Afrikaans, Amharic, Setswana, Oromo, Tigrinya, and more.</small></span>
+          <select id="setting-tts-lang"></select>
         </label>
         <label class="setting-row"><span><strong>Speech voice</strong><small>Local voices work offline. Remote voices need a connection.</small></span>
           <select id="setting-voice"></select>
@@ -755,7 +809,6 @@
     <div class="noscript">Glipter needs JavaScript for on-device inference. The camera and recognition cannot run without it.</div>
   </noscript>
 
-  <script src="vendor/mediapipe/hands/hands.js"></script>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

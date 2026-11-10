@@ -35,16 +35,21 @@ for (const match of externalScripts) {
 }
 
 const required = [
-  "vendor/mediapipe/hands/hands.js",
-  "vendor/mediapipe/hands/hands_solution_simd_wasm_bin.wasm",
-  "vendor/mediapipe/hands/hands_solution_wasm_bin.wasm",
-  "vendor/mediapipe/hands/hand_landmark_full.tflite",
-  "vendor/mediapipe/hands/hand_landmark_lite.tflite",
+  "vendor/mediapipe/tasks/vision_bundle.mjs",
+  "vendor/mediapipe/tasks/wasm/vision_wasm_internal.js",
+  "vendor/mediapipe/tasks/wasm/vision_wasm_internal.wasm",
+  "vendor/mediapipe/tasks/hand_landmarker.task",
   "src/data/models/asl-static.js",
   "src/data/models/ksl-words.js",
   "src/data/prototypes.js",
   "src/asr.js",
   "src/speech.js",
+  "src/lib/phraseRecognizer.js",
+  "src/text/phrases.js",
+  "src/tts/espeak.js",
+  "src/tts/languages.js",
+  "vendor/tts/espeak/espeak-ng.js",
+  "vendor/tts/espeak/espeak-ng.data",
   "manifest.webmanifest",
   "sw.js",
 ];

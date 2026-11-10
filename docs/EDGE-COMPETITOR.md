@@ -71,7 +71,7 @@ Static handshape classification is the entry point, not the product. The hard pr
 
 The architecture that fits the edge constraint:
 
-1. **Landmark front-end:** MediaPipe Hands (current) or a lightweight holistic model for face/pose. Keep it local.
+1. **Landmark front-end:** MediaPipe Tasks HandLandmarker (current) or a lightweight holistic model for face/pose. Keep it local; GPU delegate with CPU/WASM fallback.
 2. **Temporal encoder:** a small TCN or transformer over 30–120 frames. Quantise to int8; target <15 MB.
 3. **Segmentation head:** boundary prediction plus a "rest pose" detector. Start with a pause/rest-pose contract (Tier 1), then move to learned segmentation (Tier 2).
 4. **Gloss decoder:** per-language lexicon + a constrained grammar layer. Do not let a generic LLM invent KSL grammar.
@@ -88,13 +88,13 @@ Requirements for Tier 4:
 - **Model budget:** <20 MB total (landmarks + temporal model + language profiles) so a 2 GB Android phone can install it.
 - **Latency:** <100 ms end-to-end at 15–30 fps; camera → landmark → classifier → text.
 - **Thermals/battery:** no continuous GPU inference. Prefer WASM SIMD, WebGPU only when available, and a lite/full model switch.
-- **Graceful degradation:** lite model on low-end devices, demo/learn/text when no camera, local TTS when no network.
+- **Graceful degradation:** lite model on low-end devices, demo/learn/text when no camera, embedded eSpeak TTS when no network or no OS voice.
 - **Browser reality:** Chrome/Edge first; Safari and Firefox need explicit testing. MediaPipe, Web Speech, and service worker behaviour differ.
 - **Kiosk mode:** full-screen, auto-start, no browser chrome, offline update path, physical camera mount guidance.
 
 **Gate:** a 5-year-old mid-range Android phone runs 10 minutes of continuous recognition without thermal throttling below 15 fps, with <100 ms latency and no network.
 
-**Voice bridge caveat:** the current Voice view uses browser ASR and device TTS. TTS can be fully offline when a local voice is installed. Browser ASR may call a vendor service, so it is not a true offline ASR system. For Tier 1, either vendor a small offline ASR model (Whisper tiny / Vosk WASM / a domain-specific keyword model) or keep the text fallback and label ASR as network-dependent. Do not claim offline speech recognition until it actually works with the network off.
+**Voice bridge caveat:** the current build uses browser ASR and an **embedded eSpeak NG** voice (English + African languages) that needs no OS voice or network. Browser ASR may call a vendor service, so it is not a true offline ASR system. For Tier 1, either vendor a small offline ASR model (Whisper tiny / Vosk WASM / a domain-specific keyword model) or keep the text/phrase fallback and label ASR as network-dependent. Do not claim offline speech recognition until it actually works with the network off.
 
 ### Gap D — Trust, governance, and distribution
 
@@ -114,9 +114,9 @@ This is where a community project can beat a vendor:
 ## 3. What the current Tier 0 already gets right
 
 - **Real public data, real models.** ASL: 10,508 samples, 99.9% same-corpus held-out top-1. KSL: 818 sequences, four glosses, 99.2% held-out top-1. The numbers are labelled with their limits.
-- **Offline by construction.** MediaPipe is vendored; the service worker precaches the shell; the demo and learn library work without a camera.
-- **A working two-way bridge.** Browser ASR for speech → text, local-first TTS for text → speech, with explicit network caveats.
-- **A self-test culture.** 74 checks on load, Node tests, a static check for missing assets and CDN leaks.
+- **Offline by construction.** MediaPipe Tasks and eSpeak NG are vendored; the service worker precaches the shell and voice; the demo and learn library work without a camera.
+- **A working two-way bridge.** Browser ASR for speech → text, embedded eSpeak NG for text → speech, a Talk thread, and a speech-to-sign preview, with explicit network caveats.
+- **A self-test culture.** 74 checks on load, 18 Node tests, a static check for missing assets and CDN leaks.
 - **An app, not a landing page.** Rail navigation, inspector, timeline, command palette, status bar, keyboard workflow.
 - **Credits and provenance.** Zabibu Technika, Tehillah Kachila, dataset authors, and licences are visible in the product.
 
@@ -132,7 +132,7 @@ These are the seeds of trust. They are not yet a competitor.
 - 50 static KSL signs, recorded with Deaf signers and reviewed.
 - Motion signs for a small set (J, Z, thank-you, sorry, please).
 - Pause/rest-pose segmentation contract.
-- PWA install + offline TTS voice guidance.
+- PWA install + embedded offline TTS with African language coverage.
 - Transcript export and a classroom-friendly session view.
 - **Gate:** 20 Deaf KSL reviewers try it; ≥70% prefer it to "no tool" for a scripted school-office conversation; all limitations visible.
 

@@ -1,10 +1,13 @@
-MediaPipe Hands
-===============
+MediaPipe Tasks Vision + HandLandmarker
+=======================================
 
-Vendored from @mediapipe/hands 0.4.1675469240.
+Vendored from:
+- @mediapipe/tasks-vision 1.2.2 (vision_bundle.mjs + WASM image pipeline)
+- hand_landmarker float16 model, version 1
+
 Copyright Google LLC.
 Licensed under the Apache License, Version 2.0 (see LICENSE in this folder).
 
-Files are served locally from this directory so Glipter's recognition path
-has no runtime CDN dependency. The service worker precaches them for offline
-use. The package is used as a browser-side hand landmark detector only.
+Files are served locally from this directory so Glipter's recognition path has
+no runtime CDN dependency. The service worker precaches them for offline use.
+The package is used as a browser-side hand landmark detector only.

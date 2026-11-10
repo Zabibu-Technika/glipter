@@ -23,6 +23,8 @@ import { SessionLog } from "../src/telemetry.js";
 import { handSvg } from "../src/ui.js";
 import { canSpeak } from "../src/speech.js";
 import { SpeechInput } from "../src/asr.js";
+import { PhraseRecognizer } from "../src/lib/phraseRecognizer.js";
+import { phraseForText } from "../src/text/phrases.js";
 import { RestPoseSegmenter } from "../src/lib/segmentation.js";
 import { validateProfile } from "../src/data/profileSchema.js";
 import { ASL } from "../src/languages/asl.js";
@@ -143,6 +145,70 @@ test("grammar layers are deterministic", () => {
   assert.equal(reorderASL(["HELLO", "GLIPTER"]), "Hello Glipter");
   assert.equal(reorderKSL(["MY", "FATHER", "IS"]), "My is father");
   assert.equal(reorderBSL(["B", "S", "L"]), "BSL");
+});
+
+test("phrase vocabulary renders conversational signs as English", () => {
+  assert.equal(reorderASL(["ILY"]), "I love you");
+  assert.equal(reorderASL(["HELLO"]), "Hello");
+  assert.equal(reorderASL(["THANK-YOU"]), "Thank you");
+  assert.equal(phraseForText("I love you")?.id, "ILY");
+  assert.equal(phraseForText("thank you")?.id, "THANK-YOU");
+  assert.equal(phraseForText("something unknown"), null);
+});
+
+test("phrase recognizer finds ILY, HELP, and motion signs", () => {
+  const recognizer = new PhraseRecognizer();
+  const ily = makeSyntheticHand({ thumb: true, index: true, middle: false, ring: false, pinky: true });
+  const staticResult = recognizer.update({
+    dominant: { landmarks: ily, fingers: { thumb: true, index: true, middle: false, ring: false, pinky: true } },
+    nonDominant: null,
+    timestamp: 1000,
+  });
+  assert.equal(staticResult?.id, "ILY");
+  assert.equal(staticResult?.kind, "static");
+
+  const fist = makeSyntheticHand({ thumb: false, index: false, middle: false, ring: false, pinky: false }, { offsetX: 0.02 });
+  const open = makeSyntheticHand({ thumb: true, index: true, middle: true, ring: true, pinky: true });
+  const help = recognizer.update({
+    dominant: { landmarks: fist, fingers: { thumb: false, index: false, middle: false, ring: false, pinky: false } },
+    nonDominant: { landmarks: open, fingers: { thumb: true, index: true, middle: true, ring: true, pinky: true } },
+    timestamp: 2000,
+  });
+  assert.equal(help?.id, "HELP");
+
+  const j = new PhraseRecognizer();
+  const pinky = { thumb: false, index: false, middle: false, ring: false, pinky: true };
+  const path = [
+    [0, 0], [0, 0.06], [0, 0.12], [-0.04, 0.16], [-0.09, 0.15], [-0.12, 0.08],
+  ];
+  let jResult = null;
+  path.forEach(([x, y], i) => {
+    const landmarks = makeSyntheticHand(pinky, { offsetX: x, offsetY: y });
+    jResult = j.update({
+      dominant: { landmarks, fingers: pinky },
+      nonDominant: null,
+      timestamp: 3000 + i * 50,
+    }) ?? jResult;
+  });
+  assert.equal(jResult?.id, "J");
+  assert.equal(jResult?.kind, "motion");
+
+  const z = new PhraseRecognizer();
+  const index = { thumb: false, index: true, middle: false, ring: false, pinky: false };
+  const zPath = [
+    [0, 0], [0.08, 0], [0.16, 0], [0.10, 0.08], [0.04, 0.10], [0.10, 0.06], [0.18, 0.04],
+  ];
+  let zResult = null;
+  zPath.forEach(([x, y], i) => {
+    const landmarks = makeSyntheticHand(index, { offsetX: x, offsetY: y });
+    zResult = z.update({
+      dominant: { landmarks, fingers: index },
+      nonDominant: null,
+      timestamp: 5000 + i * 40,
+    }) ?? zResult;
+  });
+  assert.equal(zResult?.id, "Z");
+  assert.equal(zResult?.kind, "motion");
 });
 
 test("telemetry exports TXT, CSV, and JSON", () => {

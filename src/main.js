@@ -17,6 +17,8 @@ import {
   speak,
   stopSpeaking,
   canSpeak,
+  canUseSystemTts,
+  usesEmbeddedTts,
   getVoices,
   localVoiceCount,
   onVoicesChanged,
@@ -29,6 +31,8 @@ import {
   renderLearnGrid, renderTranscript, renderSelfTest, renderDatasetList,
   renderTop3, toast, pct,
 } from "./ui.js";
+import { PHRASE_LABELS, phraseForText, phraseLabel } from "./text/phrases.js";
+import { TTS_LANGUAGES, ttsLanguageLabel } from "./tts/languages.js";
 
 /* ── State ──────────────────────────────────────────────────── */
 let settings = initSettings();
@@ -49,6 +53,10 @@ let lastSequenceAt = 0;
 let lastTop3Signature = "";
 let lastSpokenTokenCount = 0;
 let lastAnnouncedTokenCount = 0;
+let lastMotionAt = 0;
+let lastAsrFinal = "";
+let talkMessages = [];
+let lastTalkSignAt = 0;
 let speechTimer = 0;
 let pwa = null;
 let installAvailable = false;
@@ -124,6 +132,17 @@ const QUICK_PHRASES = [
   "Can I get a pen and paper?",
 ];
 
+const TALK_PHRASES = [
+  "Hello",
+  "Thank you",
+  "Please",
+  "Yes",
+  "No",
+  "I love you",
+  "Help",
+  "Sorry",
+];
+
 /* ── Elements ───────────────────────────────────────────────── */
 const els = {
   video: $("video"),
@@ -140,6 +159,7 @@ const els = {
   liveChip: $("live-chip"),
   fps: $("fps"),
   latency: $("latency"),
+  engineBackend: $("engine-backend"),
   handCount: $("hand-count"),
   handLabel: $("hand-label"),
   errorBanner: $("error-banner"),
@@ -184,6 +204,18 @@ const els = {
   timelineEmpty: $("timeline-empty"),
   timelineCount: $("timeline-count"),
   clearTimeline: $("clear-timeline"),
+  talkMode: $("talk-mode"),
+  talkClear: $("talk-clear"),
+  talkQuick: $("talk-quick"),
+  talkThread: $("talk-thread"),
+  talkEmpty: $("talk-empty"),
+  talkSignPreview: $("talk-sign-preview"),
+  talkForm: $("talk-form"),
+  talkInput: $("talk-input"),
+  talkListen: $("talk-listen"),
+  talkSpeak: $("talk-speak"),
+  talkAutoSpeak: $("talk-auto-speak"),
+  talkNote: $("talk-note"),
   transcriptList: $("transcript-list"),
   transcriptEmpty: $("transcript-empty"),
   transcriptCount: $("transcript-count"),
@@ -225,11 +257,16 @@ const els = {
   settingMirror: $("setting-mirror"),
   settingSkeleton: $("setting-skeleton"),
   settingComplexity: $("setting-complexity"),
+  settingInference: $("setting-inference"),
   settingThreshold: $("setting-threshold"),
   settingThresholdValue: $("setting-threshold-value"),
+  settingMargin: $("setting-margin"),
+  settingMarginValue: $("setting-margin-value"),
   settingWordGap: $("setting-word-gap"),
   settingWordGapValue: $("setting-word-gap-value"),
   settingSpeech: $("setting-speech"),
+  settingTtsEngine: $("setting-tts-engine"),
+  settingTtsLang: $("setting-tts-lang"),
   settingVoice: $("setting-voice"),
   settingRate: $("setting-rate"),
   settingRateValue: $("setting-rate-value"),
@@ -273,6 +310,8 @@ const els = {
   asrNetwork: $("asr-network"),
   asrUseText: $("asr-use-text"),
   ttsText: $("tts-text"),
+  ttsEngine: $("tts-engine"),
+  ttsLang: $("tts-lang"),
   ttsVoice: $("tts-voice"),
   ttsRate: $("tts-rate"),
   ttsRateValue: $("tts-rate-value"),
@@ -608,10 +647,16 @@ function displayPrediction(prediction, now) {
 
 function pushStaticGesture(prediction) {
   const result = debouncer.push(prediction?.id ?? null, prediction?.confidence ?? 0);
+  const margin = prediction?.top3?.length > 1
+    ? prediction.top3[0].confidence - prediction.top3[1].confidence
+    : 1;
   if (result.gesture) {
-    if (result.confidence >= settings.threshold && result.gesture !== lastGestureId) {
+    if (result.confidence >= settings.threshold && margin >= settings.minMargin && result.gesture !== lastGestureId) {
       lastGestureId = result.gesture;
-      accumulator.push({ id: result.gesture, confidence: result.confidence });
+      const label = prediction?.id === result.gesture
+        ? prediction.label
+        : phraseLabel(result.gesture);
+      accumulator.push({ id: result.gesture, confidence: result.confidence, label });
       haptic([12]);
       flashCommit();
     }
@@ -619,6 +664,23 @@ function pushStaticGesture(prediction) {
     lastGestureId = null;
     accumulator.push(null);
   }
+}
+
+function pushMotionGesture(prediction) {
+  if (!prediction) return;
+  const now = performance.now();
+  if (now - lastMotionAt < 900) return;
+  lastMotionAt = now;
+  lastGestureId = prediction.id;
+  debouncer.reset();
+  accumulator.push({
+    id: prediction.id,
+    confidence: prediction.confidence,
+    label: prediction.label,
+  });
+  haptic([16, 40, 16]);
+  flashCommit();
+  toast(`Signed: ${prediction.label}`, { type: "success", duration: 1800 });
 }
 
 function pushSequenceGesture(prediction) {
@@ -665,6 +727,19 @@ function handleFrame(frame) {
   }
   displayPrediction(prediction, now);
 
+  if (frame.motionPending) {
+    // A motion sign is in progress; keep the live readout quiet rather than
+    // showing the starting letter (e.g. I before J, or Z before Z motion).
+    if (!frame.phrase) displayPrediction(null, now);
+    return;
+  }
+
+  if (frame.phrase?.kind === "motion") {
+    displayPrediction(frame.phrase, now);
+    pushMotionGesture(frame.phrase);
+    return;
+  }
+
   if (practiceMode) {
     handlePractice(prediction);
     return;
@@ -691,13 +766,13 @@ function syncCanvasToVideo() {
 function setCameraStatus(status, label = status) {
   if (els.cameraStatus) {
     els.cameraStatus.classList.remove("running", "error");
-    if (status === "running" || status === "demo") els.cameraStatus.classList.add("running");
+    if (status === "running" || status === "demo" || status === "loading") els.cameraStatus.classList.add("running");
     if (status === "error") els.cameraStatus.classList.add("error");
     els.cameraStatus.innerHTML = `<span class="status-dot"></span> ${escapeHTML(label)}`;
   }
   if (els.engineStatus) {
     els.engineStatus.classList.remove("running", "error");
-    if (status === "running" || status === "demo") els.engineStatus.classList.add("running");
+    if (status === "running" || status === "demo" || status === "loading") els.engineStatus.classList.add("running");
     if (status === "error") els.engineStatus.classList.add("error");
     els.engineStatus.innerHTML = `<span class="status-dot"></span> ${escapeHTML(label)}`;
   }
@@ -784,6 +859,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   sequenceDebouncer.reset();
   lastGestureId = null;
   lastSequenceAt = 0;
+  lastMotionAt = 0;
   accumulator.setAutoCommit(true);
   accumulator.setReorderEnabled(true);
   setRunningUI(false);
@@ -793,6 +869,7 @@ function stopEverything({ silent = false, keepPractice = false } = {}) {
   resetLiveReadout();
   stopSessionClock();
   setCameraStatus("idle", "idle");
+  if (els.engineBackend) setText(els.engineBackend, "detector");
   stopSpeaking();
   if (!silent) toast("Stopped. Your transcript is still here.", { type: "info", duration: 2200 });
 }
@@ -840,9 +917,47 @@ async function startCamera() {
       },
       complexity: settings.lowPower ? 0 : settings.complexity,
       maxHands: settings.lowPower ? 1 : 2,
+      inference: settings.inference,
+      maxCaptureSize: settings.lowPower ? 480 : (window.matchMedia?.("(pointer: coarse)").matches ? 640 : 960),
+      onBackend: (backend) => {
+        if (els.engineBackend) {
+          const label = backend?.delegate === "GPU"
+            ? "GPU"
+            : backend?.webgl
+              ? `CPU·GL${backend.webgl}`
+              : "CPU·noGL";
+          setText(els.engineBackend, label);
+          els.engineBackend.title = backend?.capture
+            ? `${backend.delegate} delegate · WebGL ${backend.webgl || "unavailable"} · ${backend.capture.width}×${backend.capture.height} capture · Canvas 2D overlay`
+            : "Hand detector backend";
+        }
+      },
+      onStatus: (status) => {
+        if (status === "loading") setCameraStatus("loading", "loading model…");
+        if (status === "running") {
+          setCameraStatus("running", els.engineBackend?.textContent ? `running · ${els.engineBackend.textContent}` : "running");
+          els.liveChip.classList.remove("hidden");
+        }
+        if (status === "cpu-fallback") {
+          toast("GPU inference failed. Glipter switched to CPU/WASM.", { type: "info", duration: 4200 });
+        }
+        if (status === "no-webgl") {
+          setText(els.engineBackend, "no WebGL");
+          toast("This browser has no WebGL context. The demo, phrase board, and TTS still work; camera hand tracking needs a WebGL-capable browser.", { type: "info", duration: 6200 });
+        }
+        if (status === "stopped") setCameraStatus("idle", "idle");
+        if (status === "error") {
+          setCameraStatus("error", "error");
+          setRunningUI(false);
+        }
+      },
     });
     engine.setProfile(profile);
-    engine.setOptions({ minFrameInterval: settings.lowPower ? 66 : 0 });
+    engine.setOptions({
+      minFrameInterval: settings.lowPower ? 66 : 0,
+      inference: settings.inference,
+      maxCaptureSize: settings.lowPower ? 480 : (window.matchMedia?.("(pointer: coarse)").matches ? 640 : 960),
+    });
     await engine.start(els.video);
     syncCanvasToVideo();
     debouncer.reset();
@@ -913,6 +1028,8 @@ function scheduleSpeech(english) {
   speechTimer = setTimeout(() => {
     speak(english, {
       enabled: settings.speech,
+      engine: settings.ttsEngine,
+      lang: settings.ttsLang,
       voiceURI: settings.voiceURI,
       rate: settings.ttsRate,
     });
@@ -941,14 +1058,171 @@ function renderTimeline() {
   if (els.timeline) {
     els.timeline.innerHTML = entries.slice(-14).map((entry) => {
       const elapsed = Math.max(0, entry.at - (sessionLog.state.startedAt ?? entry.at));
-      return `<div class="timeline-item" title="${escapeHTML(entry.label)} · ${pct(entry.confidence, 0)}">
+      const shown = entry.label && entry.label !== entry.id ? entry.label : entry.id;
+      return `<div class="timeline-item" title="${escapeHTML(entry.label ?? entry.id)} · ${pct(entry.confidence, 0)}">
         <span class="time">${formatDuration(elapsed)}</span>
-        <span class="sign">${escapeHTML(entry.id)}</span>
+        <span class="sign">${escapeHTML(shown)}</span>
         <span class="conf">${pct(entry.confidence, 0)}</span>
       </div>`;
     }).join("");
     els.timeline.scrollLeft = els.timeline.scrollWidth;
   }
+}
+
+/* ── Two-way conversation ─────────────────────────────────── */
+function updateTalkMode() {
+  if (!els.talkMode) return;
+  const listening = asr?.listening;
+  const offline = !navigator.onLine;
+  const localAsr = SpeechInput.localRecognitionSupported;
+  els.talkMode.classList.toggle("is-error", offline && !localAsr);
+  if (listening) setText(els.talkMode, localAsr ? "listening · local-capable" : "listening");
+  else if (offline) setText(els.talkMode, localAsr ? "offline · local-capable ASR" : "offline · phrase board");
+  else setText(els.talkMode, localAsr ? "ASR · local-capable" : "on-device models");
+}
+
+function addTalkMessage(role, text, { label = "", update = false } = {}) {
+  const clean = String(text ?? "").trim();
+  if (!clean) return;
+  const now = Date.now();
+  if (role === "sign" && update && talkMessages.length) {
+    const last = talkMessages[talkMessages.length - 1];
+    if (last.role === "sign" && now - lastTalkSignAt < 7000) {
+      last.text = clean;
+      last.label = label || last.label;
+      last.at = now;
+      lastTalkSignAt = now;
+      renderTalkThread();
+      return;
+    }
+  }
+  talkMessages.push({ role, text: clean, label, at: now });
+  if (talkMessages.length > 40) talkMessages.shift();
+  if (role === "sign") lastTalkSignAt = now;
+  renderTalkThread();
+}
+
+function renderTalkThread() {
+  if (!els.talkThread) return;
+  const hasMessages = talkMessages.length > 0;
+  els.talkEmpty?.classList.toggle("hidden", hasMessages);
+  const messages = talkMessages.map((message) => {
+    const time = new Date(message.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const roleLabel = message.role === "sign"
+      ? "Signed"
+      : message.role === "spoken"
+        ? "Spoken"
+        : "System";
+    return `<article class="talk-message ${escapeHTML(message.role)}">
+      <div class="talk-message-head"><span>${escapeHTML(roleLabel)}</span><time>${escapeHTML(time)}</time></div>
+      <p>${escapeHTML(message.text)}</p>
+      ${message.label ? `<small>${escapeHTML(message.label)}</small>` : ""}
+    </article>`;
+  }).join("");
+  const existing = [...els.talkThread.querySelectorAll(".talk-message")].map((node) => node.outerHTML).join("");
+  if (messages !== existing) {
+    els.talkThread.querySelectorAll(".talk-message").forEach((node) => node.remove());
+    els.talkThread.insertAdjacentHTML("beforeend", messages);
+  }
+  els.talkThread.scrollTop = els.talkThread.scrollHeight;
+}
+
+function renderTalkSignPreview(text) {
+  if (!els.talkSignPreview) return;
+  const clean = String(text ?? "").trim();
+  if (!clean) {
+    els.talkSignPreview.innerHTML = `<span class="talk-preview-hint">Speech-to-sign preview appears here.</span>`;
+    return;
+  }
+  const phrase = phraseForText(clean);
+  if (phrase) {
+    const label = PHRASE_LABELS[phrase.id] ?? clean;
+    els.talkSignPreview.innerHTML = `<div class="sign-preview-card" data-sign="${escapeHTML(phrase.id)}">
+      <div class="sign-preview-icon"><svg class="icon" aria-hidden="true"><use href="#i-hand"></use></svg></div>
+      <div class="sign-preview-copy">
+        <span class="label">sign back</span>
+        <strong>${escapeHTML(label)}</strong>
+        <small>${escapeHTML(phrase.note)} · motion/facial grammar not shown</small>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const language = currentLearnLang === "BSL" ? "ASL" : currentLearnLang;
+  const glyphs = [...clean.toUpperCase()].slice(0, 36).map((character) => {
+    if (character === " ") return `<span class="glyph is-space" aria-hidden="true">·</span>`;
+    const prototype = prototypeFor(language, character);
+    if (!prototype) return `<span class="glyph is-unsupported"><strong>${escapeHTML(character)}</strong></span>`;
+    return `<div class="glyph" title="${escapeHTML(character)}">${handSvg(prototype.landmarks, { label: `${character} handshape`, decorative: true })}<strong>${escapeHTML(character)}</strong></div>`;
+  }).join("");
+  els.talkSignPreview.innerHTML = `<div class="sign-preview-head"><span class="label">sign back</span><span>fingerspelling · handshape only</span></div>
+    <div class="glyph-strip talk-glyphs">${glyphs || `<span class="talk-preview-hint">Nothing to sign yet.</span>`}</div>
+    <p class="fine-print">Motion, location, orientation, and facial grammar are not shown. This is a visual reply aid, not a full sign-language generator.</p>`;
+}
+
+function sendSpokenText(text, { speakIt = true } = {}) {
+  const clean = String(text ?? "").trim();
+  if (!clean) return;
+  addTalkMessage("spoken", clean);
+  renderTalkSignPreview(clean);
+  if (speakIt) speakText(clean);
+  if (els.talkInput) els.talkInput.value = "";
+}
+
+function handleTalkTranscript(payload = {}) {
+  const finalText = String(payload.finalText ?? "").trim();
+  if (!finalText) {
+    if (!payload.interimText) lastAsrFinal = "";
+    return;
+  }
+  const delta = finalText.startsWith(lastAsrFinal)
+    ? finalText.slice(lastAsrFinal.length).trim()
+    : finalText;
+  lastAsrFinal = finalText;
+  if (delta) {
+    addTalkMessage("spoken", delta);
+    renderTalkSignPreview(delta);
+  }
+}
+
+function clearTalk() {
+  talkMessages = [];
+  lastAsrFinal = "";
+  lastTalkSignAt = 0;
+  renderTalkThread();
+  renderTalkSignPreview("");
+  updateTalkMode();
+}
+
+function initTalk() {
+  if (els.talkQuick) {
+    els.talkQuick.innerHTML = TALK_PHRASES.map((phrase) =>
+      `<button class="quick-phrase" type="button" data-talk-phrase="${escapeHTML(phrase)}">${escapeHTML(phrase)}</button>`).join("");
+    els.talkQuick.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-talk-phrase]");
+      if (!button) return;
+      sendSpokenText(button.dataset.talkPhrase);
+    });
+  }
+  els.talkForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    sendSpokenText(els.talkInput?.value);
+  });
+  els.talkClear?.addEventListener("click", () => {
+    clearTalk();
+    toast("Conversation cleared.", { type: "info", duration: 1600 });
+  });
+  els.talkListen?.addEventListener("click", () => toggleAsr({ goToVoice: false }));
+  els.talkSpeak?.addEventListener("click", speakEnglish);
+  els.talkAutoSpeak?.addEventListener("change", () => {
+    updateSettings({ speech: els.talkAutoSpeak.checked });
+    settings = getSettings();
+    if (!settings.speech) stopSpeaking();
+  });
+  if (els.talkAutoSpeak) els.talkAutoSpeak.checked = settings.speech;
+  renderTalkThread();
+  renderTalkSignPreview("");
+  updateTalkMode();
 }
 
 function startSessionClock() {
@@ -991,6 +1265,10 @@ function onAccumulatorState(state) {
   if (state.tokens.length > lastAnnouncedTokenCount) {
     const latest = state.tokens[state.tokens.length - 1];
     setText(els.signAnnouncer, `Signed ${latest.label ?? latest.id}`);
+    addTalkMessage("sign", state.english || latest.label || latest.id, {
+      label: latest.label ?? phraseLabel(latest.id) ?? latest.id,
+      update: true,
+    });
     lastAnnouncedTokenCount = state.tokens.length;
   } else if (state.tokens.length < lastAnnouncedTokenCount) {
     lastAnnouncedTokenCount = state.tokens.length;
@@ -1025,6 +1303,7 @@ function clearSession({ silent = false } = {}) {
   sequenceDebouncer.reset();
   lastGestureId = null;
   lastSequenceAt = 0;
+  lastMotionAt = 0;
   lastSpokenTokenCount = 0;
   lastAnnouncedTokenCount = 0;
   sessionClockStartedAt = null;
@@ -1096,6 +1375,8 @@ function speakEnglish() {
   }
   speak(text, {
     enabled: true,
+    engine: settings.ttsEngine,
+    lang: settings.ttsLang,
     voiceURI: settings.voiceURI,
     rate: settings.ttsRate,
     force: true,
@@ -1112,11 +1393,19 @@ function syncSettingsUI() {
   if (els.settingMirror) els.settingMirror.checked = settings.mirror;
   if (els.settingSkeleton) els.settingSkeleton.checked = settings.skeleton;
   if (els.settingComplexity) els.settingComplexity.value = String(settings.complexity);
+  if (els.settingInference) els.settingInference.value = settings.inference;
   if (els.settingThreshold) els.settingThreshold.value = String(settings.threshold);
   if (els.settingThresholdValue) els.settingThresholdValue.value = settings.threshold.toFixed(2);
+  if (els.settingMargin) els.settingMargin.value = String(settings.minMargin);
+  if (els.settingMarginValue) els.settingMarginValue.value = settings.minMargin.toFixed(2);
   if (els.settingWordGap) els.settingWordGap.value = String(settings.wordGapMs);
   if (els.settingWordGapValue) els.settingWordGapValue.value = `${(settings.wordGapMs / 1000).toFixed(1)}s`;
   if (els.settingSpeech) els.settingSpeech.checked = settings.speech;
+  if (els.talkAutoSpeak) els.talkAutoSpeak.checked = settings.speech;
+  if (els.settingTtsEngine) els.settingTtsEngine.value = settings.ttsEngine;
+  if (els.ttsEngine) els.ttsEngine.value = settings.ttsEngine;
+  if (els.settingTtsLang) els.settingTtsLang.value = settings.ttsLang;
+  if (els.ttsLang) els.ttsLang.value = settings.ttsLang;
   if (els.settingHaptics) els.settingHaptics.checked = settings.haptics;
   if (els.settingLowPower) els.settingLowPower.checked = settings.lowPower;
   if (els.settingRate) els.settingRate.value = String(settings.ttsRate);
@@ -1132,6 +1421,8 @@ function syncSettingsUI() {
     complexity: settings.lowPower ? 0 : settings.complexity,
     maxHands: settings.lowPower ? 1 : 2,
     minFrameInterval: settings.lowPower ? 66 : 0,
+    inference: settings.inference,
+    maxCaptureSize: settings.lowPower ? 480 : (window.matchMedia?.("(pointer: coarse)").matches ? 640 : 960),
   });
   populateVoices();
 }
@@ -1154,12 +1445,34 @@ function bindSettings() {
   els.settingMirror?.addEventListener("change", () => save({ mirror: els.settingMirror.checked }));
   els.settingSkeleton?.addEventListener("change", () => save({ skeleton: els.settingSkeleton.checked }));
   els.settingComplexity?.addEventListener("change", () => save({ complexity: Number(els.settingComplexity.value) }));
+  els.settingInference?.addEventListener("change", () => {
+    save({ inference: els.settingInference.value });
+    toast(
+      els.settingInference.value === "cpu"
+        ? "CPU/WASM inference selected. Restart the camera to apply."
+        : els.settingInference.value === "gpu"
+          ? "GPU inference selected. Restart the camera to apply."
+          : "Auto inference selected: GPU if available, CPU fallback.",
+      { type: "info", duration: 3200 },
+    );
+  });
   els.settingThreshold?.addEventListener("input", () => save({ threshold: Number(els.settingThreshold.value) }));
+  els.settingMargin?.addEventListener("input", () => save({ minMargin: Number(els.settingMargin.value) }));
   els.settingWordGap?.addEventListener("input", () => save({ wordGapMs: Number(els.settingWordGap.value) }));
   els.settingSpeech?.addEventListener("change", () => {
     save({ speech: els.settingSpeech.checked });
     if (!els.settingSpeech.checked) stopSpeaking();
   });
+  els.settingTtsEngine?.addEventListener("change", () => {
+    save({ ttsEngine: els.settingTtsEngine.value });
+    toast(
+      els.settingTtsEngine.value === "espeak"
+        ? "Embedded multilingual voice selected. eSpeak NG runs inside Glipter, offline."
+        : "System voice selected. The browser/OS must provide a speech voice.",
+      { type: "info", duration: 3600 },
+    );
+  });
+  els.settingTtsLang?.addEventListener("change", () => save({ ttsLang: els.settingTtsLang.value }));
   els.settingHaptics?.addEventListener("change", () => save({ haptics: els.settingHaptics.checked }));
   els.settingLowPower?.addEventListener("change", () => {
     save({ lowPower: els.settingLowPower.checked });
@@ -1295,6 +1608,13 @@ function setAsrButton(listening) {
     ? `<svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop`
     : `<svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Listen`;
   els.asrWave?.classList.toggle("is-listening", listening);
+  if (els.talkListen) {
+    els.talkListen.innerHTML = listening
+      ? `<svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg> Stop listening`
+      : `<svg class="icon" aria-hidden="true"><use href="#i-mic"></use></svg> Listen`;
+    els.talkListen.classList.toggle("is-listening", listening);
+  }
+  updateTalkMode();
 }
 
 function renderAsrTranscript({ finalText = "", interimText = "" } = {}) {
@@ -1335,12 +1655,13 @@ function setAsrStatus(status, detail = "") {
     els.asrStatus.textContent = "Idle";
     setAsrButton(false);
   }
+  updateTalkMode();
 }
 
-function toggleAsr() {
-  showView("voice");
+function toggleAsr({ goToVoice = true } = {}) {
+  if (goToVoice) showView("voice");
   if (!SpeechInput.supported) {
-    toast("Speech recognition is not supported here. Use the text box instead.", { type: "error" });
+    toast("Speech recognition is not supported here. Use the phrase board or type instead.", { type: "error" });
     return;
   }
   if (asr?.listening) {
@@ -1348,50 +1669,74 @@ function toggleAsr() {
     setAsrStatus("idle");
     return;
   }
-  if (!navigator.onLine) {
-    toast("You are offline. Browser ASR may need a network service; the text box still works.", { type: "info", duration: 4200 });
+  if (!navigator.onLine && !SpeechInput.localRecognitionSupported) {
+    toast("You are offline and this browser has no local ASR. Use a quick phrase or type instead.", { type: "info", duration: 4200 });
   }
   asr?.start();
 }
 
 function populateVoices() {
-  if (!canSpeak()) {
+  const embedded = usesEmbeddedTts();
+  const system = canUseSystemTts();
+  const voices = system ? getVoices() : [];
+
+  if (!embedded && !system) {
     if (els.ttsSupport) {
       els.ttsSupport.textContent = "TTS unavailable";
       els.ttsSupport.classList.add("error");
     }
     if (els.ttsVoice) els.ttsVoice.innerHTML = `<option value="">No voices available</option>`;
     if (els.settingVoice) els.settingVoice.innerHTML = `<option value="">No voices available</option>`;
-    if (els.ttsNote) els.ttsNote.textContent = "This browser does not expose speech synthesis. Use another browser or a screen reader.";
+    if (els.ttsNote) els.ttsNote.textContent = "This browser cannot play embedded or system speech.";
     return;
   }
 
-  const voices = getVoices();
   const options = voices.length
     ? voices.map((voice) => `<option value="${escapeHTML(voice.voiceURI)}">${escapeHTML(voice.name)} · ${voice.localService ? "local" : "remote"} · ${escapeHTML(voice.lang)}</option>`).join("")
-    : `<option value="">No voices available</option>`;
+    : `<option value="">Embedded voice · no system voice needed</option>`;
 
   const preferred = preferredVoice(settings.voiceURI);
   const selected = settings.voiceURI || preferred?.voiceURI || "";
-  if (selected && selected !== settings.voiceURI) {
+  if (system && selected && selected !== settings.voiceURI) {
     settings = updateSettings({ voiceURI: selected });
   }
 
   for (const select of [els.ttsVoice, els.settingVoice]) {
     if (!select) continue;
     select.innerHTML = options;
-    select.value = selected;
+    if (selected) select.value = selected;
+    select.disabled = settings.ttsEngine !== "system";
+  }
+  if (els.ttsEngine) els.ttsEngine.value = settings.ttsEngine;
+  if (els.settingTtsEngine) els.settingTtsEngine.value = settings.ttsEngine;
+
+  const languageOptions = TTS_LANGUAGES.map((language) =>
+    `<option value="${escapeHTML(language.code)}">${escapeHTML(language.label)}</option>`).join("");
+  for (const select of [els.ttsLang, els.settingTtsLang]) {
+    if (!select) continue;
+    select.innerHTML = languageOptions;
+    select.value = settings.ttsLang;
+    select.disabled = settings.ttsEngine !== "espeak";
   }
 
   if (els.ttsSupport) {
-    els.ttsSupport.textContent = voices.length ? `TTS · ${voices.length} voices` : "TTS unavailable";
-    els.ttsSupport.classList.toggle("error", !voices.length);
+    els.ttsSupport.textContent = embedded
+      ? "TTS · embedded · EN + African languages"
+      : voices.length
+        ? `TTS · ${voices.length} system voices`
+        : "TTS unavailable";
+    els.ttsSupport.classList.toggle("pill-success", embedded || voices.length > 0);
+    els.ttsSupport.classList.toggle("error", !embedded && !voices.length);
   }
   if (els.ttsNote) {
     const local = localVoiceCount();
-    els.ttsNote.textContent = local
-      ? `${local} local voice${local === 1 ? "" : "s"} available. TTS can work offline.`
-      : "No local voice found. TTS may need a network or an installed system voice.";
+    if (settings.ttsEngine === "espeak") {
+      els.ttsNote.textContent = `Embedded eSpeak NG voice: ${ttsLanguageLabel(settings.ttsLang)}. English, Kiswahili, Afrikaans, Amharic, Setswana, Oromo, and Tigrinya run offline. eSpeak NG is GPL-3.0; no OS voice is required.`;
+    } else if (voices.length) {
+      els.ttsNote.textContent = `${voices.length} system voice${voices.length === 1 ? "" : "s"} available (${local} local). System voices depend on the browser/OS.`;
+    } else {
+      els.ttsNote.textContent = "No system voice found. Switch to the embedded engine.";
+    }
   }
   if (els.settingRateValue) els.settingRateValue.value = settings.ttsRate.toFixed(2);
   if (els.ttsRateValue) els.ttsRateValue.value = settings.ttsRate.toFixed(2);
@@ -1407,6 +1752,8 @@ function speakText(text, { force = true } = {}) {
   }
   const ok = speak(text, {
     enabled: true,
+    engine: settings.ttsEngine,
+    lang: settings.ttsLang,
     voiceURI: settings.voiceURI,
     rate: settings.ttsRate,
     force,
@@ -1418,14 +1765,18 @@ function updateVoiceNetworkState() {
   if (!els.asrNetwork) return;
   els.asrNetwork.classList.remove("warn", "error");
   if (!SpeechInput.supported) {
-    setText(els.asrNetwork, "ASR unavailable");
+    setText(els.asrNetwork, "ASR unavailable · phrase board offline");
     els.asrNetwork.classList.add("error");
+  } else if (SpeechInput.localRecognitionSupported) {
+    setText(els.asrNetwork, "ASR · on-device capable");
+    els.asrNetwork.classList.add("pill-success");
   } else if (!navigator.onLine) {
-    setText(els.asrNetwork, "Offline · ASR may fail");
+    setText(els.asrNetwork, "Offline · phrase board / type");
     els.asrNetwork.classList.add("warn");
   } else {
     setText(els.asrNetwork, "browser ASR · may need network");
   }
+  updateTalkMode();
 }
 
 function initVoice() {
@@ -1433,17 +1784,26 @@ function initVoice() {
     els.asrSupport.textContent = SpeechInput.supported ? "ASR ready" : "ASR unavailable";
     els.asrSupport.classList.toggle("error", !SpeechInput.supported);
     els.asrSupport.classList.toggle("pill-success", SpeechInput.supported);
+    if (SpeechInput.localRecognitionSupported) els.asrSupport.textContent = "ASR · local capable";
   }
   if (els.asrNote) {
     els.asrNote.textContent = SpeechInput.supported
-      ? "Browser speech recognition may use an online service. If you are offline, type in the Speak panel instead. Nothing is sent by Glipter itself."
-      : "Speech recognition is not available in this browser. Use the text box on the right; TTS still works.";
+      ? "Glipter never uploads audio itself. Some browsers use an online recogniser; newer ones expose on-device recognition. Offline, use a quick phrase or the text box; the embedded TTS still works."
+      : "Speech recognition is not available in this browser. Use the phrase board or text box; the embedded TTS still works.";
   }
 
   asr = new SpeechInput({
     lang: settings.asrLang,
-    onTranscript: renderAsrTranscript,
+    preferLocal: true,
+    onTranscript: (payload) => {
+      renderAsrTranscript(payload);
+      handleTalkTranscript(payload);
+    },
     onStatus: setAsrStatus,
+    onMode: () => {
+      updateVoiceNetworkState();
+      updateTalkMode();
+    },
     onError: (code) => {
       if (code === "not-allowed" || code === "service-not-allowed") {
         toast("Microphone permission was blocked. Allow it in the browser, then try again.", { type: "error", duration: 5000 });
@@ -1470,6 +1830,7 @@ function initVoice() {
   els.asrClear?.addEventListener("click", () => {
     asr.clear();
     renderAsrTranscript();
+    lastAsrFinal = "";
     toast("Speech text cleared.", { type: "info", duration: 1600 });
   });
   els.asrToSpeak?.addEventListener("click", () => {
@@ -1502,6 +1863,20 @@ function initVoice() {
   });
   els.ttsVoice?.addEventListener("change", () => {
     updateSettings({ voiceURI: els.ttsVoice.value });
+    syncSettingsUI();
+  });
+  els.ttsEngine?.addEventListener("change", () => {
+    updateSettings({ ttsEngine: els.ttsEngine.value });
+    syncSettingsUI();
+    toast(
+      els.ttsEngine.value === "espeak"
+        ? "Embedded multilingual voice active: eSpeak NG, offline."
+        : "System voice active. Requires an installed browser/OS voice.",
+      { type: "info", duration: 3000 },
+    );
+  });
+  els.ttsLang?.addEventListener("change", () => {
+    updateSettings({ ttsLang: els.ttsLang.value });
     syncSettingsUI();
   });
   els.settingVoice?.addEventListener("change", () => {
@@ -1785,11 +2160,13 @@ function bindEvents() {
     toast("Back online. Glipter still runs locally.", { type: "success" });
     populateVoices();
     updateVoiceNetworkState();
+    updateTalkMode();
   });
   window.addEventListener("offline", () => {
-    toast("Offline. The app shell and models are cached.", { type: "info" });
+    toast("Offline. Models, recognition, phrase board, and local TTS still work.", { type: "info" });
     populateVoices();
     updateVoiceNetworkState();
+    updateTalkMode();
   });
 
   window.addEventListener("beforeunload", () => {
@@ -1903,6 +2280,7 @@ function boot() {
   selectLearn(currentLearnLetter, currentLearnLang, { render: false });
   initOffline();
   initVoice();
+  initTalk();
   initCommandPalette();
   startTicker();
   renderTimeline();

@@ -1,20 +1,49 @@
 /**
- * Text-to-speech (TTS) using the device's speech synthesiser.
+ * Text-to-speech.
  *
- * Prefers a local voice so the feature can work offline. Browsers expose
- * voices asynchronously; call refreshVoices() on voiceschanged.
+ * The default voice is embedded: eSpeak NG compiled to WebAssembly, shipped
+ * with the app, rendered in the browser, and played through Web Audio. It
+ * needs no OS voice, no speechSynthesis, and no network. It covers English,
+ * Kiswahili, Afrikaans, Amharic, Setswana, Oromo, Tigrinya, and many more.
+ *
+ * The device's speechSynthesis voices remain an optional fallback.
  */
+import {
+  espeakSupported,
+  isEspeakLoaded,
+  isEspeakSpeaking,
+  preloadEspeak,
+  speakEspeak,
+  stopEspeak,
+  unlockEspeakAudio,
+} from "./tts/espeak.js";
+
 let cachedVoices = [];
 let lastSpoken = "";
 let lastSpokenAt = 0;
 const voiceListeners = new Set();
 
-export function canSpeak() {
+export function canUseSystemTts() {
   return typeof window !== "undefined" && "speechSynthesis" in window;
 }
 
+export function canSpeak() {
+  return espeakSupported() || canUseSystemTts();
+}
+
+export function usesEmbeddedTts() {
+  return espeakSupported();
+}
+
+export function embeddedVoiceStatus() {
+  return {
+    multilingual: espeakSupported(),
+    multilingualLoaded: isEspeakLoaded(),
+  };
+}
+
 export function refreshVoices() {
-  if (!canSpeak()) return [];
+  if (!canUseSystemTts()) return [];
   try {
     cachedVoices = window.speechSynthesis.getVoices() ?? [];
   } catch {
@@ -53,8 +82,37 @@ export function preferredVoice(voiceURI) {
     ?? null;
 }
 
+function speakSystem(text, {
+  voiceURI = "",
+  rate = 0.95,
+  pitch = 1,
+  onStart,
+  onEnd,
+} = {}) {
+  if (!canUseSystemTts()) return false;
+  try {
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voice = preferredVoice(voiceURI);
+    if (voice) utterance.voice = voice;
+    utterance.rate = Math.max(0.5, Math.min(2, Number(rate) || 0.95));
+    utterance.pitch = Math.max(0.5, Math.min(2, Number(pitch) || 1));
+    utterance.volume = 1;
+    utterance.onstart = () => onStart?.();
+    utterance.onend = () => onEnd?.();
+    utterance.onerror = () => onEnd?.();
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    return true;
+  } catch {
+    onEnd?.();
+    return false;
+  }
+}
+
 export function speak(text, {
   enabled = true,
+  engine = "espeak",
+  lang = "en",
   voiceURI = "",
   rate = 0.95,
   pitch = 1,
@@ -71,26 +129,28 @@ export function speak(text, {
   lastSpoken = clean;
   lastSpokenAt = now;
 
-  try {
-    const utterance = new SpeechSynthesisUtterance(clean);
-    const voice = preferredVoice(voiceURI);
-    if (voice) utterance.voice = voice;
-    utterance.rate = Math.max(0.5, Math.min(2, Number(rate) || 0.95));
-    utterance.pitch = Math.max(0.5, Math.min(2, Number(pitch) || 1));
-    utterance.volume = 1;
-    utterance.onstart = () => onStart?.();
-    utterance.onend = () => onEnd?.();
-    utterance.onerror = () => onEnd?.();
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-    return true;
-  } catch {
-    return false;
+  // Older builds stored "embedded" for the Flite engine. Treat it as the
+  // embedded eSpeak engine so persisted settings keep working.
+  const selected = engine === "embedded" ? "espeak" : engine;
+
+  if (selected === "system" && canUseSystemTts()) {
+    const sent = speakSystem(clean, { voiceURI, rate, pitch, onStart, onEnd });
+    if (sent) return true;
   }
+
+  if (espeakSupported()) {
+    speakEspeak(clean, { lang, rate, pitch, onStart, onEnd }).catch(() => {
+      speakSystem(clean, { voiceURI, rate, pitch, onStart, onEnd });
+    });
+    return true;
+  }
+
+  return speakSystem(clean, { voiceURI, rate, pitch, onStart, onEnd });
 }
 
 export function stopSpeaking() {
-  if (canSpeak()) {
+  stopEspeak();
+  if (canUseSystemTts()) {
     try {
       window.speechSynthesis.cancel();
     } catch {
@@ -100,10 +160,19 @@ export function stopSpeaking() {
 }
 
 export function isSpeaking() {
-  return canSpeak() && window.speechSynthesis.speaking;
+  return isEspeakSpeaking()
+    || (canUseSystemTts() && window.speechSynthesis.speaking);
 }
 
-if (canSpeak()) {
+export function warmEmbeddedVoice() {
+  return preloadEspeak();
+}
+
+export function unlockTtsAudio() {
+  return unlockEspeakAudio();
+}
+
+if (canUseSystemTts()) {
   window.speechSynthesis.addEventListener?.("voiceschanged", refreshVoices);
   // Some browsers populate voices only after the first call.
   setTimeout(refreshVoices, 0);
